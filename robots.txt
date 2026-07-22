@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://oge-na-5.ru/sitemap.xml
