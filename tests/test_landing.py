@@ -48,6 +48,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("Sitemap: https://oge-na-5.ru/sitemap.xml", robots)
         self.assertIn("<loc>https://oge-na-5.ru/</loc>", sitemap)
         self.assertTrue((ROOT / ".nojekyll").is_file())
+        self.assertEqual((ROOT / "CNAME").read_text(encoding="utf-8").strip(), "oge-na-5.ru")
 
     def test_styles_cover_mobile_call_bar(self):
         self.assertRegex(self.css, r"@media \(max-width:\s*720px\)")
