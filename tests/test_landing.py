@@ -75,6 +75,13 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("Написать в MAX", self.html)
         self.assertNotIn("WhatsApp", self.html)
 
+    def test_callback_scenario_is_clear(self):
+        self.assertIn("10–15 минут", self.html)
+        self.assertIn("подойдёт ли формат занятий", self.html)
+        self.assertIn("Написать: перезвоните мне", self.html)
+        self.assertIn("напишите в MAX «Перезвоните»", self.html)
+        self.assertIn("Перезвоните мне", self.html)
+
     def test_new_stability_and_self_check_cases_are_present(self):
         self.assertIn("То 5, то 3", self.html)
         self.assertIn("10 вариантов", self.html)
