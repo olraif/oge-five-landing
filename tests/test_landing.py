@@ -78,9 +78,9 @@ class LandingContractTests(unittest.TestCase):
     def test_callback_scenario_is_clear(self):
         self.assertIn("10–15 минут", self.html)
         self.assertIn("подойдёт ли формат занятий", self.html)
-        self.assertIn("Написать: перезвоните мне", self.html)
-        self.assertIn("напишите в MAX «Перезвоните»", self.html)
-        self.assertIn("Перезвоните мне", self.html)
+        self.assertIn("Если не дозвонились", self.html)
+        self.assertIn("у меня идёт урок", self.html)
+        self.assertIn("напишите в MAX, и я вам перезвоню", self.html)
 
     def test_new_stability_and_self_check_cases_are_present(self):
         self.assertIn("То 5, то 3", self.html)
