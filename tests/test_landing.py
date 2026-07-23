@@ -91,9 +91,17 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("точный ввод", html)
 
     def test_strong_student_confidence_hook_is_present(self):
-        self.assertIn("В школе 4 или 5, но есть тревога", self.html)
+        self.assertIn("В школе 4 или 5, но нет уверенности", self.html)
         self.assertIn("ребёнок с пятёркой по математике", self.html)
-        self.assertIn("не случайная, а уверенная пятёрка", self.html)
+        self.assertIn("уверенная пятёрка сейчас", self.html)
+        self.assertIn("сильная траектория дальше", self.html)
+
+    def test_goal_oriented_positioning_is_present(self):
+        self.assertIn("ЕГЭ 80+", self.html)
+        self.assertIn("поступление в вуз", self.html)
+        self.assertIn("ОГЭ становится не финишем", self.html)
+        self.assertIn("цель ставим отдельно по каждому предмету и блоку заданий", self.html)
+        self.assertIn("Формат не «просто сдать»", self.html)
 
     def test_progressive_enhancement_has_fallback(self):
         self.assertIn("IntersectionObserver", self.js)
