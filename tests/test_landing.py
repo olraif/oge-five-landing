@@ -121,6 +121,14 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn('a[href*="max.ru"]', self.js)
         self.assertIn("window.METRIKA_COUNTER_ID", self.js)
 
+    def test_yandex_metrika_counter_is_installed(self):
+        self.assertIn("window.METRIKA_COUNTER_ID = 111088885", self.html)
+        self.assertIn('ym(111088885, "init"', self.html)
+        self.assertIn("https://mc.yandex.ru/metrika/tag.js", self.html)
+        self.assertIn("https://mc.yandex.ru/watch/111088885", self.html)
+        self.assertIn("accurateTrackBounce", self.html)
+        self.assertIn("trackLinks", self.html)
+
     def test_local_assets_exist(self):
         self.assertTrue((ROOT / "assets" / "portrait-teal.png").is_file())
         self.assertTrue((ROOT / "assets" / "certificate-insert-real.png").is_file())
