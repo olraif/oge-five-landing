@@ -114,6 +114,13 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("IntersectionObserver", self.js)
         self.assertIn("is-visible", self.js)
 
+    def test_yandex_direct_goals_are_wired(self):
+        self.assertIn("CALL_CLICK", self.js)
+        self.assertIn("MAX_CLICK", self.js)
+        self.assertIn('a[href^="tel:"]', self.js)
+        self.assertIn('a[href*="max.ru"]', self.js)
+        self.assertIn("window.METRIKA_COUNTER_ID", self.js)
+
     def test_local_assets_exist(self):
         self.assertTrue((ROOT / "assets" / "portrait-teal.png").is_file())
         self.assertTrue((ROOT / "assets" / "certificate-insert-real.png").is_file())

@@ -1,6 +1,19 @@
 document.documentElement.classList.add("js");
 document.getElementById("year").textContent = new Date().getFullYear();
 
+const trackGoal = (goalName) => {
+  if (typeof window.ym !== "function" || !window.METRIKA_COUNTER_ID) return;
+  window.ym(window.METRIKA_COUNTER_ID, "reachGoal", goalName);
+};
+
+document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
+  link.addEventListener("click", () => trackGoal("CALL_CLICK"));
+});
+
+document.querySelectorAll('a[href*="max.ru"]').forEach((link) => {
+  link.addEventListener("click", () => trackGoal("MAX_CLICK"));
+});
+
 const revealItems = [...document.querySelectorAll("[data-reveal]")];
 
 if ("IntersectionObserver" in window) {
