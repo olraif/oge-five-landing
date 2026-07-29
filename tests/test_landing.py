@@ -12,6 +12,9 @@ class LandingContractTests(unittest.TestCase):
         cls.html = (ROOT / "index.html").read_text(encoding="utf-8")
         cls.study_html = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
         cls.study_css = (ROOT / "study" / "study.css").read_text(encoding="utf-8")
+        cls.part_one_html = (ROOT / "study" / "math" / "part-one" / "index.html").read_text(encoding="utf-8")
+        cls.part_one_css = (ROOT / "study" / "math" / "part-one" / "part-one.css").read_text(encoding="utf-8")
+        cls.part_one_js = (ROOT / "study" / "math" / "part-one" / "part-one.js").read_text(encoding="utf-8")
         cls.css = (ROOT / "theme.css").read_text(encoding="utf-8")
         cls.js = (ROOT / "site.js").read_text(encoding="utf-8")
 
@@ -50,6 +53,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("Sitemap: https://oge-na-5.ru/sitemap.xml", robots)
         self.assertIn("<loc>https://oge-na-5.ru/</loc>", sitemap)
         self.assertIn("<loc>https://oge-na-5.ru/study/</loc>", sitemap)
+        self.assertIn("<loc>https://oge-na-5.ru/study/math/part-one/</loc>", sitemap)
         self.assertTrue((ROOT / ".nojekyll").is_file())
         self.assertEqual((ROOT / "CNAME").read_text(encoding="utf-8").strip(), "oge-na-5.ru")
 
@@ -145,6 +149,20 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("бонусный индивидуальный урок", self.study_html)
         self.assertIn("study.css", self.study_html)
         self.assertIn(".studio-sidebar", self.study_css)
+        self.assertIn('href="math/part-one/"', self.study_html)
+
+    def test_math_part_one_course_shell_exists(self):
+        self.assertIn("Первая часть ОГЭ по математике", self.part_one_html)
+        self.assertIn("Курс по прототипам банка ФИПИ", self.part_one_html)
+        self.assertIn("Демо-плашка", self.part_one_html)
+        self.assertIn("Первая часть даёт уверенную базу", self.part_one_html)
+        self.assertIn("Вторая часть — только с проверкой", self.part_one_html)
+        self.assertEqual(self.part_one_html.count("сюда вставим видео"), 10)
+        self.assertIn("06.01", self.part_one_html)
+        self.assertIn("06.10", self.part_one_html)
+        self.assertIn("fractionQuiz", self.part_one_html)
+        self.assertIn("MATH_PART_ONE_TEST", self.part_one_js)
+        self.assertIn(".prototype-grid", self.part_one_css)
 
     def test_local_assets_exist(self):
         self.assertTrue((ROOT / "assets" / "portrait-teal.png").is_file())
