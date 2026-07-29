@@ -1,5 +1,9 @@
 document.documentElement.classList.add("js");
-document.getElementById("year").textContent = new Date().getFullYear();
+
+const yearNode = document.getElementById("year");
+if (yearNode) {
+  yearNode.textContent = new Date().getFullYear();
+}
 
 const trackGoal = (goalName) => {
   if (typeof window.ym !== "function" || !window.METRIKA_COUNTER_ID) return;

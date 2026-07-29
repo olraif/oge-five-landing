@@ -10,6 +10,8 @@ class LandingContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.html = (ROOT / "index.html").read_text(encoding="utf-8")
+        cls.study_html = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
+        cls.study_css = (ROOT / "study" / "study.css").read_text(encoding="utf-8")
         cls.css = (ROOT / "theme.css").read_text(encoding="utf-8")
         cls.js = (ROOT / "site.js").read_text(encoding="utf-8")
 
@@ -47,6 +49,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn('"@type": "EducationalService"', self.html)
         self.assertIn("Sitemap: https://oge-na-5.ru/sitemap.xml", robots)
         self.assertIn("<loc>https://oge-na-5.ru/</loc>", sitemap)
+        self.assertIn("<loc>https://oge-na-5.ru/study/</loc>", sitemap)
         self.assertTrue((ROOT / ".nojekyll").is_file())
         self.assertEqual((ROOT / "CNAME").read_text(encoding="utf-8").strip(), "oge-na-5.ru")
 
@@ -123,11 +126,25 @@ class LandingContractTests(unittest.TestCase):
 
     def test_yandex_metrika_counter_is_installed(self):
         self.assertIn("window.METRIKA_COUNTER_ID = 111088885", self.html)
+        self.assertIn("window.METRIKA_COUNTER_ID = 111088885", self.study_html)
         self.assertIn('ym(111088885, "init"', self.html)
         self.assertIn("https://mc.yandex.ru/metrika/tag.js", self.html)
         self.assertIn("https://mc.yandex.ru/watch/111088885", self.html)
         self.assertIn("accurateTrackBounce", self.html)
         self.assertIn("trackLinks", self.html)
+
+    def test_study_studio_entry_and_page_exist(self):
+        self.assertIn('href="study/">Кабинет</a>', self.html)
+        self.assertIn("Студия ОГЭ на 5", self.study_html)
+        self.assertIn("Кабинет ученика", self.study_html)
+        self.assertIn("Мои курсы", self.study_html)
+        self.assertIn("Мой прогресс", self.study_html)
+        self.assertIn("Бонусы", self.study_html)
+        self.assertIn("Три тарифа студии", self.study_html)
+        self.assertIn("Привёл друга", self.study_html)
+        self.assertIn("бонусный индивидуальный урок", self.study_html)
+        self.assertIn("study.css", self.study_html)
+        self.assertIn(".studio-sidebar", self.study_css)
 
     def test_local_assets_exist(self):
         self.assertTrue((ROOT / "assets" / "portrait-teal.png").is_file())
