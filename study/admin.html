@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Администратор — Студия ОГЭ</title>
-  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../theme.css"><link rel="stylesheet" href="study.css"><link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../theme.css"><link rel="stylesheet" href="study.css"><link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="admin-extra.css">
 </head>
 <body class="studio-page admin-page">
   <main class="admin-shell">
@@ -21,7 +21,7 @@
       const client = window.supabase.createClient(window.OGE_SUPABASE.url, window.OGE_SUPABASE.publishableKey);
       const $ = (id) => document.getElementById(id);
       const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
-      const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${esc(c.render ? c.render(row) : row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${c.render ? c.render(row) : esc(row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       async function load() {
         const { data: sessionData } = await client.auth.getSession();
         if (!sessionData.session) { location.href = './login.html?next=admin.html'; return; }
@@ -34,7 +34,8 @@
         ]);
         $('students-count').textContent = students?.length || 0; $('courses-count').textContent = courses?.length || 0; $('coupons-count').textContent = (coupons || []).filter((c) => c.is_active).length;
         $('students-list').innerHTML = renderTable(students || [], [{label:'Имя',key:'display_name'},{label:'Предмет',key:'subject'},{label:'Создан',render:(r)=>new Date(r.created_at).toLocaleDateString('ru-RU')}]);
-        $('coupons-list').innerHTML = renderTable(coupons || [], [{label:'Код',key:'code'},{label:'Курс',render:(r)=>(courses || []).find((c)=>c.id===r.course_id)?.title || r.course_id},{label:'Использован',render:(r)=>`${r.used_count}/${r.max_uses}`}]);
+        $('coupons-list').innerHTML = renderTable(coupons || [], [{label:'Код',key:'code'},{label:'Курс',render:(r)=>esc((courses || []).find((c)=>c.id===r.course_id)?.title || r.course_id)},{label:'Использован',render:(r)=>esc(`${r.used_count}/${r.max_uses}`)},{label:'',render:(r)=>`<button class="admin-delete" type="button" data-delete-code="${esc(r.code)}">Удалить</button>`}]);
+        document.querySelectorAll('[data-delete-code]').forEach((button) => button.addEventListener('click', async () => { const code=button.dataset.deleteCode; if(!window.confirm(`Удалить промокод ${code}?`)) return; const { error }=await client.from('coupons').delete().eq('code', code); if(error){$('coupon-message').textContent=`Не удалось удалить: ${error.message}`;$('coupon-message').className='admin-message is-error';return;} load(); }));
         $('course-select').innerHTML = (courses || []).map((c) => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('');
         $('course-select').value = courses?.[0]?.id || '';
       }
