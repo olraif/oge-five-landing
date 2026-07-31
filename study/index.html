@@ -272,6 +272,23 @@
           </div>
         </div>
 
+        <div class="diagnostic-card" id="free-diagnostic">
+          <div class="diagnostic-copy">
+            <span class="diagnostic-kicker">бесплатно для зарегистрированных</span>
+            <h3>Первая диагностика</h3>
+            <p>Пять коротких заданий первой части. Ответы проверяются автоматически, а результат сразу попадает в ваш прогресс.</p>
+          </div>
+          <form class="diagnostic-form" id="diagnostic-form">
+            <label>1. 5 + 7 = <input name="q1" inputmode="decimal" required></label>
+            <label>2. 0,6 + 0,7 = <input name="q2" inputmode="decimal" required></label>
+            <label>3. 3/4 = <input name="q3" inputmode="decimal" required></label>
+            <label>4. 2x + 3 = 11. x = <input name="q4" inputmode="decimal" required></label>
+            <label>5. Площадь прямоугольника 5 × 3 = <input name="q5" inputmode="decimal" required></label>
+            <button class="diagnostic-submit" type="submit">Проверить диагностику</button>
+            <p class="diagnostic-message" id="diagnostic-message" role="status"></p>
+          </form>
+        </div>
+
         <div class="progress-legend" aria-label="Обозначения прогресса">
           <span><i class="is-green"></i> правильно решено</span>
           <span><i class="is-blue"></i> над этим ещё работаем</span>
@@ -436,6 +453,54 @@
           message.classList.add('is-error');
         });
       });
+
+      const diagnosticForm = document.querySelector('#diagnostic-form');
+      const diagnosticMessage = document.querySelector('#diagnostic-message');
+      const diagnosticAnswers = { q1: '12', q2: '1.3', q3: '0.75', q4: '4', q5: '15' };
+      const normalizeAnswer = (value) => String(value || '').trim().replace(',', '.').replace(/\s+/g, '');
+      const diagnosticKey = (user) => `ogeDiagnostic:math:${user.id}`;
+      const paintDiagnosticProgress = (answers) => {
+        document.querySelectorAll('.progress-bars .bar').forEach((bar, index) => {
+          if (index > 4) return;
+          const key = `q${index + 1}`;
+          const correct = answers[key] === diagnosticAnswers[key];
+          bar.style.setProperty('--ok', correct ? '100%' : '0%');
+          bar.style.setProperty('--work', correct ? '0%' : '100%');
+        });
+      };
+      const initDiagnostic = async () => {
+        if (!diagnosticForm || !window.ogeSupabase) return;
+        const { data } = await window.ogeSupabase.auth.getSession();
+        const user = data.session?.user;
+        if (!user) {
+          diagnosticForm.querySelectorAll('input,button').forEach((el) => { el.disabled = true; });
+          diagnosticMessage.textContent = 'Войдите или зарегистрируйтесь, чтобы пройти бесплатную диагностику.';
+          diagnosticMessage.classList.add('is-error');
+          return;
+        }
+        const localSaved = localStorage.getItem(diagnosticKey(user));
+        const { data: remoteSaved } = await window.ogeSupabase.from('diagnostic_attempts').select('answers,score').eq('user_id', user.id).eq('subject', 'math').eq('variant', 'free-first-part-01').maybeSingle();
+        const result = remoteSaved || (localSaved ? JSON.parse(localSaved) : null);
+        if (result) {
+          Object.entries(result.answers || {}).forEach(([key, value]) => { if (diagnosticForm.elements[key]) diagnosticForm.elements[key].value = value; });
+          paintDiagnosticProgress(result.answers || {});
+          diagnosticForm.querySelectorAll('input,button').forEach((el) => { el.disabled = true; });
+          diagnosticMessage.textContent = `Диагностика уже пройдена: ${result.score} из 5 правильных ответов.`;
+          return;
+        }
+        diagnosticForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const answers = Object.fromEntries(Object.keys(diagnosticAnswers).map((key) => [key, normalizeAnswer(new FormData(diagnosticForm).get(key))]));
+          const score = Object.keys(diagnosticAnswers).filter((key) => answers[key] === diagnosticAnswers[key]).length;
+          const attempt = { user_id: user.id, subject: 'math', variant: 'free-first-part-01', answers, score };
+          const { error: saveError } = await window.ogeSupabase.from('diagnostic_attempts').insert(attempt);
+          localStorage.setItem(diagnosticKey(user), JSON.stringify({ answers, score, createdAt: new Date().toISOString() }));
+          paintDiagnosticProgress(answers);
+          diagnosticForm.querySelectorAll('input,button').forEach((el) => { el.disabled = true; });
+          diagnosticMessage.textContent = saveError ? `Готово: ${score} из 5. Результат сохранён на этом устройстве.` : `Готово: ${score} из 5 правильных ответов. Результат добавлен в «Мой прогресс».`;
+        });
+      };
+      initDiagnostic();
     })();
   </script>
 </body>
