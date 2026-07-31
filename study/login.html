@@ -44,7 +44,8 @@
           return;
         }
         message.textContent = 'Вход выполнен. Открываем кабинет…';
-        window.location.href = './index.html';
+        const next = new URLSearchParams(window.location.search).get('next');
+        window.location.href = next === 'admin.html' ? './admin.html' : './index.html';
       });
     })();
   </script>

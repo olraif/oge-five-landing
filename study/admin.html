@@ -24,7 +24,7 @@
       const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${esc(c.render ? c.render(row) : row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       async function load() {
         const { data: sessionData } = await client.auth.getSession();
-        if (!sessionData.session) { location.href = './login.html'; return; }
+        if (!sessionData.session) { location.href = './login.html?next=admin.html'; return; }
         const { data: profile, error: profileError } = await client.from('profiles').select('role,display_name').eq('id', sessionData.session.user.id).single();
         if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./index.html">Вернуться в кабинет</a></section></main>'; return; }
         const [{ data: students }, { data: courses }, { data: coupons }] = await Promise.all([
