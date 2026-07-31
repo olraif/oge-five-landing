@@ -15,10 +15,12 @@
       <h1 id="auth-title">Студия ОГЭ</h1>
       <form id="auth-form" class="auth-form">
         <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-        <label>Пароль<input name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Не менее 6 символов"></label>
-        <button class="auth-submit" type="submit">Войти</button>
+        <label>Пароль<div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Не менее 6 символов"><button class="password-toggle" type="button" aria-label="Показать пароль" aria-pressed="false">◉</button></div></label>
+        <label id="confirm-label" hidden>Повторите пароль<div class="password-field"><input id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" minlength="6" placeholder="Повторите пароль"><button class="password-toggle" type="button" aria-label="Показать пароль" aria-pressed="false">◉</button></div></label>
+        <button class="auth-submit" id="auth-submit" type="submit">Войти</button>
         <p id="auth-message" class="auth-message" role="status"></p>
       </form>
+      <button class="auth-mode-toggle" id="mode-toggle" type="button">Зарегистрироваться</button>
     </section>
   </main>
   <script src="./supabase-config.js"></script>
@@ -27,16 +29,50 @@
     (() => {
       const form = document.querySelector('#auth-form');
       const message = document.querySelector('#auth-message');
+      const submit = document.querySelector('#auth-submit');
+      const modeToggle = document.querySelector('#mode-toggle');
+      const confirmLabel = document.querySelector('#confirm-label');
+      const confirmInput = document.querySelector('#password-confirm');
       const client = window.supabase.createClient(window.OGE_SUPABASE.url, window.OGE_SUPABASE.publishableKey);
+      let registerMode = false;
+      modeToggle.addEventListener('click', () => {
+        registerMode = !registerMode;
+        confirmLabel.hidden = !registerMode;
+        confirmInput.required = registerMode;
+        submit.textContent = registerMode ? 'Зарегистрироваться' : 'Войти';
+        modeToggle.textContent = registerMode ? 'Уже есть аккаунт? Войти' : 'Зарегистрироваться';
+        message.textContent = '';
+      });
+      document.querySelectorAll('.password-toggle').forEach((toggle) => toggle.addEventListener('click', () => {
+        const input = toggle.previousElementSibling;
+        const visible = input.type === 'text';
+        input.type = visible ? 'password' : 'text';
+        toggle.setAttribute('aria-pressed', String(!visible));
+        toggle.setAttribute('aria-label', visible ? 'Показать пароль' : 'Скрыть пароль');
+      }));
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const data = new FormData(form);
         message.textContent = 'Проверяем данные…';
         message.className = 'auth-message';
-        const { data: authData, error } = await client.auth.signInWithPassword({ email: data.get('email'), password: data.get('password') });
-        if (error) {
-          message.textContent = 'Не удалось войти. Проверьте email и пароль.';
+        const email = String(data.get('email') || '').trim().toLowerCase();
+        const password = String(data.get('password') || '');
+        if (registerMode && password !== String(data.get('password-confirm') || '')) {
+          message.textContent = 'Пароли не совпадают.';
           message.classList.add('is-error');
+          return;
+        }
+        const { data: authData, error } = registerMode
+          ? await client.auth.signUp({ email, password, options: { data: { display_name: email.split('@')[0] } } })
+          : await client.auth.signInWithPassword({ email, password });
+        if (error) {
+          message.textContent = registerMode ? 'Не удалось зарегистрироваться. Проверьте email и пароль.' : 'Не удалось войти. Проверьте email и пароль.';
+          message.classList.add('is-error');
+          return;
+        }
+        if (registerMode && !authData.session) {
+          message.textContent = 'Регистрация выполнена. Подтвердите email, затем войдите.';
+          form.reset();
           return;
         }
         message.textContent = 'Вход выполнен. Открываем студию…';
