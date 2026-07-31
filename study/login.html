@@ -43,7 +43,7 @@
           message.classList.add('is-error');
           return;
         }
-        message.textContent = 'Вход выполнен. Открываем кабинет…';
+        message.textContent = 'Вход выполнен. Открываем студию…';
         const { data: profile } = await client.from('profiles').select('role').eq('id', authData.user.id).single();
         const next = new URLSearchParams(window.location.search).get('next');
         window.location.href = profile?.role === 'admin' && (next === 'admin.html' || !next) ? './admin.html' : './choose.html';

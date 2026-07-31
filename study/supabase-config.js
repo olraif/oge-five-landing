@@ -1,4 +1,4 @@
-// Публичные параметры Supabase для клиентского кабинета.
+// Публичные параметры Supabase для студии.
 // Secret/service_role ключи в сайт не добавляются.
 window.OGE_SUPABASE = Object.freeze({
   url: 'https://tshmjtzcenzyjsdaeifk.supabase.co',

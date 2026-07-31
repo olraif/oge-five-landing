@@ -8,7 +8,7 @@
 <body class="studio-page admin-page">
   <main class="admin-shell">
     <header class="admin-head">
-      <div><p class="eyebrow"><span></span> кабинет администратора</p><h1>Студия ОГЭ</h1><p>Курсы, ученики и доступы в одном месте.</p></div>
+      <div><p class="eyebrow"><span></span> студия администратора</p><h1>Студия ОГЭ</h1><p>Курсы, ученики и доступы в одном месте.</p></div>
       <div class="admin-actions"><a class="admin-button secondary" href="./choose.html">Открыть студию</a><button class="admin-button" id="logout" type="button">Выйти</button></div>
     </header>
     <section class="admin-grid" aria-label="Статистика"><article class="admin-stat"><small>Ученики</small><strong id="students-count">—</strong></article><article class="admin-stat"><small>Курсы</small><strong id="courses-count">—</strong></article><article class="admin-stat"><small>Активные промокоды</small><strong id="coupons-count">—</strong></article></section>
@@ -26,7 +26,7 @@
         const { data: sessionData } = await client.auth.getSession();
         if (!sessionData.session) { location.href = './login.html?next=admin.html'; return; }
         const { data: profile, error: profileError } = await client.from('profiles').select('role,display_name').eq('id', sessionData.session.user.id).single();
-        if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./index.html">Вернуться в кабинет</a></section></main>'; return; }
+        if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./choose.html">Вернуться в студию</a></section></main>'; return; }
         const [{ data: students }, { data: courses }, { data: coupons }] = await Promise.all([
           client.from('profiles').select('display_name,subject,created_at').order('created_at', { ascending:false }),
           client.from('courses').select('id,title,subject').order('sort_order'),

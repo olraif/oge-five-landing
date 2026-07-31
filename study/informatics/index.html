@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071633">
   <title>Студия ОГЭ — информатика</title>
-  <meta name="description" content="Студия ОГЭ: кабинет ученика для подготовки к ОГЭ по информатике.">
+  <meta name="description" content="Студия ОГЭ: подготовка к ОГЭ по информатике.">
   <link rel="canonical" href="https://oge-na-5.ru/study/informatics/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:url" content="https://oge-na-5.ru/study/informatics/">
   <meta property="og:title" content="Студия ОГЭ">
-  <meta property="og:description" content="Мини-кабинет для подготовки к ОГЭ по системе Олеси Сайфуллиной.">
+  <meta property="og:description" content="Студия для подготовки к ОГЭ по системе Олеси Сайфуллиной.">
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="../../theme.css">
   <link rel="stylesheet" href="../study.css">
@@ -61,7 +61,7 @@
       <div class="student-badge">
         <span aria-hidden="true">🎓</span>
         <div>
-          <strong>Кабинет ученика</strong>
+          <strong>Студия ученика</strong>
           <small>гость</small>
         </div>
       </div>
@@ -381,12 +381,12 @@
             const result = await window.ogeActivateCourseCode(value);
             if (!result.error && result.data?.length) {
               activateCourse(card);
-              message.textContent = 'Курс открыт и сохранён в кабинете';
+              message.textContent = 'Курс открыт и сохранён в студии';
               message.classList.remove('is-error');
               return;
             }
             console.error('Supabase coupon activation error:', result.error);
-            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в кабинет' : `Ошибка активации: ${result.error?.message || 'проверьте промокод'}`;
+            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в студию' : `Ошибка активации: ${result.error?.message || 'проверьте промокод'}`;
             message.classList.add('is-error');
             return;
           }

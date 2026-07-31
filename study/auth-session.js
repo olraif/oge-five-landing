@@ -14,7 +14,7 @@
   const applyUser = (user) => {
     const email = user?.email || '';
     const name = user?.user_metadata?.display_name || email.split('@')[0] || 'гость';
-    document.querySelectorAll('.student-badge strong').forEach((el) => { el.textContent = user ? name : 'Кабинет ученика'; });
+    document.querySelectorAll('.student-badge strong').forEach((el) => { el.textContent = user ? name : 'Студия ученика'; });
     document.querySelectorAll('.student-badge small').forEach((el) => { el.textContent = user ? email : 'гость'; });
     document.querySelectorAll('[data-auth-open]').forEach((el) => { el.textContent = user ? 'Выйти' : 'Войти'; });
     document.documentElement.dataset.authenticated = user ? 'true' : 'false';
