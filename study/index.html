@@ -217,7 +217,7 @@
         </div>
 
         <div class="access-grid">
-          <article class="access-card is-locked" data-course-card data-course-id="math-part1" data-code="MATH-4900">
+          <article class="access-card is-locked" data-course-card data-course-id="math-first" data-code="MATH-4900">
             <span class="access-status">доступ закрыт</span>
             <h3>Первая часть ОГЭ</h3>
             <p>После покупки здесь появится вход в курс, уроки по прототипам и тренировка по заданиям банка ФИПИ.</p>
@@ -404,12 +404,25 @@
           card.querySelector('input')?.focus();
         });
 
-        card.querySelector('[data-code-form]')?.addEventListener('submit', (event) => {
+        card.querySelector('[data-code-form]')?.addEventListener('submit', async (event) => {
           event.preventDefault();
           const input = card.querySelector('input');
           const message = card.querySelector('[data-code-message]');
           const expected = (card.dataset.code || '').trim().toUpperCase();
           const value = (input?.value || '').trim().toUpperCase();
+
+          if (window.ogeActivateCourseCode) {
+            const result = await window.ogeActivateCourseCode(value);
+            if (!result.error && result.data?.length) {
+              activateCourse(card);
+              message.textContent = 'Курс открыт и сохранён в кабинете';
+              message.classList.remove('is-error');
+              return;
+            }
+            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в кабинет' : 'Промокод не найден или уже использован';
+            message.classList.add('is-error');
+            return;
+          }
 
           if (value && value === expected) {
             activateCourse(card);

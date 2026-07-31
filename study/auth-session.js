@@ -4,6 +4,12 @@
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
   window.ogeSupabase = client;
+  window.ogeActivateCourseCode = async (code) => {
+    const { data: sessionData } = await client.auth.getSession();
+    if (!sessionData.session) return { error: new Error('AUTH_REQUIRED') };
+    const { data, error } = await client.rpc('activate_coupon', { p_code: code });
+    return { data, error };
+  };
 
   const applyUser = (user) => {
     const email = user?.email || '';

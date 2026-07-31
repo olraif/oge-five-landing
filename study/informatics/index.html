@@ -215,7 +215,7 @@
         </div>
 
         <div class="access-grid access-grid--two">
-          <article class="access-card is-locked" data-course-card data-course-id="info-part1" data-code="INFO-4900">
+          <article class="access-card is-locked" data-course-card data-course-id="informatics-first" data-code="INFO-4900">
             <span class="access-status">доступ закрыт</span>
             <h3>Информатика ОГЭ: первая часть</h3>
             <p>После покупки здесь появится вход в курс, видеообъяснения и тренировка заданий, где ответ вводится в ячейку.</p>
@@ -230,7 +230,7 @@
             </form>
             <a class="access-enter" href="#progress">Войти в курс</a>
           </article>
-          <article class="access-card is-locked" data-course-card data-course-id="info-part2" data-code="INFO-6900">
+          <article class="access-card is-locked" data-course-card data-course-id="informatics-second" data-code="INFO-6900">
             <span class="access-status">доступ закрыт</span>
             <h3>Информатика ОГЭ: вторая часть</h3>
             <p>После покупки здесь откроется практическая часть: задания за компьютером, материалы и самопроверка по предоставленному решению.</p>
@@ -370,12 +370,25 @@
           card.querySelector('input')?.focus();
         });
 
-        card.querySelector('[data-code-form]')?.addEventListener('submit', (event) => {
+        card.querySelector('[data-code-form]')?.addEventListener('submit', async (event) => {
           event.preventDefault();
           const input = card.querySelector('input');
           const message = card.querySelector('[data-code-message]');
           const expected = (card.dataset.code || '').trim().toUpperCase();
           const value = (input?.value || '').trim().toUpperCase();
+
+          if (window.ogeActivateCourseCode) {
+            const result = await window.ogeActivateCourseCode(value);
+            if (!result.error && result.data?.length) {
+              activateCourse(card);
+              message.textContent = 'Курс открыт и сохранён в кабинете';
+              message.classList.remove('is-error');
+              return;
+            }
+            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в кабинет' : 'Промокод не найден или уже использован';
+            message.classList.add('is-error');
+            return;
+          }
 
           if (value && value === expected) {
             activateCourse(card);
