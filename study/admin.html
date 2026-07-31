@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Администратор — Студия ОГЭ</title>
+  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../theme.css"><link rel="stylesheet" href="study.css"><link rel="stylesheet" href="admin.css">
+</head>
+<body class="studio-page admin-page">
+  <main class="admin-shell">
+    <header class="admin-head">
+      <div><p class="eyebrow"><span></span> кабинет администратора</p><h1>Студия ОГЭ</h1><p>Курсы, ученики и доступы в одном месте.</p></div>
+      <div class="admin-actions"><a class="admin-button secondary" href="./index.html">Кабинет ученика</a><button class="admin-button" id="logout" type="button">Выйти</button></div>
+    </header>
+    <section class="admin-grid" aria-label="Статистика"><article class="admin-stat"><small>Ученики</small><strong id="students-count">—</strong></article><article class="admin-stat"><small>Курсы</small><strong id="courses-count">—</strong></article><article class="admin-stat"><small>Активные промокоды</small><strong id="coupons-count">—</strong></article></section>
+    <section class="admin-panel"><h2>Промокоды</h2><form class="admin-form" id="coupon-form"><label>Код<input name="code" required placeholder="MATH-4900"></label><label>Курс<select name="course_id" id="course-select" required></select></label><label>Использований<input name="max_uses" type="number" min="1" value="1" required></label><button class="admin-button" type="submit">Создать</button></form><p class="admin-message" id="coupon-message"></p><div id="coupons-list" class="admin-empty">Загрузка…</div></section>
+    <section class="admin-panel"><h2>Ученики</h2><div id="students-list" class="admin-empty">Загрузка…</div></section>
+  </main>
+  <script src="./supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      const client = window.supabase.createClient(window.OGE_SUPABASE.url, window.OGE_SUPABASE.publishableKey);
+      const $ = (id) => document.getElementById(id);
+      const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+      const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${esc(c.render ? c.render(row) : row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      async function load() {
+        const { data: sessionData } = await client.auth.getSession();
+        if (!sessionData.session) { location.href = './login.html'; return; }
+        const { data: profile, error: profileError } = await client.from('profiles').select('role,display_name').eq('id', sessionData.session.user.id).single();
+        if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./index.html">Вернуться в кабинет</a></section></main>'; return; }
+        const [{ data: students }, { data: courses }, { data: coupons }] = await Promise.all([
+          client.from('profiles').select('display_name,subject,created_at').order('created_at', { ascending:false }),
+          client.from('courses').select('id,title,subject').order('sort_order'),
+          client.from('coupons').select('code,course_id,used_count,max_uses,is_active').order('created_at', { ascending:false })
+        ]);
+        $('students-count').textContent = students?.length || 0; $('courses-count').textContent = courses?.length || 0; $('coupons-count').textContent = (coupons || []).filter((c) => c.is_active).length;
+        $('students-list').innerHTML = renderTable(students || [], [{label:'Имя',key:'display_name'},{label:'Предмет',key:'subject'},{label:'Создан',render:(r)=>new Date(r.created_at).toLocaleDateString('ru-RU')}]);
+        $('coupons-list').innerHTML = renderTable(coupons || [], [{label:'Код',key:'code'},{label:'Курс',render:(r)=>(courses || []).find((c)=>c.id===r.course_id)?.title || r.course_id},{label:'Использован',render:(r)=>`${r.used_count}/${r.max_uses}`}]);
+        $('course-select').innerHTML = (courses || []).map((c) => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('');
+      }
+      $('coupon-form').addEventListener('submit', async (event) => { event.preventDefault(); const data = new FormData(event.currentTarget); const { error } = await client.from('coupons').insert({ code:String(data.get('code')).trim().toUpperCase(), course_id:data.get('course_id'), max_uses:Number(data.get('max_uses')) }); const msg=$('coupon-message'); msg.textContent=error ? `Не удалось создать: ${error.message}` : 'Промокод создан'; msg.className=`admin-message${error?' is-error':''}`; if(!error){event.currentTarget.reset();load();} });
+      $('logout').addEventListener('click', async () => { await client.auth.signOut(); location.href='./login.html'; });
+      load();
+    })();
+  </script>
+</body>
+</html>
