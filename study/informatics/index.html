@@ -385,7 +385,8 @@
               message.classList.remove('is-error');
               return;
             }
-            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в кабинет' : 'Промокод не найден или уже использован';
+            console.error('Supabase coupon activation error:', result.error);
+            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в кабинет' : `Ошибка активации: ${result.error?.message || 'проверьте промокод'}`;
             message.classList.add('is-error');
             return;
           }
