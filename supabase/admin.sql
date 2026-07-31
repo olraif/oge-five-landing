@@ -13,6 +13,13 @@ as $$
   );
 $$;
 
+-- В проекте предусмотрен один административный аккаунт.
+-- Новые пользователи создаются со статусом student, а второй admin
+-- не сможет быть назначен случайно.
+create unique index if not exists one_admin_profile
+  on public.profiles ((role))
+  where role = 'admin';
+
 drop policy if exists "admins manage profiles" on public.profiles;
 create policy "admins manage profiles" on public.profiles
   for all using (public.is_admin()) with check (public.is_admin());
