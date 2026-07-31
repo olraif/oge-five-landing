@@ -9,7 +9,7 @@
   <main class="admin-shell">
     <header class="admin-head">
       <div><p class="eyebrow"><span></span> кабинет администратора</p><h1>Студия ОГЭ</h1><p>Курсы, ученики и доступы в одном месте.</p></div>
-      <div class="admin-actions"><a class="admin-button secondary" href="./index.html">Кабинет ученика</a><button class="admin-button" id="logout" type="button">Выйти</button></div>
+      <div class="admin-actions"><a class="admin-button secondary" href="./choose.html">Открыть студию</a><button class="admin-button" id="logout" type="button">Выйти</button></div>
     </header>
     <section class="admin-grid" aria-label="Статистика"><article class="admin-stat"><small>Ученики</small><strong id="students-count">—</strong></article><article class="admin-stat"><small>Курсы</small><strong id="courses-count">—</strong></article><article class="admin-stat"><small>Активные промокоды</small><strong id="coupons-count">—</strong></article></section>
     <section class="admin-panel"><h2>Промокоды</h2><form class="admin-form" id="coupon-form"><label>Код<input name="code" placeholder="MATH-4900"></label><label>Курс<select name="course_id" id="course-select"></select></label><label>Использований<input name="max_uses" type="number" min="1" value="1"></label><button class="admin-button" type="submit">Создать</button></form><p class="admin-message" id="coupon-message"></p><div id="coupons-list" class="admin-empty">Загрузка…</div></section>
