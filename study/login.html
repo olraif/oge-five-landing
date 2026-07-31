@@ -12,17 +12,13 @@
 <body class="studio-page auth-page">
   <main class="auth-shell">
     <section class="auth-card" aria-labelledby="auth-title">
-      <a class="studio-logo auth-logo" href="./choose.html"><span>5</span><strong>Студия ОГЭ</strong></a>
-      <p class="eyebrow"><span></span> единый вход</p>
-      <h1 id="auth-title">Войти в студию</h1>
-      <p class="auth-lead">Введите email и пароль. Система сама откроет нужный раздел.</p>
+      <h1 id="auth-title">Студия ОГЭ</h1>
       <form id="auth-form" class="auth-form">
         <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
         <label>Пароль<input name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Не менее 6 символов"></label>
         <button class="auth-submit" type="submit">Войти</button>
         <p id="auth-message" class="auth-message" role="status"></p>
       </form>
-      <a class="auth-back" href="./choose.html">Выбрать предмет</a>
     </section>
   </main>
   <script src="./supabase-config.js"></script>
