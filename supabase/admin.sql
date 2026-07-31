@@ -36,10 +36,6 @@ drop policy if exists "admins manage enrollments" on public.enrollments;
 create policy "admins manage enrollments" on public.enrollments
   for all using (public.is_admin()) with check (public.is_admin());
 
-drop policy if exists "admins manage diagnostics" on public.diagnostic_attempts;
-create policy "admins manage diagnostics" on public.diagnostic_attempts
-  for all using (public.is_admin()) with check (public.is_admin());
-
 drop policy if exists "admins manage coupons" on public.coupons;
 create policy "admins manage coupons" on public.coupons
   for all using (public.is_admin()) with check (public.is_admin());

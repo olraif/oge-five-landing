@@ -53,17 +53,6 @@ create table if not exists public.lesson_progress (
   primary key (user_id, lesson_id)
 );
 
-create table if not exists public.diagnostic_attempts (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  subject text not null,
-  variant text not null,
-  score integer not null default 0,
-  answers jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now(),
-  unique (user_id, subject, variant)
-);
-
 create table if not exists public.coupons (
   code text primary key,
   course_id text not null references public.courses(id) on delete cascade,
@@ -157,7 +146,6 @@ alter table public.courses enable row level security;
 alter table public.lessons enable row level security;
 alter table public.enrollments enable row level security;
 alter table public.lesson_progress enable row level security;
-alter table public.diagnostic_attempts enable row level security;
 alter table public.coupons enable row level security;
 alter table public.coupon_redemptions enable row level security;
 
@@ -181,14 +169,6 @@ drop policy if exists "students manage own progress" on public.lesson_progress;
 create policy "students manage own progress" on public.lesson_progress
   for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
-drop policy if exists "students see own diagnostics" on public.diagnostic_attempts;
-create policy "students see own diagnostics" on public.diagnostic_attempts
-  for select using (user_id = auth.uid());
-
-drop policy if exists "students create own diagnostics" on public.diagnostic_attempts;
-create policy "students create own diagnostics" on public.diagnostic_attempts
-  for insert with check (user_id = auth.uid());
-
 drop policy if exists "students see own redemptions" on public.coupon_redemptions;
 create policy "students see own redemptions" on public.coupon_redemptions
   for select using (user_id = auth.uid());
@@ -196,4 +176,3 @@ create policy "students see own redemptions" on public.coupon_redemptions
 revoke all on public.coupons from anon, authenticated;
 revoke all on public.coupon_redemptions from anon, authenticated;
 grant execute on function public.activate_coupon(text) to authenticated;
-grant select, insert on public.diagnostic_attempts to authenticated;
