@@ -50,7 +50,7 @@
     </a>
     <nav aria-label="Навигация по студии">
       <a href="#pricing">Тарифы</a>
-      <a href="#courses">Курсы</a>
+      <a href="#courses">Тренажёры</a>
       <a href="#bonuses">Бонусы</a>
     </nav>
     <div class="studio-topbar-actions"><a class="studio-back" href="../../">Основной сайт</a><button class="auth-button" type="button" data-auth-open>Войти</button></div>
@@ -67,7 +67,7 @@
       </div>
       <a class="is-active" href="#dashboard"><span>▣</span> Обзор</a>
       <a href="#pricing"><span>₽</span> Тарифы</a>
-      <a href="#courses"><span>▶</span> Мои курсы</a>
+      <a href="#courses"><span>▶</span> Мои тренажёры</a>
       <a href="#progress"><span>✓</span> Мой прогресс</a>
       <a href="#bonuses"><span>★</span> Бонусы</a>
       <a href="#contact"><span>↗</span> Поддержка</a>
@@ -117,13 +117,13 @@
           <article>
             <b>Актуальность</b>
             <h2>Банк ФИПИ</h2>
-            <p>Все задания в курсе будут взяты из актуального банка ФИПИ по информатике и сверены с демо-вариантом текущего года.</p>
+            <p>Все задания в тренажёре будут взяты из актуального банка ФИПИ по информатике и сверены с демо-вариантом текущего года.</p>
             <button class="card-action" type="button">Обновить актуальность банка ФИПИ</button>
           </article>
           <article>
             <b>Время + наставник</b>
             <h2>Свой путь</h2>
-            <p>Ученик занимается в удобном темпе, используя видеообъяснения внутри курса: разбирает тип задания, тренируется в компьютерном формате и при необходимости запрашивает индивидуальный урок.</p>
+            <p>Ученик занимается в удобном темпе, используя задания тренажёра: разбирает тип задания, тренируется в компьютерном формате и при необходимости запрашивает отдельное обучение.</p>
           </article>
           <article class="diagnostic-card">
             <b>Контроль</b>
@@ -156,7 +156,7 @@
               <span class="course-tag">тариф 01</span>
             </div>
             <h3>Информатика ОГЭ: первая часть</h3>
-            <p>Курс по первой части информатики ОГЭ: ученик смотрит видеообъяснение, решает задания за компьютером и вводит ответ в ячейку для сверки.</p>
+            <p>Тренажёр по первой части информатики ОГЭ: ученик решает задания за компьютером и вводит ответ в ячейку для сверки.</p>
             <ul>
               <li>тренировка заданий за компьютером;</li>
               <li>точный ввод ответа в ячейку;</li>
@@ -173,7 +173,7 @@
               <span class="course-tag">тариф 02</span>
             </div>
             <h3>Информатика ОГЭ: вторая часть</h3>
-            <p>Курс по практической части: ученик выполняет задания за компьютером, а затем делает самопроверку по предоставленному решению.</p>
+            <p>Тренажёр по практической части: ученик выполняет задания за компьютером, а затем делает самопроверку по предоставленному решению.</p>
             <ul>
               <li>тренировка заданий за компьютером;</li>
               <li>работа с файлами и компьютерными заданиями;</li>
@@ -210,7 +210,7 @@
       <section class="studio-panel my-courses-view studio-view" id="courses" data-view="courses" data-reveal>
         <div class="panel-head panel-head--simple">
           <div>
-            <p class="eyebrow"><span></span> мои курсы</p>
+            <p class="eyebrow"><span></span> мои тренажёры</p>
           </div>
         </div>
 
@@ -225,10 +225,10 @@
                 <span>Введите промокод</span>
                 <input type="text" name="code" autocomplete="off" placeholder="Промокод после оплаты">
               </label>
-              <button type="submit">Открыть курс</button>
+              <button type="submit">Открыть тренажёр</button>
               <small data-code-message></small>
             </form>
-            <a class="access-enter" href="#progress">Войти в курс</a>
+            <a class="access-enter" href="#progress">Открыть тренажёр</a>
           </article>
           <article class="access-card is-locked" data-course-card data-course-id="informatics-second" data-code="INFO-6900">
             <span class="access-status">доступ закрыт</span>
@@ -240,10 +240,10 @@
                 <span>Введите промокод</span>
                 <input type="text" name="code" autocomplete="off" placeholder="Промокод после оплаты">
               </label>
-              <button type="submit">Открыть курс</button>
+              <button type="submit">Открыть тренажёр</button>
               <small data-code-message></small>
             </form>
-            <a class="access-enter" href="#progress">Войти в курс</a>
+            <a class="access-enter" href="#progress">Открыть тренажёр</a>
           </article>
         </div>
       </section>
@@ -381,7 +381,7 @@
             const result = await window.ogeActivateCourseCode(value);
             if (!result.error && result.data?.length) {
               activateCourse(card);
-              message.textContent = 'Курс открыт и сохранён в студии';
+              message.textContent = 'Тренажёр открыт и сохранён в студии';
               message.classList.remove('is-error');
               return;
             }
@@ -393,7 +393,7 @@
 
           if (value && value === expected) {
             activateCourse(card);
-            message.textContent = 'Курс открыт';
+            message.textContent = 'Тренажёр открыт';
             message.classList.remove('is-error');
             return;
           }
