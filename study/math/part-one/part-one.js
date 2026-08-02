@@ -106,6 +106,25 @@ const renderPrototype = (key, restore = true) => {
     caption?.after(formatNote);
   }
   formatNote.textContent = key >= "6.5" && key !== "6.9" ? "РћС‚РІРµС‚ РІРІРѕРґРёС‚Рµ РґРµСЃСЏС‚РёС‡РЅРѕР№ РґСЂРѕР±СЊСЋ, РЅР°РїСЂРёРјРµСЂ: 0,5." : "";
+  let taskInstruction = quiz.querySelector(".task-instruction");
+  if (!taskInstruction) {
+    taskInstruction = document.createElement("p");
+    taskInstruction.className = "task-instruction";
+    caption?.after(taskInstruction);
+  }
+  const instructions = {
+    "6.1": "Вычислите значение выражения.",
+    "6.2": "Вычислите значение выражения.",
+    "6.3": "Вычислите значение выражения.",
+    "6.4": "Вычислите значение выражения.",
+    "6.5": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+    "6.6": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+    "6.7": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+    "6.8": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+    "6.9": "Приведите дробь к указанному знаменателю и запишите числитель.",
+    "6.10": "Вычислите значение выражения: единица делится на сумму двух дробей."
+  };
+  taskInstruction.textContent = instructions[key] || "";
   const rows = Array.from(quiz.querySelectorAll("label[data-question]"));
   data.items.forEach(([id, expression], index) => {
     const row = rows[index];
@@ -255,4 +274,37 @@ Object.keys(prototypeData).forEach((key) => {
 });
 
 prototypeData["6.9"].items = [["6.9.1", "1/7 + 3/4 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 56)", "50"], ["6.9.2", "2/3 - 7/13 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 78)", "10"], ["6.9.3", "3/4 - 8/11 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 88)", "2"], ["6.9.4", "5/8 + 1/3 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 48)", "46"], ["6.9.5", "6/7 - 3/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 70)", "18"], ["6.9.6", "7/9 - 2/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 90)", "34"]];
+prototypeData["6.10"].items = [["6.10.1", "1 / (1/28 + 1/12)", "8,4"], ["6.10.2", "1 / (1/36 + 1/45)", "20"], ["6.10.3", "1 / (1/21 + 1/28)", "12"], ["6.10.4", "1 / (1/14 - 1/63)", "18"], ["6.10.5", "1 / (1/36 - 1/44)", "198"], ["6.10.6", "1 / (1/35 - 1/60)", "84"], ["6.10.7", "1 / (1/72 - 1/99)", "264"]];
 renderPrototype(activePrototype);
+
+// Final content corrections: task statements and clean fraction expressions.
+(() => {
+  const taskText = {
+    "6.1": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.",
+    "6.2": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.",
+    "6.3": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.",
+    "6.4": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.",
+    "6.5": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.",
+    "6.6": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.",
+    "6.7": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.",
+    "6.8": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.",
+    "6.9": "\u041f\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0434\u0440\u043e\u0431\u044c \u043a \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u043e\u043c\u0443 \u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044e \u0438 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0447\u0438\u0441\u043b\u0438\u0442\u0435\u043b\u044c.",
+    "6.10": "\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f: \u0435\u0434\u0438\u043d\u0438\u0446\u0430 \u0434\u0435\u043b\u0438\u0442\u0441\u044f \u043d\u0430 \u0441\u0443\u043c\u043c\u0443 \u0434\u0432\u0443\u0445 \u0434\u0440\u043e\u0431\u0435\u0439."
+  };
+  prototypeData["6.9"].items = [["6.9.1", "1/7 + 3/4 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 56)", "50"], ["6.9.2", "2/3 - 7/13 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 78)", "10"], ["6.9.3", "3/4 - 8/11 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 88)", "2"], ["6.9.4", "5/8 + 1/3 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 48)", "46"], ["6.9.5", "6/7 - 3/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 70)", "18"], ["6.9.6", "7/9 - 2/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 90)", "34"]];
+  prototypeData["6.10"].items = [["6.10.1", "1 / (1/28 + 1/12)", "8,4"], ["6.10.2", "1 / (1/36 + 1/45)", "20"], ["6.10.3", "1 / (1/21 + 1/28)", "12"], ["6.10.4", "1 / (1/14 - 1/63)", "18"], ["6.10.5", "1 / (1/36 - 1/44)", "198"], ["6.10.6", "1 / (1/35 - 1/60)", "84"], ["6.10.7", "1 / (1/72 - 1/99)", "264"]];
+  renderPrototype(activePrototype);
+  const caption = quiz?.querySelector(".prototype-caption");
+  const instruction = document.createElement("p");
+  instruction.className = "task-instruction";
+  instruction.textContent = taskText[activePrototype] || "";
+  caption?.after(instruction);
+  const submit = quiz?.querySelector('button[type="submit"]');
+  if (submit) submit.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + activePrototype;
+  document.querySelectorAll("[data-prototype-cell]").forEach((cell) => cell.addEventListener("click", () => setTimeout(() => {
+    document.querySelector(".task-instruction")?.remove();
+    const c = quiz?.querySelector(".prototype-caption");
+    const i = document.createElement("p"); i.className = "task-instruction"; i.textContent = taskText[activePrototype] || ""; c?.after(i);
+    const b = quiz?.querySelector('button[type="submit"]'); if (b) b.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + activePrototype;
+  }, 0)));
+})();
