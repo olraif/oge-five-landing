@@ -2,6 +2,7 @@ const quiz = document.getElementById("fractionQuiz");
 const result = document.getElementById("quizResult");
 const cell = document.querySelector('[data-prototype-cell="6.1"]');
 const storageKey = "ogeTrainer:math:task6:prototype6.1";
+const cloudPath = ["trainer_progress", "math", "task6", "6.1"];
 
 const normalizeAnswer = (value) => value
   .trim()
@@ -54,6 +55,31 @@ const showResult = (score, misses = []) => {
   `;
 };
 
+const saveCloudProgress = async (payload) => {
+  if (!window.ogeSupabase) return;
+  const { data } = await window.ogeSupabase.auth.getSession();
+  const user = data?.session?.user;
+  if (!user) return;
+  const current = user.user_metadata?.trainer_progress || {};
+  const next = { ...current, math: { ...(current.math || {}), task6: { ...(current.math?.task6 || {}), [cloudPath[3]]: payload } } };
+  await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+};
+
+const loadCloudProgress = async () => {
+  if (!window.ogeSupabase) return;
+  const { data } = await window.ogeSupabase.auth.getSession();
+  const saved = data?.session?.user?.user_metadata?.trainer_progress?.math?.task6?.[cloudPath[3]];
+  if (!saved || !Number.isFinite(Number(saved.score))) return;
+  applyProgress(Number(saved.score));
+  if (saved.answers && quiz) Object.entries(saved.answers).forEach(([name, value]) => {
+    const input = quiz.elements.namedItem(name);
+    if (input) input.value = value;
+  });
+  applyQuestionStatuses(saved.answers || {});
+  showResult(Number(saved.score), saved.misses || []);
+  localStorage.setItem(storageKey, JSON.stringify(saved));
+};
+
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
   if (saved && Number.isFinite(saved.score)) {
@@ -90,6 +116,7 @@ if (quiz && result) {
     showResult(score, misses);
     try {
       localStorage.setItem(storageKey, JSON.stringify({ score, misses, answers: submittedAnswers, savedAt: new Date().toISOString() }));
+      saveCloudProgress({ score, misses, answers: submittedAnswers, savedAt: new Date().toISOString() });
     } catch (error) {
       // Visual result still works without storage.
     }
@@ -99,6 +126,9 @@ if (quiz && result) {
     }
   });
 }
+
+window.addEventListener("oge-auth-ready", loadCloudProgress);
+setTimeout(loadCloudProgress, 700);
 
 document.querySelectorAll("[data-prototype-cell]").forEach((prototypeCell) => {
   prototypeCell.addEventListener("click", () => {

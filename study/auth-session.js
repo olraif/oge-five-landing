@@ -18,6 +18,7 @@
     document.querySelectorAll('.student-badge small').forEach((el) => { el.textContent = user ? email : 'гость'; });
     document.querySelectorAll('[data-auth-open]').forEach((el) => { el.textContent = user ? 'Выйти' : 'Войти'; });
     document.documentElement.dataset.authenticated = user ? 'true' : 'false';
+    window.dispatchEvent(new CustomEvent('oge-auth-ready', { detail: { user } }));
   };
 
   client.auth.getSession().then(({ data }) => applyUser(data.session?.user || null));
