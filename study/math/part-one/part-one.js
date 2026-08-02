@@ -75,12 +75,25 @@ const getSaved = () => {
   try { return JSON.parse(localStorage.getItem(storageKey) || "null"); } catch (error) { return null; }
 };
 
+const guideElement = document.querySelector(".trainer-guide");
+const defaultGuideMarkup = guideElement?.innerHTML || "";
+
 const renderPrototype = (key, restore = true) => {
   const data = prototypeData[key];
   if (!data || !quiz) return;
   activePrototype = key;
   activeAnswers = Object.fromEntries(data.items.map((item, index) => [`q${index + 1}`, [item[2]]]));
   storageKey = `ogeTrainer:math:task6:prototype${key}`;
+  if (guideElement) {
+    const lesson = document.getElementById("lesson-06-01");
+    if (key === "6.1" && lesson) {
+      guideElement.className = "trainer-guide trainer-guide--lesson";
+      guideElement.innerHTML = lesson.innerHTML;
+    } else {
+      guideElement.className = "trainer-guide";
+      guideElement.innerHTML = defaultGuideMarkup;
+    }
+  }
   const caption = document.querySelector(".quiz-caption");
   if (caption) caption.textContent = `Прототип ${key} · ${data.title}`;
   const rows = Array.from(quiz.querySelectorAll("label[data-question]"));
