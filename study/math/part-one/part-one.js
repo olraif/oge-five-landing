@@ -84,15 +84,10 @@ const renderPrototype = (key, restore = true) => {
   activePrototype = key;
   activeAnswers = Object.fromEntries(data.items.map((item, index) => [`q${index + 1}`, [item[2]]]));
   storageKey = `ogeTrainer:math:task6:prototype${key}`;
+
   if (guideElement) {
-    const lesson = document.getElementById("lesson-06-01");
-    if (key === "6.1" && lesson) {
-      guideElement.className = "trainer-guide trainer-guide--lesson";
-      guideElement.innerHTML = lesson.innerHTML;
-    } else {
-      guideElement.className = "trainer-guide";
-      guideElement.innerHTML = defaultGuideMarkup;
-    }
+    guideElement.className = 'trainer-guide trainer-guide--image';
+    guideElement.innerHTML = key === '6.1' ? '<img src="assets/lesson-06-01.png" alt="Схема сложения десятичных дробей">' : '';
   }
   const caption = document.querySelector(".quiz-caption");
   if (caption) caption.textContent = `Прототип ${key} · ${data.title}`;
