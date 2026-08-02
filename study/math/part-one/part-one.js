@@ -294,7 +294,7 @@ renderPrototype(activePrototype);
   prototypeData["6.9"].items = [["6.9.1", "1/7 + 3/4 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 56)", "50"], ["6.9.2", "2/3 - 7/13 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 78)", "10"], ["6.9.3", "3/4 - 8/11 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 88)", "2"], ["6.9.4", "5/8 + 1/3 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 48)", "46"], ["6.9.5", "6/7 - 3/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 70)", "18"], ["6.9.6", "7/9 - 2/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 90)", "34"]];
   prototypeData["6.10"].items = [["6.10.1", "1 / (1/28 + 1/12)", "8,4"], ["6.10.2", "1 / (1/36 + 1/45)", "20"], ["6.10.3", "1 / (1/21 + 1/28)", "12"], ["6.10.4", "1 / (1/14 - 1/63)", "18"], ["6.10.5", "1 / (1/36 - 1/44)", "198"], ["6.10.6", "1 / (1/35 - 1/60)", "84"], ["6.10.7", "1 / (1/72 - 1/99)", "264"]];
   renderPrototype(activePrototype);
-  const caption = quiz?.querySelector(".prototype-caption");
+  const caption = quiz?.querySelector(".prototype-caption");`r`n  quiz?.querySelector(".task-instruction")?.remove();
   const instruction = document.createElement("p");
   instruction.className = "task-instruction";
   instruction.textContent = taskText[activePrototype] || "";
