@@ -98,7 +98,7 @@ const renderPrototype = (key, restore = true) => {
   const caption = document.querySelector(".quiz-caption");
   if (caption) caption.textContent = `\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f ${key} - ${data.title}`;
   const submitButton = quiz.querySelector('button[type="submit"]');
-  if (submitButton) submitButton.textContent = `РџСЂРѕРІРµСЂРёС‚СЊ РїСЂРѕС‚РѕС‚РёРї ${key}`;
+  if (submitButton) submitButton.textContent = "\\u041f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c \\u043f\\u0440\\u043e\\u0442\\u043e\\u0442\\u0438\\u043f " + key;
   let formatNote = quiz.querySelector(".answer-format-note");
   if (!formatNote) {
     formatNote = document.createElement("p");
@@ -124,14 +124,14 @@ const renderPrototype = (key, restore = true) => {
     "6.9": "Приведите дробь к указанному знаменателю и запишите числитель.",
     "6.10": "Вычислите значение выражения: единица делится на сумму двух дробей."
   };
-  taskInstruction.textContent = instructions[key] || "";
+  taskInstruction.textContent = ({"6.1":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f.","6.2":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f.","6.3":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f.","6.4":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f.","6.5":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f. \\u041e\\u0442\\u0432\\u0435\\u0442 \\u0437\\u0430\\u043f\\u0438\\u0448\\u0438\\u0442\\u0435 \\u0434\\u0435\\u0441\\u044f\\u0442\\u0438\\u0447\\u043d\\u043e\\u0439 \\u0434\\u0440\\u043e\\u0431\\u044c\\u044e.","6.6":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f. \\u041e\\u0442\\u0432\\u0435\\u0442 \\u0437\\u0430\\u043f\\u0438\\u0448\\u0438\\u0442\\u0435 \\u0434\\u0435\\u0441\\u044f\\u0442\\u0438\\u0447\\u043d\\u043e\\u0439 \\u0434\\u0440\\u043e\\u0431\\u044c\\u044e.","6.7":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f. \\u041e\\u0442\\u0432\\u0435\\u0442 \\u0437\\u0430\\u043f\\u0438\\u0448\\u0438\\u0442\\u0435 \\u0434\\u0435\\u0441\\u044f\\u0442\\u0438\\u0447\\u043d\\u043e\\u0439 \\u0434\\u0440\\u043e\\u0431\\u044c\\u044e.","6.8":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f. \\u041e\\u0442\\u0432\\u0435\\u0442 \\u0437\\u0430\\u043f\\u0438\\u0448\\u0438\\u0442\\u0435 \\u0434\\u0435\\u0441\\u044f\\u0442\\u0438\\u0447\\u043d\\u043e\\u0439 \\u0434\\u0440\\u043e\\u0431\\u044c\\u044e.","6.9":"\\u041f\\u0440\\u0438\\u0432\\u0435\\u0434\\u0438\\u0442\\u0435 \\u0434\\u0440\\u043e\\u0431\\u044c \\u043a \\u0443\\u043a\\u0430\\u0437\\u0430\\u043d\\u043d\\u043e\\u043c\\u0443 \\u0437\\u043d\\u0430\\u043c\\u0435\\u043d\\u0430\\u0442\\u0435\\u043b\\u044e \\u0438 \\u0437\\u0430\\u043f\\u0438\\u0448\\u0438\\u0442\\u0435 \\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435\\u043b\\u044c.","6.10":"\\u0412\\u044b\\u0447\\u0438\\u0441\\u043b\\u0438\\u0442\\u0435 \\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435 \\u0432\\u044b\\u0440\\u0430\\u0436\\u0435\\u043d\\u0438\\u044f: \\u0435\\u0434\\u0438\\u043d\\u0438\\u0446\\u0430 \\u0434\\u0435\\u043b\\u0438\\u0442\\u0441\\u044f \\u043d\\u0430 \\u0441\\u0443\\u043c\\u043c\\u0443 \\u0434\\u0432\\u0443\\u0445 \\u0434\\u0440\\u043e\\u0431\\u0435\\u0439."})[key] || "";
   const rows = Array.from(quiz.querySelectorAll("label[data-question]"));
   data.items.forEach(([id, expression], index) => {
     const row = rows[index];
     if (!row) return;
     row.style.display = "grid";
     row.dataset.question = `q${index + 1}`;
-    row.innerHTML = `${id} <span>${formatExpression(expression)}</span><input name="q${index + 1}" autocomplete="off">`;
+    row.innerHTML = `${id} <span>${key === "6.10" ? formatComplexFraction(expression) : formatExpression(expression)}</span><input name="q${index + 1}" autocomplete="off">`;
   });
   rows.slice(data.items.length).forEach((row) => { row.style.display = "none"; });
   document.querySelectorAll("[data-prototype-cell]").forEach((button) => {
@@ -308,4 +308,8 @@ renderPrototype(activePrototype);
     const i = document.createElement("p"); i.className = "task-instruction"; i.textContent = taskText[activePrototype] || ""; c?.after(i);
     const b = quiz?.querySelector('button[type="submit"]'); if (b) b.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + activePrototype;
   }, 0)));
-})();
+})();function formatComplexFraction(value) {
+  const match = value.match(/1 \/ \((\d+\/\d+) ([+\-]) (\d+\/\d+)\)/);
+  if (!match) return formatExpression(value);
+  return `<span class="complex-fraction"><sup>1</sup><i></i><sub>${formatExpression(match[1])} ${match[2]} ${formatExpression(match[3])}</sub></span>`;
+}
