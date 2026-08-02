@@ -93,7 +93,7 @@ const renderPrototype = (key, restore = true) => {
 
   if (guideElement) {
     guideElement.className = 'trainer-guide trainer-guide--image';
-    guideElement.innerHTML = key === '6.1' ? '<img src="assets/lesson-06-01.png" alt="РњРµС‚РѕРґРёС‡РµСЃРєР°СЏ СЃС…РµРјР°">' : '';
+    guideElement.innerHTML = "";
   }
   const caption = document.querySelector(".quiz-caption");
   if (caption) caption.textContent = `\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f ${key} - ${data.title}`;
