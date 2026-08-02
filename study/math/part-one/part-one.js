@@ -14,16 +14,20 @@ const answers = {
   q2: ["14,3"],
   q3: ["10,1"],
   q4: ["13,7"],
-  q5: ["12,1"]
+  q5: ["12,1"],
+  q6: ["13,3"],
+  q7: ["14,7"],
+  q8: ["17,1"],
+  q9: ["18,4"]
 };
 
 const applyProgress = (score) => {
   if (!cell) return;
   cell.classList.remove("is-green", "is-yellow");
-  if (score === 5) cell.classList.add("is-green");
+  if (score >= 5) cell.classList.add("is-green");
   else if (score >= 3) cell.classList.add("is-yellow");
   const counter = cell.querySelector("span");
-  if (counter) counter.textContent = `${score}/5`;
+  if (counter) counter.textContent = `${score}/9`;
 };
 
 const applyQuestionStatuses = (submittedAnswers = {}) => {
@@ -40,12 +44,12 @@ const applyQuestionStatuses = (submittedAnswers = {}) => {
 
 const showResult = (score, misses = []) => {
   if (!result) return;
-  const status = score === 5
+  const status = score >= 5
     ? "Прототип 6.1 закрыт"
     : score >= 3 ? "Прототип 6.1 в работе" : "Прототип 6.1 ещё не закрыт";
   result.innerHTML = `
-    <strong>${score}/5 · ${status}</strong>
-    <p>${score === 5 ? "Прототип отмечен зелёным в прогрессе." : "Решите ещё аналоги этого прототипа и повторите попытку."}</p>
+    <strong>${score}/9 · ${status}</strong>
+    <p>${score >= 5 ? "Порог прототипа достигнут: 5 правильных ответов." : "Для зелёного статуса нужно 5 правильных ответов."}</p>
     ${misses.length ? `<ul>${misses.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
   `;
 };
