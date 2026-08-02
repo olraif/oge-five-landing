@@ -78,3 +78,6 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 .fipi-bank-table-wrap{margin-top:24px;padding:20px;border:1px solid #dce6fb;border-radius:22px;background:#fbfdff}.fipi-bank-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:14px}.fipi-bank-head h3{margin:10px 0 0;color:#1f2433;font-size:21px}.fipi-bank-total{color:#71809a;font-size:12px}.fipi-bank-scroll{overflow:auto}.fipi-bank-table{width:100%;border-collapse:collapse;min-width:560px;color:#405477;font-size:12px}.fipi-bank-table th,.fipi-bank-table td{padding:10px 12px;border-bottom:1px solid #e7edf8;text-align:left}.fipi-bank-table th{color:#71809a;font-size:10px;text-transform:uppercase;letter-spacing:.06em}.fipi-bank-table td:last-child,.fipi-bank-table th:last-child{text-align:right;white-space:nowrap}@media (max-width:650px){.fipi-bank-head{display:block}.fipi-bank-total{display:block;margin-top:10px}}
 
 .support-links{display:flex;flex-wrap:wrap;gap:10px}
+
+.studio-return-bar{display:flex;justify-content:flex-end;align-items:center;padding:12px 28px 0}.studio-return-bar .studio-back{display:inline-flex;align-items:center}
+@media (max-width:720px){.studio-return-bar{padding:10px 14px 0}.studio-return-bar .studio-back{display:inline-flex}}
