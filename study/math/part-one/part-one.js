@@ -105,7 +105,7 @@ const renderPrototype = (key, restore = true) => {
     formatNote.className = "answer-format-note";
     caption?.after(formatNote);
   }
-  formatNote.textContent = key >= "6.5" && key !== "6.9" ? "\u041e\u0442\u0432\u0435\u0442 \u0432\u0432\u043e\u0434\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e." : "";
+  formatNote.textContent = "";\n  formatNote.style.display = "none";
   let taskInstruction = quiz.querySelector(".task-instruction");
   if (!taskInstruction) {
     taskInstruction = document.createElement("p");
