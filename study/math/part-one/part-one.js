@@ -1,7 +1,7 @@
 const quiz = document.getElementById("fractionQuiz");
 const result = document.getElementById("quizResult");
 const getCell = () => document.querySelector(`[data-prototype-cell="${activePrototype}"]`);
-let storageKey = "ogeTrainer:v2:math:task6:prototype6.1";
+let storageKey = "ogeTrainer:v3:math:task6:prototype6.1";
 const cloudPath = ["trainer_progress", "math", "task6", "6.1"];
 
 const syncCourseView = () => document.body.classList.toggle("task6-view", location.hash === "#trainer");
@@ -83,7 +83,7 @@ const renderPrototype = (key, restore = true) => {
   if (!data || !quiz) return;
   activePrototype = key;
   activeAnswers = Object.fromEntries(data.items.map((item, index) => [`q${index + 1}`, [item[2]]]));
-  storageKey = `ogeTrainer:v2:math:task6:prototype${key}`;
+  storageKey = `ogeTrainer:v3:math:task6:prototype${key}`;
 
   if (guideElement) {
     guideElement.className = 'trainer-guide trainer-guide--image';
@@ -91,6 +91,8 @@ const renderPrototype = (key, restore = true) => {
   }
   const caption = document.querySelector(".quiz-caption");
   if (caption) caption.textContent = `\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f ${key} - ${data.title}`;
+  const submitButton = quiz.querySelector('button[type="submit"]');
+  if (submitButton) submitButton.textContent = `Проверить прототип ${key}`;
   const rows = Array.from(quiz.querySelectorAll("label[data-question]"));
   data.items.forEach(([id, expression], index) => {
     const row = rows[index];
@@ -239,4 +241,5 @@ Object.keys(prototypeData).forEach((key) => {
   prototypeData[key].title = labels[key] ? labels[key] : prototypeData[key].title;
 });
 
+prototypeData["6.9"].items = [["6.9.1", "1/7 + 3/4 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 56)", "50"], ["6.9.2", "2/3 - 7/13 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 78)", "10"], ["6.9.3", "3/4 - 8/11 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 88)", "2"], ["6.9.4", "5/8 + 1/3 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 48)", "46"], ["6.9.5", "6/7 - 3/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 70)", "18"], ["6.9.6", "7/9 - 2/5 (\u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044c 90)", "34"]];
 renderPrototype(activePrototype);
