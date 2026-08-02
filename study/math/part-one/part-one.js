@@ -72,7 +72,7 @@ const showResult = (score, misses = []) => {
   if (!result) return;
   result.innerHTML = `
     <strong>${score}/${Object.keys(activeAnswers).length}</strong>
-    <p>\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0445 \u043e\u0442\u0432\u0435\u0442\u043e\u0432 В· ${score >= 5 ? "\u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043e\u0441\u0432\u043e\u0435\u043d" : "\u0434\u043e \u0437\u0435\u043b\u0451\u043d\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0443\u0441\u0430 \u043d\u0443\u0436\u043d\u043e 5"}</p>
+    <p>${score >= 5 ? "\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043e\u0441\u0432\u043e\u0435\u043d" : "\u0414\u043b\u044f \u0437\u0435\u043b\u0451\u043d\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0443\u0441\u0430 \u043d\u0443\u0436\u043d\u043e 5"}</p>
     ${misses.length ? `<ul>${misses.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
   `;
 };
@@ -105,7 +105,7 @@ const renderPrototype = (key, restore = true) => {
     formatNote.className = "answer-format-note";
     caption?.after(formatNote);
   }
-  formatNote.textContent = key >= "6.5" && key !== "6.9" ? "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u0432\\u0432\\u043e\\u0434\\u0438\\u0442\\u0435 \\u0434\\u0435\\u0441\\u044f\\u0442\\u0438\\u0447\\u043d\\u043e\\u0439 \\u0434\\u0440\\u043e\\u0431\\u044c\\u044e." : "";
+  formatNote.textContent = key >= "6.5" && key !== "6.9" ? "\u041e\u0442\u0432\u0435\u0442 \u0432\u0432\u043e\u0434\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e." : "";
   let taskInstruction = quiz.querySelector(".task-instruction");
   if (!taskInstruction) {
     taskInstruction = document.createElement("p");
