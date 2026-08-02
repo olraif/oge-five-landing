@@ -26,6 +26,18 @@ const applyProgress = (score) => {
   if (counter) counter.textContent = `${score}/5`;
 };
 
+const applyQuestionStatuses = (submittedAnswers = {}) => {
+  Object.entries(answers).forEach(([name, valid]) => {
+    const row = document.querySelector(`[data-question="${name}"]`);
+    if (!row) return;
+    const raw = submittedAnswers[name] || "";
+    row.classList.remove("question-correct", "question-wrong", "question-empty");
+    if (!raw.trim()) row.classList.add("question-empty");
+    else if (valid.includes(normalizeAnswer(raw))) row.classList.add("question-correct");
+    else row.classList.add("question-wrong");
+  });
+};
+
 const showResult = (score, misses = []) => {
   if (!result) return;
   const status = score === 5
@@ -46,6 +58,7 @@ try {
       const input = quiz.elements.namedItem(name);
       if (input) input.value = value;
     });
+    applyQuestionStatuses(saved.answers || {});
     showResult(saved.score, saved.misses || []);
   }
 } catch (error) {
@@ -69,6 +82,7 @@ if (quiz && result) {
     });
 
     applyProgress(score);
+    applyQuestionStatuses(submittedAnswers);
     showResult(score, misses);
     try {
       localStorage.setItem(storageKey, JSON.stringify({ score, misses, answers: submittedAnswers, savedAt: new Date().toISOString() }));
