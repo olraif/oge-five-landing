@@ -105,7 +105,8 @@ const renderPrototype = (key, restore = true) => {
     formatNote.className = "answer-format-note";
     caption?.after(formatNote);
   }
-  formatNote.textContent = "";\n  formatNote.style.display = "none";
+  formatNote.textContent = "";
+  formatNote.style.display = "none";
   let taskInstruction = quiz.querySelector(".task-instruction");
   if (!taskInstruction) {
     taskInstruction = document.createElement("p");
