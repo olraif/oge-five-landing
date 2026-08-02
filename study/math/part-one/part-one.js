@@ -49,12 +49,9 @@ const applyQuestionStatuses = (submittedAnswers = {}) => {
 
 const showResult = (score, misses = []) => {
   if (!result) return;
-  const status = score >= 5
-    ? "Прототип 6.1 закрыт"
-    : score >= 3 ? "Прототип 6.1 в работе" : "Прототип 6.1 ещё не закрыт";
   result.innerHTML = `
-    <strong>${score}/9 · ${status}</strong>
-    <p>${score >= 5 ? "Порог прототипа достигнут: 5 правильных ответов." : "Для зелёного статуса нужно 5 правильных ответов."}</p>
+    <strong>${score}/9</strong>
+    <p>правильных ответов · ${score >= 5 ? "прототип освоен" : "до зелёного статуса нужно 5"}</p>
     ${misses.length ? `<ul>${misses.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
   `;
 };
