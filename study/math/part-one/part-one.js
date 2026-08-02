@@ -1,7 +1,7 @@
 const quiz = document.getElementById("fractionQuiz");
 const result = document.getElementById("quizResult");
 const getCell = () => document.querySelector(`[data-prototype-cell="${activePrototype}"]`);
-let storageKey = "ogeTrainer:math:task6:prototype6.1";
+let storageKey = "ogeTrainer:v2:math:task6:prototype6.1";
 const cloudPath = ["trainer_progress", "math", "task6", "6.1"];
 
 const syncCourseView = () => document.body.classList.toggle("task6-view", location.hash === "#trainer");
@@ -83,7 +83,7 @@ const renderPrototype = (key, restore = true) => {
   if (!data || !quiz) return;
   activePrototype = key;
   activeAnswers = Object.fromEntries(data.items.map((item, index) => [`q${index + 1}`, [item[2]]]));
-  storageKey = `ogeTrainer:math:task6:prototype${key}`;
+  storageKey = `ogeTrainer:v2:math:task6:prototype${key}`;
 
   if (guideElement) {
     guideElement.className = 'trainer-guide trainer-guide--image';
