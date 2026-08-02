@@ -69,3 +69,5 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
   .mobile-max{display:none!important}
   .mobile-max::after{content:"MAX";display:block;font-size:13px;font-weight:900}
 }
+.header-contacts{display:flex;gap:6px}.header-contacts .header-message{padding:10px 12px;font-size:12px}
+@media (max-width:1000px){.header-contacts{display:none}}
