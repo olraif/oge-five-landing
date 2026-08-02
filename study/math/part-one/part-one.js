@@ -4,6 +4,10 @@ const cell = document.querySelector('[data-prototype-cell="6.1"]');
 const storageKey = "ogeTrainer:math:task6:prototype6.1";
 const cloudPath = ["trainer_progress", "math", "task6", "6.1"];
 
+const syncCourseView = () => document.body.classList.toggle("task6-view", location.hash === "#trainer");
+window.addEventListener("hashchange", syncCourseView);
+syncCourseView();
+
 const normalizeAnswer = (value) => value
   .trim()
   .replace(/\s+/g, "")
