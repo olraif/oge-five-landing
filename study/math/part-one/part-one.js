@@ -69,7 +69,13 @@ const loadCloudProgress = async () => {
   if (!window.ogeSupabase) return;
   const { data } = await window.ogeSupabase.auth.getSession();
   const saved = data?.session?.user?.user_metadata?.trainer_progress?.math?.task6?.[cloudPath[3]];
-  if (!saved || !Number.isFinite(Number(saved.score))) return;
+  if (!saved || !Number.isFinite(Number(saved.score))) {
+    try {
+      const localSaved = JSON.parse(localStorage.getItem(storageKey) || "null");
+      if (localSaved && Number.isFinite(Number(localSaved.score))) await saveCloudProgress(localSaved);
+    } catch (error) { /* local storage may be unavailable */ }
+    return;
+  }
   applyProgress(Number(saved.score));
   if (saved.answers && quiz) Object.entries(saved.answers).forEach(([name, value]) => {
     const input = quiz.elements.namedItem(name);
