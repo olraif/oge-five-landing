@@ -380,52 +380,62 @@
       window.addEventListener('hashchange', showView);
       showView();
 
-      const updateTask6Progress = () => {
-        const bar = document.querySelector('.progress-bars .bar:nth-child(6)');
+      const progressBar6 = () => document.querySelector('.progress-bars .bar:nth-child(6)');
+      const resetTask6Progress = () => {
+        const bar = progressBar6();
         if (!bar) return;
-        let score = 0;
-        try { score = Number(JSON.parse(localStorage.getItem('ogeTrainer:math:task6:prototype6.1') || 'null')?.score || 0); } catch (error) { score = 0; }
-        const ok = score >= 5 ? 10 : 0;
-        const work = score > 0 && score < 5 ? 5 : 0;
-        bar.style.setProperty('--ok', `${ok}%`);
-        bar.style.setProperty('--work', `${work}%`);
-        bar.classList.toggle('is-started', score > 0);
+        bar.style.setProperty('--ok', '0%');
+        bar.style.setProperty('--work', '0%');
+        bar.classList.remove('is-started');
+        bar.removeAttribute('title');
+      };
+      const renderTask6Progress = (score) => {
+        const bar = progressBar6();
+        if (!bar || score <= 0) return;
+        bar.style.setProperty('--ok', score >= 5 ? '10%' : '0%');
+        bar.style.setProperty('--work', score > 0 && score < 5 ? '5%' : '0%');
+        bar.classList.add('is-started');
         bar.title = `Задание 6: ${score >= 5 ? 'прототип 6.1 закрыт, 1 из 10' : 'прототип 6.1 в работе'}`;
       };
-      const syncCloudTask6Progress = async () => {
-        if (!window.ogeSupabase) return;
-        const { data } = await window.ogeSupabase.auth.getSession();
-        const score = Number(data?.session?.user?.user_metadata?.trainer_progress?.math?.task6?.['6.1']?.score || 0);
-        if (score > 0) {
-          const bar = document.querySelector('.progress-bars .bar:nth-child(6)');
-          if (bar) {
-            bar.style.setProperty('--ok', score >= 5 ? '10%' : '0%');
-            bar.style.setProperty('--work', score > 0 && score < 5 ? '5%' : '0%');
-            bar.classList.add('is-started');
-          }
-        }
+      const syncCloudTask6Progress = (user) => {
+        resetTask6Progress();
+        if (!user) return;
+        const score = Number(user.user_metadata?.trainer_progress?.math?.task6?.['6.1']?.score || 0);
+        renderTask6Progress(score);
       };
-      updateTask6Progress();
-      window.addEventListener('oge-auth-ready', syncCloudTask6Progress);
-      setTimeout(syncCloudTask6Progress, 700);
-      window.addEventListener('storage', (event) => {
-        if (event.key === 'ogeTrainer:math:task6:prototype6.1') updateTask6Progress();
-      });
 
       const courseCards = document.querySelectorAll('[data-course-card]');
+      const lockCourse = (card) => {
+        card.classList.remove('is-active', 'is-code-open');
+        card.classList.add('is-locked');
+        card.querySelector('.access-status').textContent = 'доступ закрыт';
+      };
       const activateCourse = (card) => {
         card.classList.remove('is-locked', 'is-code-open');
         card.classList.add('is-active');
         card.querySelector('.access-status').textContent = 'доступ открыт';
-        localStorage.setItem(`ogeStudioCourse:${card.dataset.courseId}`, 'active');
+      };
+      const syncCourseAccess = async (user) => {
+        courseCards.forEach(lockCourse);
+        if (!user || !window.ogeGetEnrollmentIds) return;
+        const result = await window.ogeGetEnrollmentIds();
+        if (result.error) {
+          console.error('Supabase enrollment error:', result.error);
+          return;
+        }
+        const enrolled = new Set(result.data);
+        courseCards.forEach((card) => {
+          if (enrolled.has(card.dataset.courseId)) activateCourse(card);
+        });
       };
 
       courseCards.forEach((card) => {
-        if (localStorage.getItem(`ogeStudioCourse:${card.dataset.courseId}`) === 'active') {
-          activateCourse(card);
-        }
-
+        lockCourse(card);
         card.querySelector('[data-activate]')?.addEventListener('click', () => {
+          if (!window.ogeCurrentUser) {
+            window.location.href = './login.html';
+            return;
+          }
           card.classList.add('is-code-open');
           card.querySelector('input')?.focus();
         });
@@ -434,34 +444,34 @@
           event.preventDefault();
           const input = card.querySelector('input');
           const message = card.querySelector('[data-code-message]');
-          const expected = (card.dataset.code || '').trim().toUpperCase();
           const value = (input?.value || '').trim().toUpperCase();
 
-          if (window.ogeActivateCourseCode) {
-            const result = await window.ogeActivateCourseCode(value);
-            if (!result.error && result.data?.length) {
-              activateCourse(card);
-              message.textContent = 'Тренажёр открыт и сохранён в студии';
-              message.classList.remove('is-error');
-              return;
-            }
-            console.error('Supabase coupon activation error:', result.error);
-            message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в студию' : `Ошибка активации: ${result.error?.message || 'проверьте промокод'}`;
+          if (!window.ogeActivateCourseCode) {
+            message.textContent = 'Сервис активации временно недоступен';
             message.classList.add('is-error');
             return;
           }
 
-          if (value && value === expected) {
+          const result = await window.ogeActivateCourseCode(value);
+          if (!result.error && result.data?.length) {
             activateCourse(card);
-            message.textContent = 'Тренажёр открыт';
+            message.textContent = 'Тренажёр открыт и сохранён в студии';
             message.classList.remove('is-error');
             return;
           }
-
-          message.textContent = 'Проверьте промокод или напишите в поддержку';
+          console.error('Supabase coupon activation error:', result.error);
+          message.textContent = result.error?.message === 'AUTH_REQUIRED' ? 'Сначала войдите в студию' : `Ошибка активации: ${result.error?.message || 'проверьте промокод'}`;
           message.classList.add('is-error');
         });
       });
+
+      const syncAuthenticatedUi = (user) => {
+        syncCloudTask6Progress(user);
+        syncCourseAccess(user);
+      };
+      resetTask6Progress();
+      window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
+      setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();
   </script>
 </body>

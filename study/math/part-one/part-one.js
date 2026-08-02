@@ -192,10 +192,16 @@ const saveCloudProgress = async (payload) => {
 
 const loadCloudProgress = async () => {
   const requestedPrototype = activePrototype;
-  if (!window.ogeSupabase) return;
-  const { data } = await window.ogeSupabase.auth.getSession();
+  if (!window.ogeHasCourseAccess) return;
+  const access = await window.ogeHasCourseAccess("math-first");
   if (requestedPrototype !== activePrototype) return;
-  const cloudValue = data?.session?.user?.user_metadata?.trainer_progress?.math?.task6?.[requestedPrototype];
+  if (access.error || !access.data) {
+    localStorage.removeItem(storageKey);
+    clearCurrentAttempt();
+    window.location.replace("../../login.html");
+    return;
+  }
+  const cloudValue = access.user?.user_metadata?.trainer_progress?.math?.task6?.[requestedPrototype];
   const cloudSaved = validateSavedProgress(cloudValue, requestedPrototype);
   if (cloudSaved) {
     restoreAttempt(cloudSaved);

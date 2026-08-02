@@ -15,6 +15,7 @@ class LandingContractTests(unittest.TestCase):
         cls.part_one_html = (ROOT / "study" / "math" / "part-one" / "index.html").read_text(encoding="utf-8")
         cls.part_one_css = (ROOT / "study" / "math" / "part-one" / "part-one.css").read_text(encoding="utf-8")
         cls.part_one_js = (ROOT / "study" / "math" / "part-one" / "part-one.js").read_text(encoding="utf-8")
+        cls.auth_js = (ROOT / "study" / "auth-session.js").read_text(encoding="utf-8")
         cls.css = (ROOT / "theme.css").read_text(encoding="utf-8")
         cls.js = (ROOT / "site.js").read_text(encoding="utf-8")
 
@@ -177,6 +178,19 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("Как эффективно подготовить ребёнка к ОГЭ на 5?", self.html)
         self.assertIn("контролировать подготовку", self.html)
 
+
+    def test_guest_access_does_not_inherit_browser_storage(self):
+        self.assertNotIn("localStorage.getItem(`ogeStudioCourse:", self.study_html)
+        self.assertIn(".from('enrollments')", self.auth_js)
+        self.assertIn("resetTask6Progress", self.study_html)
+    def test_direct_trainer_requires_active_enrollment(self):
+        self.assertIn("ogeHasCourseAccess(\"math-first\")", self.part_one_js)
+        self.assertIn("window.location.replace(\"../../login.html\")", self.part_one_js)
+
+
+    def test_main_header_does_not_duplicate_tutor_name(self):
+        self.assertNotIn("<strong>\u041e\u043b\u0435\u0441\u044f \u0421\u0430\u0439\u0444\u0443\u043b\u043b\u0438\u043d\u0430</strong>", self.html)
+        self.assertIn("<strong>\u041e\u0413\u042d \u043d\u0430 5</strong>", self.html)
 
 if __name__ == "__main__":
     unittest.main()

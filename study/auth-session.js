@@ -4,6 +4,24 @@
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
   window.ogeSupabase = client;
+  window.ogeGetEnrollmentIds = async () => {
+    const { data: sessionData } = await client.auth.getSession();
+    const user = sessionData.session?.user || null;
+    if (!user) return { data: [], error: null, user: null };
+    const { data, error } = await client
+      .from('enrollments')
+      .select('course_id')
+      .eq('user_id', user.id);
+    return { data: (data || []).map((row) => row.course_id), error, user };
+  };
+  window.ogeHasCourseAccess = async (courseId) => {
+    const result = await window.ogeGetEnrollmentIds();
+    return {
+      data: Boolean(result.user && result.data.includes(courseId)),
+      error: result.error,
+      user: result.user,
+    };
+  };
   window.ogeActivateCourseCode = async (code) => {
     const { data: sessionData } = await client.auth.getSession();
     if (!sessionData.session) return { error: new Error('AUTH_REQUIRED') };
@@ -14,6 +32,8 @@
   const applyUser = (user) => {
     const email = user?.email || '';
     const name = user?.user_metadata?.display_name || email.split('@')[0] || 'гость';
+    window.ogeCurrentUser = user || null;
+    document.documentElement.dataset.userId = user?.id || '';
     document.querySelectorAll('.student-badge strong').forEach((el) => { el.textContent = 'Кабинет ученика'; });
     document.querySelectorAll('.student-badge small').forEach((el) => { el.textContent = user ? email : 'гость'; });
     document.querySelectorAll('[data-auth-open]').forEach((el) => { el.textContent = user ? 'Выйти' : 'Войти'; });
