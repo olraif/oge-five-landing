@@ -394,6 +394,23 @@
       window.addEventListener('hashchange', showView);
       showView();
 
+      const updateTask6Progress = () => {
+        const bar = document.querySelector('.progress-bars .bar:nth-child(6)');
+        if (!bar) return;
+        let score = 0;
+        try { score = Number(JSON.parse(localStorage.getItem('ogeTrainer:math:task6:prototype6.1') || 'null')?.score || 0); } catch (error) { score = 0; }
+        const ok = score >= 5 ? 10 : 0;
+        const work = score > 0 && score < 5 ? 5 : 0;
+        bar.style.setProperty('--ok', `${ok}%`);
+        bar.style.setProperty('--work', `${work}%`);
+        bar.classList.toggle('is-started', score > 0);
+        bar.title = `Задание 6: ${score >= 5 ? 'прототип 6.1 закрыт, 1 из 10' : 'прототип 6.1 в работе'}`;
+      };
+      updateTask6Progress();
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'ogeTrainer:math:task6:prototype6.1') updateTask6Progress();
+      });
+
       const courseCards = document.querySelectorAll('[data-course-card]');
       const activateCourse = (card) => {
         card.classList.remove('is-locked', 'is-code-open');
