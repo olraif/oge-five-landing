@@ -46,14 +46,16 @@ const prototypeData = {
 let activePrototype = "6.1";
 let activeAnswers = answers;
 
-const applyProgress = (score) => {
+const applyProgress = (score, submittedAnswers = {}) => {
   const cell = getCell();
   if (!cell) return;
+  const total = Object.keys(activeAnswers).length;
+  const answered = Object.values(submittedAnswers).filter((value) => normalizeAnswer(String(value || ""))).length;
   cell.classList.remove("is-green", "is-yellow");
-  if (score >= 5) cell.classList.add("is-green");
-  else if (score >= 3) cell.classList.add("is-yellow");
+  if (total > 0 && score === total) cell.classList.add("is-green");
+  else if (answered > 0) cell.classList.add("is-yellow");
   const counter = cell.querySelector("span");
-  if (counter) counter.textContent = `${score}/${Object.keys(activeAnswers).length}`;
+  if (counter) counter.textContent = `${score}/${total}`;
 };
 
 const applyQuestionStatuses = (submittedAnswers = {}) => {
@@ -70,9 +72,11 @@ const applyQuestionStatuses = (submittedAnswers = {}) => {
 
 const showResult = (score, misses = []) => {
   if (!result) return;
+  const total = Object.keys(activeAnswers).length;
+  const complete = total > 0 && score === total;
   result.innerHTML = `
-    <strong>${score}/${Object.keys(activeAnswers).length}</strong>
-    <p>${score >= 5 ? "\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043e\u0441\u0432\u043e\u0435\u043d" : "\u0414\u043b\u044f \u0437\u0435\u043b\u0451\u043d\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0443\u0441\u0430 \u043d\u0443\u0436\u043d\u043e 5"}</p>
+    <strong>${score}/${total}</strong>
+    <p>${complete ? "\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043f\u0440\u043e\u0439\u0434\u0435\u043d" : `\u041f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e: ${score} \u0438\u0437 ${total}`}</p>
     ${misses.length ? `<ul>${misses.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
   `;
 };
@@ -105,7 +109,7 @@ const restoreAttempt = (saved) => {
     const input = quiz.elements.namedItem(name);
     if (input) input.value = value;
   });
-  applyProgress(Number(saved.score));
+  applyProgress(Number(saved.score), saved.answers || {});
   applyQuestionStatuses(saved.answers || {});
   showResult(Number(saved.score), saved.misses || []);
 };
@@ -233,11 +237,11 @@ if (quiz && result) {
       else misses.push(`6.1.${index + 1}`);
     });
 
-    applyProgress(score);
+    applyProgress(score, submittedAnswers);
     applyQuestionStatuses(submittedAnswers);
     showResult(score, misses);
     try {
-      const payload = { prototype: activePrototype, score, misses, answers: submittedAnswers, savedAt: new Date().toISOString() };
+      const payload = { prototype: activePrototype, score, total: Object.keys(activeAnswers).length, misses, answers: submittedAnswers, savedAt: new Date().toISOString() };
       localStorage.setItem(storageKey, JSON.stringify(payload));
       saveCloudProgress(payload);
     } catch (error) {

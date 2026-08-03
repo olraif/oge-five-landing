@@ -258,7 +258,7 @@
 
         <div class="progress-legend" aria-label="Обозначения прогресса">
           <span><i class="is-green"></i> правильно решено</span>
-          <span><i class="is-blue"></i> над этим ещё работаем</span>
+          <span><i class="is-yellow"></i> над этим ещё работаем</span>
           <span><i class="is-red"></i> осталось закрыть до 100%</span>
         </div>
 
@@ -276,7 +276,7 @@
             <div class="bar" style="--ok:0%;--work:0%"><span>3</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>4</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>5</span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>6</span></div>
+            <div class="bar bar--task6" style="--ok:0%;--work:0%"><div class="task6-progress-stack" data-task6-stack aria-hidden="true"></div><span>6<small data-task6-percent>0%</small></span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>7</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>8</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>9</span></div>
@@ -366,6 +366,7 @@
   <script src="./supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./auth-session.js"></script>
+  <script src="./progress-model.js"></script>
   <script>
     (() => {
       const views = document.querySelectorAll('.studio-view');
@@ -381,27 +382,43 @@
       showView();
 
       const progressBar6 = () => document.querySelector('.progress-bars .bar:nth-child(6)');
-      const resetTask6Progress = () => {
+      const renderTask6Progress = (task6Progress = {}) => {
         const bar = progressBar6();
-        if (!bar) return;
-        bar.style.setProperty('--ok', '0%');
-        bar.style.setProperty('--work', '0%');
-        bar.classList.remove('is-started');
-        bar.removeAttribute('title');
+        const model = window.OgeProgressModel;
+        if (!bar || !model) return;
+
+        const stack = bar.querySelector('[data-task6-stack]');
+        const percent = bar.querySelector('[data-task6-percent]');
+        const summary = model.buildTask6Summary(task6Progress);
+        const fragment = document.createDocumentFragment();
+
+        summary.prototypes.forEach((prototype) => {
+          const group = document.createElement('div');
+          group.className = 'task6-progress-prototype';
+          group.style.flexGrow = String(prototype.total);
+          group.title = `${prototype.key}: ${prototype.correct}/${prototype.total} правильно, ${prototype.wrong} с ошибкой, ${prototype.untouched} не решено`;
+
+          prototype.cells.forEach((color) => {
+            const cell = document.createElement('i');
+            cell.className = `task6-progress-cell task6-progress-cell--${color}`;
+            group.append(cell);
+          });
+          fragment.append(group);
+        });
+
+        stack?.replaceChildren(fragment);
+        if (percent) percent.textContent = `${summary.percent}%`;
+        bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
+        bar.title = `Задание 6: ${summary.percent}%`;
       };
-      const renderTask6Progress = (score) => {
-        const bar = progressBar6();
-        if (!bar || score <= 0) return;
-        bar.style.setProperty('--ok', score >= 5 ? '10%' : '0%');
-        bar.style.setProperty('--work', score > 0 && score < 5 ? '5%' : '0%');
-        bar.classList.add('is-started');
-        bar.title = `Задание 6: ${score >= 5 ? 'прототип 6.1 закрыт, 1 из 10' : 'прототип 6.1 в работе'}`;
-      };
+      const resetTask6Progress = () => renderTask6Progress({});
       const syncCloudTask6Progress = (user) => {
-        resetTask6Progress();
-        if (!user) return;
-        const score = Number(user.user_metadata?.trainer_progress?.math?.task6?.['6.1']?.score || 0);
-        renderTask6Progress(score);
+        if (!user) {
+          resetTask6Progress();
+          return;
+        }
+        const task6Progress = user.user_metadata?.trainer_progress?.math?.task6 || {};
+        renderTask6Progress(task6Progress);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
