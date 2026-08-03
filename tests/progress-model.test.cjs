@@ -2,19 +2,26 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { buildTask6Summary, getPrototypeStatus } = require(modelPath);
+const { TASK6_ANSWER_KEYS, buildTask6Summary, getPrototypeStatus } = require(modelPath);
 
-const attempt = (correct, wrong, empty) => {
+const attempt = (key, correct, wrong, empty) => {
   const answers = {};
   for (let index = 0; index < correct + wrong + empty; index += 1) {
-    answers[`q${index + 1}`] = index < correct + wrong ? 'answer' : '';
+    if (index < correct) answers[`q${index + 1}`] = TASK6_ANSWER_KEYS[key][index];
+    else answers[`q${index + 1}`] = index < correct + wrong ? 'wrong' : '';
   }
   return { score: correct, answers };
 };
 
 const summary = buildTask6Summary({
-  '6.1': attempt(8, 1, 0),
-  '6.2': attempt(3, 1, 5),
+  '6.1': attempt('6.1', 8, 1, 0),
+  '6.2': attempt('6.2', 3, 1, 5),
+  '6.10': {
+    prototype: '6.10',
+    score: 6,
+    total: 7,
+    answers: { q1: '9,4', q2: '14,3', q3: '10,1', q4: '13,7', q5: '12,1', q6: '10', q7: '14,7' },
+  },
 });
 
 assert.equal(summary.total, 85, 'task 6 should count all 85 analogues');
@@ -22,6 +29,9 @@ assert.equal(summary.correct, 11);
 assert.equal(summary.wrong, 2);
 assert.equal(summary.untouched, 72);
 assert.equal(summary.percent, 13, '11 of 85 rounds to 13%');
+assert.equal(summary.prototypes[9].correct, 0, 'copied 6.1 answers must not count as 6.10 progress');
+assert.equal(summary.prototypes[9].wrong, 0, 'corrupted legacy attempt must be ignored, not marked as a real mistake');
+assert.equal(summary.prototypes[9].untouched, 7);
 assert.deepEqual(summary.prototypes[0].cells, [
   'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'yellow',
 ]);
@@ -29,8 +39,16 @@ assert.deepEqual(summary.prototypes[1].cells, [
   'green', 'green', 'green', 'yellow', 'pink', 'pink', 'pink', 'pink', 'pink',
 ]);
 
-assert.equal(getPrototypeStatus(attempt(8, 1, 0), 9), 'in-progress');
-assert.equal(getPrototypeStatus(attempt(9, 0, 0), 9), 'complete');
-assert.equal(getPrototypeStatus(attempt(0, 0, 9), 9), 'not-started');
+const genericAttempt = (correct, wrong, empty) => {
+  const answers = {};
+  for (let index = 0; index < correct + wrong + empty; index += 1) {
+    answers[`q${index + 1}`] = index < correct + wrong ? 'answer' : '';
+  }
+  return { score: correct, answers };
+};
+
+assert.equal(getPrototypeStatus(genericAttempt(8, 1, 0), 9), 'in-progress');
+assert.equal(getPrototypeStatus(genericAttempt(9, 0, 0), 9), 'complete');
+assert.equal(getPrototypeStatus(genericAttempt(0, 0, 9), 9), 'not-started');
 
 console.log('progress-model: grouped task 6 summary passed');
