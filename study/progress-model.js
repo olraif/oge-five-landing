@@ -29,6 +29,12 @@
     '6.10': ['8,4', '20', '12', '18', '198', '84', '264'],
   });
 
+  const TASK7_TOTALS = Object.freeze({
+    '7.1': 5, '7.2': 4, '7.3': 4, '7.4': 4, '7.5': 4,
+    '7.6': 5, '7.7': 5, '7.8': 5, '7.9': 5, '7.10': 5,
+    '7.11': 5, '7.12': 5, '7.13': 5, '7.14': 5, '7.15': 5,
+    '7.16': 5, '7.17': 5,
+  });
   const isAnswered = (value) => String(value ?? '').trim().length > 0;
   const normalizeAnswer = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
 
@@ -82,5 +88,26 @@
     };
   };
 
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, summarizePrototype, getPrototypeStatus, buildTask6Summary };
+  const summarizeTask7Prototype = (key, attempt = {}) => {
+    const total = TASK7_TOTALS[key] || Number(attempt.total) || 0;
+    const correctIds = Array.isArray(attempt.correctIds) ? attempt.correctIds : [];
+    const answeredIds = Array.isArray(attempt.answeredIds) ? attempt.answeredIds : Object.keys(attempt.answers || {}).filter((id) => isAnswered(attempt.answers[id]));
+    const correct = Math.min(total, correctIds.length);
+    const answered = Math.min(total, Math.max(correct, answeredIds.length));
+    const wrong = Math.max(0, answered - correct);
+    const untouched = Math.max(0, total - answered);
+    return { key, total, correct, wrong, untouched, cells: [...Array(correct).fill('green'), ...Array(wrong).fill('yellow'), ...Array(untouched).fill('pink')] };
+  };
+
+  const buildTask7Summary = (task7Progress = {}) => {
+    const prototypes = Object.keys(TASK7_TOTALS).map((key) => summarizeTask7Prototype(key, task7Progress?.[key]));
+    const totals = prototypes.reduce((result, prototype) => ({
+      total: result.total + prototype.total,
+      correct: result.correct + prototype.correct,
+      wrong: result.wrong + prototype.wrong,
+      untouched: result.untouched + prototype.untouched,
+    }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
+    return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
+  };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, summarizePrototype, summarizeTask7Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary };
 });
