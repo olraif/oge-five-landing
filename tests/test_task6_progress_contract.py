@@ -14,8 +14,10 @@ class Task6ProgressContractTests(unittest.TestCase):
         self.assertIn("data-task6-stack", html)
         self.assertIn("data-task6-percent", html)
         self.assertIn("buildTask6Summary", html)
-        self.assertIn("task6-progress-prototype", css)
-        self.assertIn("task6-progress-cell--yellow", css)
+        self.assertIn(".task6-progress-prototype{display:contents}", css)
+        self.assertIn(".task6-progress-cell--green{order:1", css)
+        self.assertIn(".task6-progress-cell--yellow{order:2", css)
+        self.assertIn(".task6-progress-cell--pink{order:3", css)
 
 
 if __name__ == "__main__":

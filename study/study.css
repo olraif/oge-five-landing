@@ -81,3 +81,11 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 
 .studio-return-bar{display:flex;justify-content:flex-end;align-items:center;padding:12px 28px 0}.studio-return-actions{display:flex;align-items:center;gap:10px}.studio-return-bar .studio-back{display:inline-flex;align-items:center}
 @media (max-width:720px){.studio-return-bar{padding:10px 14px 0}.studio-return-bar .studio-back{display:inline-flex}}
+
+/* Task 6: merge all prototype results into one readable colour stack. */
+.task6-progress-stack{gap:0}
+.task6-progress-prototype{display:contents}
+.task6-progress-cell{min-height:0;border-radius:0}
+.task6-progress-cell--green{order:1;background:#69d18a}
+.task6-progress-cell--yellow{order:2;background:#f7d77c}
+.task6-progress-cell--pink{order:3;background:#f4e6ec}
