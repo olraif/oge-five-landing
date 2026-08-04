@@ -20,6 +20,7 @@
   let cloudUser = null;
 
   const normalize = (value) => String(value ?? '').trim().replace(/,/g, '.').replace(/\s+/g, '');
+  const prepareTaskHtml = (value) => String(value ?? '').replace(/\$([^$]+)\$/g, (_, expression) => `\\(${expression}\\)`);
   const getSaved = (id) => {
     try { return JSON.parse(localStorage.getItem(storagePrefix + id) || 'null'); } catch { return null; }
   };
@@ -81,7 +82,7 @@
   const render = () => {
     const proto = prototypeById.get(activeId);
     title.textContent = `Прототип ${proto.id} · ${proto.title}`;
-    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${item.taskHtml}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="Ответ ${item.id}"></label>`).join('');
+    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="Ответ ${item.id}"></label>`).join('');
     const saved = validSaved(getSaved(proto.id), proto);
     applySaved(proto, saved);
     renderNav();
@@ -106,7 +107,7 @@
       render();
     } catch { /* offline mode keeps local progress */ }
   };
-  submit.addEventListener('click', async () => {
+  const checkPrototype = async () => {
     const proto = prototypeById.get(activeId);
     const answers = {};
     const correctIds = [];
@@ -120,11 +121,17 @@
     });
     const payload = { prototype: proto.id, answers, answeredIds, correctIds, score: correctIds.length, total: proto.items.length, savedAt: new Date().toISOString() };
     localStorage.setItem(storagePrefix + proto.id, JSON.stringify(payload));
-    await saveCloud(payload);
     applySaved(proto, payload);
     renderNav();
     renderOverall();
+    saveCloud(payload);
     if (typeof window.ym === 'function' && window.METRIKA_COUNTER_ID) window.ym(window.METRIKA_COUNTER_ID, 'reachGoal', 'MATH_TASK7_TEST');
+  };
+  submit.addEventListener('click', checkPrototype);
+  quiz.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    checkPrototype();
   });
   window.addEventListener('oge-auth-ready', loadCloud);
   render();
