@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build and publish a complete task 9 OGE math trainer with 126 source-backed exercises and dashboard progress.
+**Goal:** Build and publish a complete task 9 OGE math trainer with 124 source-backed exercises and dashboard progress.
 
 **Architecture:** Reuse the isolated static trainer pattern established by task 8. A Python importer creates one JavaScript data file per prototype; the task page renders, validates, and stores per-prototype progress locally and in Supabase; the student dashboard summarizes the same saved records.
 
@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Source is `https://mathstart.ru/sources/FIPI_OGE_MATH/equations`.
-- Dataset contains exactly 14 prototypes and 126 unique tasks, 9 per prototype.
+- Dataset contains exactly 14 prototypes and 124 unique tasks, 9 per prototype.
 - Enter checks the active prototype immediately.
 - Answers never leak between prototypes or users.
 - Dashboard task 9 colors and percentage use the same saved data as the trainer.
@@ -29,7 +29,7 @@
 **Interfaces:**
 - Produces assertions for `window.OgeTask9DataPrototypes`, `ogeTrainer:v3:math:task9:`, `trainer_progress.math.task9`, and dashboard task 9 hooks.
 
-- [ ] Write tests that require 14 prototypes, 126 unique items, source tasks and answers.
+- [ ] Write tests that require 14 prototypes, 124 unique items, source tasks and answers.
 - [ ] Write tests that require the task 9 page, data scripts, Enter handling, local/cloud paths, navigation, and dashboard hooks.
 - [ ] Run the tests and verify they fail because task 9 does not exist.
 
@@ -44,7 +44,7 @@
 
 - [ ] Adapt the verified HTML and analog API parser to the equations route.
 - [ ] Collect 9 unique tasks for each of 14 prototypes and reject duplicates.
-- [ ] Run data tests and verify all 126 records pass.
+- [ ] Run data tests and verify all 124 records pass.
 - [ ] Commit the verified dataset.
 
 ### Task 3: Trainer page
@@ -74,7 +74,7 @@
 - Test: `tests/progress-model.test.cjs`
 
 **Interfaces:**
-- Produces `buildTask9Summary(storage, cloud)` with grouped segment counts and `percent = round(correct / 126 * 100)`.
+- Produces `buildTask9Summary(storage, cloud)` with grouped segment counts and `percent = round(correct / 124 * 100)`.
 
 - [ ] Add task 9 totals and summarization functions.
 - [ ] Render grouped green/yellow/pink segments in bar 9 and print its percentage below the bar.
