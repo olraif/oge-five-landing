@@ -426,7 +426,7 @@
           const group = document.createElement('div');
           group.className = 'task7-progress-prototype';
           group.style.flexGrow = String(prototype.total);
-          group.title = `${prototype.key}: ${prototype.correct}/${prototype.total} ���������, ${prototype.wrong} � �������, ${prototype.untouched} �� ������`;
+          group.title = `${prototype.key}: ${prototype.correct}/${prototype.total} правильно, ${prototype.wrong} с ошибкой, ${prototype.untouched} не решено`;
           prototype.cells.forEach((color) => {
             const cell = document.createElement('i');
             cell.className = 'task7-progress-cell task7-progress-cell--' + color;

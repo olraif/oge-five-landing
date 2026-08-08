@@ -60,9 +60,9 @@
       acc.correct += saved?.correctIds?.length || 0;
       return acc;
     }, { total: 0, correct: 0 });
-    total.textContent = all.total;
+    if (total) total.textContent = all.total;
     const value = all.total ? Math.round(all.correct / all.total * 100) : 0;
-    percent.textContent = `${value}%`;
+    if (percent) percent.textContent = `${value}%`;
   };
   const applySaved = (proto, saved) => {
     const answers = saved?.answers || {};
@@ -77,12 +77,12 @@
     });
     score.textContent = saved?.correctIds?.length || 0;
     currentTotal.textContent = proto.items.length;
-    note.textContent = saved ? `Проверено: ${saved.correctIds.length} верных ответов из ${proto.items.length}.` : 'Заполните задания и нажмите «Проверить прототип».';
+    note.textContent = saved ? `РџСЂРѕРІРµСЂРµРЅРѕ: ${saved.correctIds.length} РІРµСЂРЅС‹С… РѕС‚РІРµС‚РѕРІ РёР· ${proto.items.length}.` : 'Р—Р°РїРѕР»РЅРёС‚Рµ Р·Р°РґР°РЅРёСЏ Рё РЅР°Р¶РјРёС‚Рµ В«РџСЂРѕРІРµСЂРёС‚СЊ РїСЂРѕС‚РѕС‚РёРїВ».';
   };
   const render = () => {
     const proto = prototypeById.get(activeId);
-    title.textContent = `Прототип ${proto.id} · ${proto.title}`;
-    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="Ответ ${item.id}"></label>`).join('');
+    title.textContent = `РџСЂРѕС‚РѕС‚РёРї ${proto.id} В· ${proto.title}`;
+    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="РћС‚РІРµС‚ ${item.id}"></label>`).join('');
     const saved = validSaved(getSaved(proto.id), proto);
     applySaved(proto, saved);
     renderNav();
