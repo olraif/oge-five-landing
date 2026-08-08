@@ -44,5 +44,17 @@ class Task10DataContractTests(unittest.TestCase):
                 self.assertIn("answer", item, item["id"])
                 self.assertNotEqual("", str(item["answer"]).strip(), item["id"])
 
+
+    def test_every_drawing_is_stored_locally_and_exists(self):
+        _, prototypes = self.load_prototypes()
+        image_sources = []
+        for prototype in prototypes:
+            for item in prototype["items"]:
+                image_sources.extend(re.findall(r'<img[^>]+src="([^"]+)"', item["taskHtml"]))
+
+        self.assertEqual(50, len(image_sources))
+        for source in image_sources:
+            self.assertTrue(source.startswith("task10-drawings/"), source)
+            self.assertTrue((DATA_DIR / source).is_file(), source)
 if __name__ == "__main__":
     unittest.main()

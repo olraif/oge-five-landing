@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import html, json, time, urllib.request
+import html, json, re, time, urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -8,11 +8,28 @@ PAGE = BASE + "/sources/FIPI_OGE_MATH/probabilities"
 API = BASE + "/api/analog/FIPI_OGE_MATH/probabilities"
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "study" / "math" / "part-one"
+DRAWINGS_OUT = OUT / "task10-drawings"
 
-def fetch(url):
+def fetch_bytes(url):
     req = urllib.request.Request(url, headers={"User-Agent": "OGE-Studio-Importer/1.0"})
     with urllib.request.urlopen(req, timeout=30) as response:
-        return response.read().decode("utf-8")
+        return response.read()
+
+def fetch(url):
+    return fetch_bytes(url).decode("utf-8")
+
+def localize_drawings(task_html):
+    DRAWINGS_OUT.mkdir(parents=True, exist_ok=True)
+
+    def replace_source(match):
+        source = match.group(1)
+        file_name = Path(source).name
+        target = DRAWINGS_OUT / file_name
+        if not target.exists():
+            target.write_bytes(fetch_bytes(BASE + source))
+        return f'src="task10-drawings/{file_name}"'
+
+    return re.sub(r'src="(/drawings/FIPI_OGE_MATH/probabilities/[^"]+)"', replace_source, task_html)
 
 class Parser(HTMLParser):
     def __init__(self):
@@ -102,7 +119,7 @@ def make_item(pid, number, internal, task, answer, answer_html="", fmt="number")
     return {
         "id": f"{pid}.{number}",
         "internalId": internal,
-        "taskHtml": task.strip(),
+        "taskHtml": localize_drawings(task.strip()),
         "answer": answer,
         "answerHtml": answer_html or "",
         "format": fmt or "number",
