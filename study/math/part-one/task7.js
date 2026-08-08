@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const prototypes = Array.isArray(window.OgeTask7DataPrototypes) ? window.OgeTask7DataPrototypes : [];
   const prototypeById = new Map(prototypes.map((item) => [item.id, item]));
   const prototypeNav = document.querySelector('[data-task7-prototypes]');
@@ -77,12 +77,12 @@
     });
     score.textContent = saved?.correctIds?.length || 0;
     currentTotal.textContent = proto.items.length;
-    note.textContent = saved ? `Проверено: ${saved.correctIds.length} верных ответов из ${proto.items.length}.` : 'Заполните задания и нажмите «Проверить прототип».';
+    note.textContent = saved ? `РџСЂРѕРІРµСЂРµРЅРѕ: ${saved.correctIds.length} РІРµСЂРЅС‹С… РѕС‚РІРµС‚РѕРІ РёР· ${proto.items.length}.` : 'Р—Р°РїРѕР»РЅРёС‚Рµ Р·Р°РґР°РЅРёСЏ Рё РЅР°Р¶РјРёС‚Рµ В«РџСЂРѕРІРµСЂРёС‚СЊ РїСЂРѕС‚РѕС‚РёРїВ».';
   };
   const render = () => {
     const proto = prototypeById.get(activeId);
-    title.textContent = `Прототип ${proto.id} · ${proto.title}`;
-    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="Ответ ${item.id}"></label>`).join('');
+    title.textContent = `РџСЂРѕС‚РѕС‚РёРї ${proto.id} В· ${proto.title}`;
+    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="РћС‚РІРµС‚ ${item.id}"></label>`).join('');
     const saved = validSaved(getSaved(proto.id), proto);
     applySaved(proto, saved);
     renderNav();
@@ -91,9 +91,25 @@
   };
   const saveCloud = async (payload) => {
     if (!window.ogeSupabase || !cloudUser) return;
-    const current = cloudUser.user_metadata?.trainer_progress || {};
-    const next = { ...current, math: { ...(current.math || {}), task7: { ...(current.math?.task7 || {}), [payload.prototype]: payload } } };
-    try { await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } }); } catch (error) { console.warn('Не удалось сохранить прогресс №7', error); }
+    try {
+      // Берём свежие метаданные перед каждым сохранением, чтобы ответы
+      // нескольких прототипов не перезаписывали друг друга.
+      const { data } = await window.ogeSupabase.auth.getUser();
+      const freshUser = data?.user || cloudUser;
+      const current = freshUser.user_metadata?.trainer_progress || {};
+      const next = {
+        ...current,
+        math: {
+          ...(current.math || {}),
+          task7: { ...(current.math?.task7 || {}), [payload.prototype]: payload },
+        },
+      };
+      const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+      if (error) throw error;
+      cloudUser = updated?.user || { ...freshUser, user_metadata: { ...freshUser.user_metadata, trainer_progress: next } };
+    } catch (error) {
+      console.warn('Не удалось сохранить прогресс №7', error);
+    }
   };
   const loadCloud = async () => {
     if (!window.ogeSupabase) return;
@@ -137,3 +153,4 @@
   render();
   setTimeout(loadCloud, 700);
 })();
+
