@@ -35,6 +35,12 @@
     '7.11': 5, '7.12': 5, '7.13': 5, '7.14': 5, '7.15': 5,
     '7.16': 5, '7.17': 5,
   });
+  const TASK8_TOTALS = Object.freeze(Object.fromEntries(
+    Array.from({ length: 35 }, (_, index) => {
+      const number = index + 1;
+      return [`8.${number}`, [1, 14, 34].includes(number) ? 5 : 4];
+    }),
+  ));
   const isAnswered = (value) => String(value ?? '').trim().length > 0;
   const normalizeAnswer = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
 
@@ -109,5 +115,25 @@
     }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
   };
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, summarizePrototype, summarizeTask7Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary };
+  const summarizeTask8Prototype = (key, attempt = {}) => {
+    const total = TASK8_TOTALS[key] || Number(attempt.total) || 0;
+    const correctIds = Array.isArray(attempt.correctIds) ? attempt.correctIds : [];
+    const answeredIds = Array.isArray(attempt.answeredIds) ? attempt.answeredIds : Object.keys(attempt.answers || {}).filter((id) => isAnswered(attempt.answers[id]));
+    const correct = Math.min(total, correctIds.length);
+    const answered = Math.min(total, Math.max(correct, answeredIds.length));
+    const wrong = Math.max(0, answered - correct);
+    const untouched = Math.max(0, total - answered);
+    return { key, total, correct, wrong, untouched, cells: [...Array(correct).fill('green'), ...Array(wrong).fill('yellow'), ...Array(untouched).fill('pink')] };
+  };
+
+  const buildTask8Summary = (task8Progress = {}) => {
+    const prototypes = Object.keys(TASK8_TOTALS).map((key) => summarizeTask8Prototype(key, task8Progress?.[key]));
+    const totals = prototypes.reduce((result, prototype) => ({
+      total: result.total + prototype.total,
+      correct: result.correct + prototype.correct,
+      wrong: result.wrong + prototype.wrong,
+      untouched: result.untouched + prototype.untouched,
+    }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
+    return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
+  };  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary };
 });
