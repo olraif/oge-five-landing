@@ -20,7 +20,9 @@
   let cloudUser = null;
 
   const normalize = (value) => String(value ?? '').trim().replace(/,/g, '.').replace(/\s+/g, '');
-  const prepareTaskHtml = (value) => String(value ?? '').replace(/\$([^$]+)\$/g, (_, expression) => `\\(${expression}\\)`);
+  const prepareTaskHtml = (value) => String(value ?? '')
+    .replace(/\$\$([\s\S]*?)\$\$/g, (_, expression) => `\\(${expression.trim()}\\)`)
+    .replace(/\$([^$]+)\$/g, (_, expression) => `\\(${expression.trim()}\\)`);
   const getSaved = (id) => {
     try { return JSON.parse(localStorage.getItem(storagePrefix + id) || 'null'); } catch { return null; }
   };

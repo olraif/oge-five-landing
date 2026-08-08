@@ -23,6 +23,13 @@ class Task12PageContractTests(unittest.TestCase):
         for marker in (".bar--task12", ".task12-progress-stack", ".task12-progress-cell--green"):
             self.assertIn(marker, css)
 
+    def test_task12_formats_math_without_stray_dollars_or_scrollbars(self):
+        script = (PART_ONE / "task12.js").read_text(encoding="utf-8")
+        css = (PART_ONE / "task12.css").read_text(encoding="utf-8")
+        self.assertIn("replace(/\\$\\$([\\s\\S]*?)\\$\\$/g", script)
+        self.assertIn("replace(/\\$([^$]+)\\$/g", script)
+        self.assertIn("overflow-wrap:anywhere", css)
+        self.assertNotIn("label span{font-size:14px;line-height:1.35;overflow:auto}", css)
     def test_task12_script_has_enter_local_and_cloud_progress(self):
         script = (PART_ONE / "task12.js").read_text(encoding="utf-8")
         for marker in ("event.key !== 'Enter'", "ogeTrainer:v3:math:task12:", "task12:", "correctIds", "answeredIds", "MATH_TASK12_TEST"):
