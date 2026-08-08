@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const prototypes = Array.isArray(window.OgeTask7DataPrototypes) ? window.OgeTask7DataPrototypes : [];
   const prototypeById = new Map(prototypes.map((item) => [item.id, item]));
   const prototypeNav = document.querySelector('[data-task7-prototypes]');
@@ -92,8 +92,8 @@
   const saveCloud = async (payload) => {
     if (!window.ogeSupabase || !cloudUser) return;
     try {
-      // ���� ������ ���������� ����� ������ �����������, ����� ������
-      // ���������� ���������� �� �������������� ���� �����.
+      // Берём свежие метаданные перед каждым сохранением, чтобы ответы
+      // нескольких прототипов не перезаписывали друг друга.
       const { data } = await window.ogeSupabase.auth.getUser();
       const freshUser = data?.user || cloudUser;
       const current = freshUser.user_metadata?.trainer_progress || {};
@@ -108,7 +108,7 @@
       if (error) throw error;
       cloudUser = updated?.user || { ...freshUser, user_metadata: { ...freshUser.user_metadata, trainer_progress: next } };
     } catch (error) {
-      console.warn('�� ������� ��������� �������� �7', error);
+      console.warn('Не удалось сохранить прогресс №7', error);
     }
   };
   const loadCloud = async () => {
