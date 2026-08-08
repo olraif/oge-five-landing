@@ -138,3 +138,13 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 .task11-progress-cell--pink{background:#f4e6ec}
 .bar--task11>span{bottom:-42px;display:flex;flex-direction:column;align-items:center;gap:1px;color:#4b74ff}
 .bar--task11>span small{font-size:9px;line-height:1;color:#4b74ff;font-weight:950}
+
+.bar--task12{background:#f4e6ec;opacity:1;overflow:visible}
+.task12-progress-stack{position:absolute;inset:3px;display:flex;flex-direction:column-reverse;gap:2px;overflow:hidden;border-radius:999px 999px 8px 8px}
+.task12-progress-prototype{display:flex;flex:1 1 0;min-height:0;flex-direction:column-reverse;gap:1px}
+.task12-progress-cell{display:block;flex:1 1 0;min-height:1px;border-radius:2px}
+.task12-progress-cell--green{background:#69d18a}
+.task12-progress-cell--yellow{background:#f7d77c}
+.task12-progress-cell--pink{background:#f4e6ec}
+.bar--task12>span{bottom:-42px;display:flex;flex-direction:column;align-items:center;gap:1px;color:#4b74ff}
+.bar--task12>span small{font-size:9px;line-height:1;color:#4b74ff;font-weight:950}

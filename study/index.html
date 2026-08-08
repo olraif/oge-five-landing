@@ -282,7 +282,7 @@
             <div class="bar bar--task9" style="--ok:0%;--work:0%"><div class="task9-progress-stack" data-task9-stack aria-hidden="true"></div><span>9<small data-task9-percent>0%</small></span></div>
             <div class="bar bar--task10" style="--ok:0%;--work:0%"><div class="task10-progress-stack" data-task10-stack aria-hidden="true"></div><span>10<small data-task10-percent>0%</small></span></div>
             <div class="bar bar--task11" style="--ok:0%;--work:0%"><div class="task11-progress-stack" data-task11-stack aria-hidden="true"></div><span>11<small data-task11-percent>0%</small></span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>12</span></div>
+            <div class="bar bar--task12" style="--ok:0%;--work:0%"><div class="task12-progress-stack" data-task12-stack aria-hidden="true"></div><span>12<small data-task12-percent>0%</small></span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>13</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>14</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>15</span></div>
@@ -545,12 +545,38 @@
         bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
         bar.title = 'Задание 9: ' + summary.percent + '%';
       };
-      const resetTask6Progress = () => renderTask6Progress({});
+      const progressBar12 = () => document.querySelector('.progress-bars .bar--task12');
+      const renderTask12Progress = (task12Progress = {}) => {
+        const bar = progressBar12();
+        const model = window.OgeProgressModel;
+        if (!bar || !model?.buildTask12Summary) return;
+        const stack = bar.querySelector('[data-task12-stack]');
+        const percent = bar.querySelector('[data-task12-percent]');
+        const summary = model.buildTask12Summary(task12Progress);
+        const fragment = document.createDocumentFragment();
+        summary.prototypes.forEach((prototype) => {
+          const group = document.createElement('div');
+          group.className = 'task12-progress-prototype';
+          group.style.flexGrow = String(prototype.total);
+          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total + ' РїСЂР°РІРёР»СЊРЅРѕ, ' + prototype.wrong + ' СЃ РѕС€РёР±РєРѕР№, ' + prototype.untouched + ' РЅРµ СЂРµС€РµРЅРѕ';
+          prototype.cells.forEach((color) => {
+            const cell = document.createElement('i');
+            cell.className = 'task12-progress-cell task12-progress-cell--' + color;
+            group.append(cell);
+          });
+          fragment.append(group);
+        });
+        stack?.replaceChildren(fragment);
+        if (percent) percent.textContent = summary.percent + '%';
+        bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
+        bar.title = 'Р—Р°РґР°РЅРёРµ 12: ' + summary.percent + '%';
+      };      const resetTask6Progress = () => renderTask6Progress({});
       const resetTask7Progress = () => renderTask7Progress({});
       const resetTask8Progress = () => renderTask8Progress({});
       const resetTask9Progress = () => renderTask9Progress({});
       const resetTask10Progress = () => renderTask10Progress({});
       const resetTask11Progress = () => renderTask11Progress({});
+      const resetTask12Progress = () => renderTask12Progress({});
       const syncCloudTask6Progress = (user) => {
         if (!user) {
           resetTask6Progress();
@@ -559,6 +585,7 @@
           resetTask9Progress();
           resetTask10Progress();
           resetTask11Progress();
+          resetTask12Progress();
           return;
         }
         const task6Progress = user.user_metadata?.trainer_progress?.math?.task6 || {};
@@ -573,6 +600,8 @@
         renderTask10Progress(task10Progress);
         const task11Progress = user.user_metadata?.trainer_progress?.math?.task11 || {};
         renderTask11Progress(task11Progress);
+        const task12Progress = user.user_metadata?.trainer_progress?.math?.task12 || {};
+        renderTask12Progress(task12Progress);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
@@ -646,6 +675,7 @@
       resetTask9Progress();
       resetTask10Progress();
       resetTask11Progress();
+      resetTask12Progress();
       window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();
