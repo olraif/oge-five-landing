@@ -77,12 +77,12 @@
     });
     score.textContent = saved?.correctIds?.length || 0;
     currentTotal.textContent = proto.items.length;
-    note.textContent = saved ? `РџСЂРѕРІРµСЂРµРЅРѕ: ${saved.correctIds.length} РІРµСЂРЅС‹С… РѕС‚РІРµС‚РѕРІ РёР· ${proto.items.length}.` : 'Р—Р°РїРѕР»РЅРёС‚Рµ Р·Р°РґР°РЅРёСЏ Рё РЅР°Р¶РјРёС‚Рµ В«РџСЂРѕРІРµСЂРёС‚СЊ РїСЂРѕС‚РѕС‚РёРїВ».';
+    note.textContent = saved ? `\u041F\u0440\u043E\u0432\u0435\u0440\u0435\u043D\u043E: ${saved.correctIds.length} \u0432\u0435\u0440\u043D\u044B\u0445 \u043E\u0442\u0432\u0435\u0442\u043E\u0432 \u0438\u0437 ${proto.items.length}.` : '\u0417\u0430\u043F\u043E\u043B\u043D\u0438\u0442\u0435 \u0437\u0430\u0434\u0430\u043D\u0438\u044F \u0438 \u043D\u0430\u0436\u043C\u0438\u0442\u0435 "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u043F\u0440\u043E\u0442\u043E\u0442\u0438\u043F".';
   };
   const render = () => {
     const proto = prototypeById.get(activeId);
-    title.textContent = `РџСЂРѕС‚РѕС‚РёРї ${proto.id} В· ${proto.title}`;
-    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="РћС‚РІРµС‚ ${item.id}"></label>`).join('');
+    title.textContent = `\u041F\u0440\u043E\u0442\u043E\u0442\u0438\u043F ${proto.id}: ${proto.title}`;
+    quiz.innerHTML = proto.items.map((item) => `<label data-item-id="${item.id}" class="question-empty"><b>${item.id}</b><span>${prepareTaskHtml(item.taskHtml)}</span><input name="${item.id}" autocomplete="off" inputmode="decimal" aria-label="\u041E\u0442\u0432\u0435\u0442 ${item.id}"></label>`).join('');
     const saved = validSaved(getSaved(proto.id), proto);
     applySaved(proto, saved);
     renderNav();
