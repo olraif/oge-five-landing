@@ -279,7 +279,7 @@
             <div class="bar bar--task6" style="--ok:0%;--work:0%"><div class="task6-progress-stack" data-task6-stack aria-hidden="true"></div><span>6<small data-task6-percent>0%</small></span></div>
             <div class="bar bar--task7" style="--ok:0%;--work:0%"><div class="task7-progress-stack" data-task7-stack aria-hidden="true"></div><span>7<small data-task7-percent>0%</small></span></div>
             <div class="bar bar--task8" style="--ok:0%;--work:0%"><div class="task8-progress-stack" data-task8-stack aria-hidden="true"></div><span>8<small data-task8-percent>0%</small></span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>9</span></div>
+            <div class="bar bar--task9" style="--ok:0%;--work:0%"><div class="task9-progress-stack" data-task9-stack aria-hidden="true"></div><span>9<small data-task9-percent>0%</small></span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>10</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>11</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>12</span></div>
@@ -467,14 +467,42 @@
         bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
         bar.title = 'Задание 8: ' + summary.percent + '%';
       };
+      const progressBar9 = () => document.querySelector('.progress-bars .bar--task9');
+      const renderTask9Progress = (task9Progress = {}) => {
+        const bar = progressBar9();
+        const model = window.OgeProgressModel;
+        if (!bar || !model?.buildTask9Summary) return;
+        const stack = bar.querySelector('[data-task9-stack]');
+        const percent = bar.querySelector('[data-task9-percent]');
+        const summary = model.buildTask9Summary(task9Progress);
+        const fragment = document.createDocumentFragment();
+        summary.prototypes.forEach((prototype) => {
+          const group = document.createElement('div');
+          group.className = 'task9-progress-prototype';
+          group.style.flexGrow = String(prototype.total);
+          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total + ' правильно, ' + prototype.wrong + ' с ошибкой, ' + prototype.untouched + ' не решено';
+          prototype.cells.forEach((color) => {
+            const cell = document.createElement('i');
+            cell.className = 'task9-progress-cell task9-progress-cell--' + color;
+            group.append(cell);
+          });
+          fragment.append(group);
+        });
+        stack?.replaceChildren(fragment);
+        if (percent) percent.textContent = summary.percent + '%';
+        bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
+        bar.title = 'Задание 9: ' + summary.percent + '%';
+      };
       const resetTask6Progress = () => renderTask6Progress({});
       const resetTask7Progress = () => renderTask7Progress({});
       const resetTask8Progress = () => renderTask8Progress({});
+      const resetTask9Progress = () => renderTask9Progress({});
       const syncCloudTask6Progress = (user) => {
         if (!user) {
           resetTask6Progress();
           resetTask7Progress();
           resetTask8Progress();
+          resetTask9Progress();
           return;
         }
         const task6Progress = user.user_metadata?.trainer_progress?.math?.task6 || {};
@@ -483,6 +511,8 @@
         renderTask7Progress(task7Progress);
         const task8Progress = user.user_metadata?.trainer_progress?.math?.task8 || {};
         renderTask8Progress(task8Progress);
+        const task9Progress = user.user_metadata?.trainer_progress?.math?.task9 || {};
+        renderTask9Progress(task9Progress);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
@@ -553,6 +583,7 @@
       resetTask6Progress();
       resetTask7Progress();
       resetTask8Progress();
+      resetTask9Progress();
       window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();

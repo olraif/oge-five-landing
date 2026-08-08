@@ -26,6 +26,14 @@ class Task9DataContractTests(unittest.TestCase):
         self.assertEqual(124, len(items))
         self.assertEqual(124, len({item["internalId"] for item in items}))
 
+    def test_russian_text_is_valid_utf8_without_mojibake(self):
+        _, prototypes = self.load_prototypes()
+        broken_markers = ("Р›", "Рё", "Р°", "С‹", "СЏ", "�")
+        for prototype in prototypes:
+            texts = [prototype["title"], *(item["taskHtml"] for item in prototype["items"])]
+            for text in texts:
+                self.assertFalse(any(marker in text for marker in broken_markers), text)
+
     def test_every_item_contains_source_task_and_answer(self):
         _, prototypes = self.load_prototypes()
         for prototype in prototypes:
