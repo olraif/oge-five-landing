@@ -3,65 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Тренажёр задания 9 · ОГЭ-студия</title>
+  <title>Тренажёр задания 10 · ОГЭ-студия</title>
   <link rel="stylesheet" href="../../study.css">
   <link rel="stylesheet" href="part-one.css">
-  <link rel="stylesheet" href="task9.css">
+  <link rel="stylesheet" href="task10.css">
   <script src="../../../site.js" defer></script>
   <script src="../../supabase-config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="../../auth-session.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
-  <script src="task9-data-01.js" defer></script>
-  <script src="task9-data-02.js" defer></script>
-  <script src="task9-data-03.js" defer></script>
-  <script src="task9-data-04.js" defer></script>
-  <script src="task9-data-05.js" defer></script>
-  <script src="task9-data-06.js" defer></script>
-  <script src="task9-data-07.js" defer></script>
-  <script src="task9-data-08.js" defer></script>
-  <script src="task9-data-09.js" defer></script>
-  <script src="task9-data-10.js" defer></script>
-  <script src="task9-data-11.js" defer></script>
-  <script src="task9-data-12.js" defer></script>
-  <script src="task9-data-13.js" defer></script>
-  <script src="task9-data-14.js" defer></script>
-  <script src="task9.js" defer></script>
+  <script src="task10-data-01.js" defer></script>
+  <script src="task10-data-02.js" defer></script>
+  <script src="task10-data-03.js" defer></script>
+  <script src="task10-data-04.js" defer></script>
+  <script src="task10-data-05.js" defer></script>
+  <script src="task10-data-06.js" defer></script>
+  <script src="task10-data-07.js" defer></script>
+  <script src="task10-data-08.js" defer></script>
+  <script src="task10-data-09.js" defer></script>
+  <script src="task10-data-10.js" defer></script>
+  <script src="task10-data-11.js" defer></script>
+  <script src="task10-data-12.js" defer></script>
+  <script src="task10-data-13.js" defer></script>
+  <script src="task10-data-14.js" defer></script>
+  <script src="task10-data-15.js" defer></script>
+  <script src="task10-data-16.js" defer></script>
+  <script src="task10-data-17.js" defer></script>
+  <script src="task10-data-18.js" defer></script>
+  <script src="task10.js" defer></script>
 </head>
-<body class="studio-page math-course-page task9-page">
+<body class="studio-page math-course-page task10-page">
 <main class="course-shell">
     <aside class="course-sidebar" aria-label="Меню тренажёра">
       <a class="is-active" href="index.html#overview"><span>?</span> Обзор тренажёра</a>
       <div class="task-nav task-nav--sidebar" aria-label="Задания 1-19">
         <small>ЗАДАНИЯ 1–19</small>
         <a href="index.html#overview">1</a><a href="index.html#overview">2</a><a href="index.html#overview">3</a><a href="index.html#overview">4</a><a href="index.html#overview">5</a>
-        <a href="index.html#trainer">6</a><a href="task7.html#trainer">7</a><a href="task8.html#trainer">8</a><a class="is-current" href="#trainer">9</a><a href="task10.html#trainer">10</a>
+        <a href="index.html#trainer">6</a><a href="task7.html#trainer">7</a><a href="task8.html#trainer">8</a><a href="task9.html#trainer">9</a><a class="is-current" href="#trainer">10</a>
         <a href="index.html#trainer">11</a><a href="index.html#trainer">12</a><a href="index.html#trainer">13</a><a href="index.html#trainer">14</a><a href="index.html#trainer">15</a>
         <a href="index.html#trainer">16</a><a href="index.html#trainer">17</a><a href="index.html#trainer">18</a><a href="index.html#trainer">19</a>
       </div>
       <a class="trainer-progress-link" href="../../index.html#progress"><span>&#8599;</span> &#1052;&#1086;&#1081; &#1087;&#1088;&#1086;&#1075;&#1088;&#1077;&#1089;&#1089;</a>
 </aside>
     <section class="course-content">
-      <section class="course-panel task9-panel" id="trainer">
-        <div class="task9-head">
+      <section class="course-panel task10-panel" id="trainer">
+        <div class="task10-head">
           <div>
             <p class="eyebrow"><span></span> Математика ОГЭ · первая часть</p>
-            <h1>Задание 9</h1>
-            <p class="task9-lead">Уравнения и системы уравнений. 14 прототипов и 124 задания по материалам банка ФИПИ.</p>
+            <h1>Задание 10</h1>
+            <p class="task10-lead">Теория вероятностей. 18 прототипов и 217 заданий по материалам банка ФИПИ.</p>
           </div>
 </div>
-        <div class="prototype-progress-grid" data-task9-prototypes></div>
-        <div class="task9-workspace">
+        <div class="prototype-progress-grid" data-task10-prototypes></div>
+        <div class="task10-workspace">
           <div>
-            <p class="quiz-caption" data-task9-title></p>
+            <p class="quiz-caption" data-task10-title></p>
             <p class="task-instruction">Выберите ответ и заполните поле. После проверки цвет задания покажет результат: зелёный — верно, жёлтый — есть ошибка, розовый — ещё не решено.</p>
-            <form class="quiz-card" data-task9-quiz></form>
-            <button class="button task9-submit" type="button" data-task9-submit>Проверить прототип</button>
+            <form class="quiz-card" data-task10-quiz></form>
+            <button class="button task10-submit" type="button" data-task10-submit>Проверить прототип</button>
           </div>
-          <aside class="result-card task9-result" data-task9-result>
-            <strong><span data-task9-score>0</span>/<span data-task9-current-total>0</span></strong>
+          <aside class="result-card task10-result" data-task10-result>
+            <strong><span data-task10-score>0</span>/<span data-task10-current-total>0</span></strong>
             <p>правильных ответов в выбранном прототипе</p>
-            <div class="task9-result-note" data-task9-note>Заполните задания и нажмите «Проверить прототип».</div>
+            <div class="task10-result-note" data-task10-note>Заполните задания и нажмите «Проверить прототип».</div>
           </aside>
         </div>
       </section>
