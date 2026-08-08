@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const config = window.OGE_SUPABASE;
   if (!config || !window.supabase?.createClient) return;
 
@@ -55,3 +55,4 @@
     });
   });
 })();
+
