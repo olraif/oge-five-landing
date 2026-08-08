@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, getPrototypeStatus } = require(modelPath);
+const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, getPrototypeStatus } = require(modelPath);
 
 const attempt = (key, correct, wrong, empty) => {
   const answers = {};
@@ -87,4 +87,17 @@ assert.equal(task10Summary.untouched, 213);
 assert.equal(task10Summary.percent, 1);
 assert.deepEqual(task10Summary.prototypes[0].cells, ['green', 'green', 'yellow', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink']);
 assert.deepEqual(task10Summary.prototypes[1].cells, ['green', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink', 'pink']);
-console.log('progress-model: grouped task 6, task 8, task 9, and task 10 summaries passed');
+
+assert.equal(Object.values(TASK11_TOTALS).reduce((sum, value) => sum + value, 0), 103, 'task 11 should count all 103 tasks');
+const task11Summary = buildTask11Summary({
+  '11.1': { total: 14, correctIds: ['11.1.1', '11.1.2'], answeredIds: ['11.1.1', '11.1.2', '11.1.3'] },
+  '11.2': { total: 13, correctIds: ['11.2.1'], answeredIds: ['11.2.1'] },
+});
+assert.equal(task11Summary.total, 103);
+assert.equal(task11Summary.correct, 3);
+assert.equal(task11Summary.wrong, 1);
+assert.equal(task11Summary.untouched, 99);
+assert.equal(task11Summary.percent, 3);
+assert.deepEqual(task11Summary.prototypes[0].cells.slice(0, 5), ['green', 'green', 'yellow', 'pink', 'pink']);
+assert.deepEqual(task11Summary.prototypes[1].cells.slice(0, 3), ['green', 'pink', 'pink']);
+console.log('progress-model: grouped task 6 through task 11 summaries passed');

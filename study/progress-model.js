@@ -51,6 +51,10 @@
     '10.7': 10, '10.8': 16, '10.9': 10, '10.10': 6, '10.11': 10, '10.12': 16,
     '10.13': 16, '10.14': 10, '10.15': 10, '10.16': 10, '10.17': 10, '10.18': 10,
   });
+  const TASK11_TOTALS = Object.freeze({
+    '11.1': 14, '11.2': 13, '11.3': 10, '11.4': 13, '11.5': 14,
+    '11.6': 12, '11.7': 6, '11.8': 2, '11.9': 15, '11.10': 4,
+  });
   const isAnswered = (value) => String(value ?? '').trim().length > 0;
   const normalizeAnswer = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
 
@@ -186,5 +190,25 @@
     }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
   };
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary };
+  const summarizeTask11Prototype = (key, attempt = {}) => {
+    const total = TASK11_TOTALS[key] || Number(attempt.total) || 0;
+    const correctIds = Array.isArray(attempt.correctIds) ? attempt.correctIds : [];
+    const answeredIds = Array.isArray(attempt.answeredIds) ? attempt.answeredIds : Object.keys(attempt.answers || {}).filter((id) => isAnswered(attempt.answers[id]));
+    const correct = Math.min(total, correctIds.length);
+    const answered = Math.min(total, Math.max(correct, answeredIds.length));
+    const wrong = Math.max(0, answered - correct);
+    const untouched = Math.max(0, total - answered);
+    return { key, total, correct, wrong, untouched, cells: [...Array(correct).fill('green'), ...Array(wrong).fill('yellow'), ...Array(untouched).fill('pink')] };
+  };
+  const buildTask11Summary = (task11Progress = {}) => {
+    const prototypes = Object.keys(TASK11_TOTALS).map((key) => summarizeTask11Prototype(key, task11Progress?.[key]));
+    const totals = prototypes.reduce((result, prototype) => ({
+      total: result.total + prototype.total,
+      correct: result.correct + prototype.correct,
+      wrong: result.wrong + prototype.wrong,
+      untouched: result.untouched + prototype.untouched,
+    }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
+    return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
+  };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary };
 });
