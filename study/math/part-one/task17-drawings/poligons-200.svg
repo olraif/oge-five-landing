@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="79.63pt"
+   height="113.39pt"
+   viewBox="0 0 79.63 113.39"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="poligons-200.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs4">
+    <clipPath
+       id="clip-0">
+      <path
+         clip-rule="nonzero"
+         d="M 0 0 L 79.628906 0 L 79.628906 113.390625 L 0 113.390625 Z M 0 0 "
+         id="path1" />
+    </clipPath>
+    <clipPath
+       id="clip-1">
+      <path
+         clip-rule="nonzero"
+         d="M 39 0 L 41 0 L 41 113.390625 L 39 113.390625 Z M 39 0 "
+         id="path2" />
+    </clipPath>
+    <clipPath
+       id="clip-2">
+      <path
+         clip-rule="nonzero"
+         d="M 74 53 L 79.628906 53 L 79.628906 61 L 74 61 Z M 74 53 "
+         id="path3" />
+    </clipPath>
+    <clipPath
+       id="clip-3">
+      <path
+         clip-rule="nonzero"
+         d="M 72 51 L 79.628906 51 L 79.628906 63 L 72 63 Z M 72 51 "
+         id="path4" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#clip-0)"
+     id="g5">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 566.946875 L 398.164062 1129.876563 L 792.304688 566.946875 L 398.164062 4.017188 Z M 3.984375 566.946875 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path5" />
+  </g>
+  <g
+     clip-path="url(#clip-1)"
+     id="g6">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 398.164062 1129.876563 L 398.164062 4.017188 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path6" />
+  </g>
+  <path
+     fill="none"
+     stroke-width="5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 3.984375 566.946875 L 582.304688 266.985938 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+     id="path7" />
+  <path
+     fill="none"
+     stroke-width="5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 398.164062 403.74375 C 382.226562 403.74375 368.398438 394.720313 361.5625 381.478125 L 398.164062 362.49375 Z M 398.164062 403.74375 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+     id="path8" />
+  <path
+     fill="none"
+     stroke-width="5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 605.9375 300.775 L 569.335938 319.759375 L 545.703125 285.970313 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+     id="path9" />
+  <g
+     clip-path="url(#clip-2)"
+     id="g10">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 768.632812 600.696875 C 758.007812 593.235938 751.054688 580.892188 751.054688 566.946875 C 751.054688 552.9625 758.007812 540.61875 768.632812 533.157813 L 792.304688 566.946875 Z M 768.632812 600.696875 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path10" />
+  </g>
+  <g
+     clip-path="url(#clip-3)"
+     id="g11">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 756.835938 617.610938 C 740.898438 606.4 730.46875 587.884375 730.46875 566.946875 C 730.46875 545.970313 740.898438 527.454688 756.835938 516.24375 L 792.304688 566.946875 Z M 756.835938 617.610938 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path11" />
+  </g>
+</svg>

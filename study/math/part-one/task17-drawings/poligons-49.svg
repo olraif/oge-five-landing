@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="109.52pt"
+   height="113.39pt"
+   viewBox="0 0 109.52 113.39"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="poligons-49.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs1">
+    <clipPath
+       id="clip-0">
+      <path
+         clip-rule="nonzero"
+         d="M 0 0 L 109.519531 0 L 109.519531 113.390625 L 0 113.390625 Z M 0 0 "
+         id="path1" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#clip-0)"
+     id="g4">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 4.017188 L 3.984375 1129.876563 L 1091.210938 1129.876563 L 1091.210938 4.017188 Z M 3.984375 4.017188 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path2" />
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 4.017188 L 1091.210938 1129.876563 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path3" />
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 1129.876563 L 1091.210938 4.017188 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path4" />
+  </g>
+</svg>

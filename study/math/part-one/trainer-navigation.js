@@ -11,8 +11,9 @@
     14: 'task14.html#trainer',
     15: 'task15.html#trainer',
     16: 'task16.html#trainer',
+    17: 'task17.html#trainer',
   });
-  const developmentMessage = 'Задание ещё не загружено. Оно находится в разработке.';
+  const developmentMessage = 'Р—Р°РґР°РЅРёРµ РµС‰С‘ РЅРµ Р·Р°РіСЂСѓР¶РµРЅРѕ. РћРЅРѕ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ.';
 
   const showDevelopmentMessage = () => {
     let toast = document.querySelector('[data-trainer-development-toast]');

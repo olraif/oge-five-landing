@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="113.39pt"
+   height="60.23pt"
+   viewBox="0 0 113.39 60.23"
+   version="1.1"
+   id="svg15"
+   sodipodi:docname="poligons-182.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs5">
+    <clipPath
+       id="clip-0">
+      <path
+         clip-rule="nonzero"
+         d="M 0 47 L 12 47 L 12 60.230469 L 0 60.230469 Z M 0 47 "
+         id="path1" />
+    </clipPath>
+    <clipPath
+       id="clip-1">
+      <path
+         clip-rule="nonzero"
+         d="M 105 53 L 113.390625 53 L 113.390625 60.230469 L 105 60.230469 Z M 105 53 "
+         id="path2" />
+    </clipPath>
+    <clipPath
+       id="clip-2">
+      <path
+         clip-rule="nonzero"
+         d="M 102 50 L 113.390625 50 L 113.390625 60.230469 L 102 60.230469 Z M 102 50 "
+         id="path3" />
+    </clipPath>
+    <clipPath
+       id="clip-3">
+      <path
+         clip-rule="nonzero"
+         d="M 99 47 L 113.390625 47 L 113.390625 60.230469 L 99 60.230469 Z M 99 47 "
+         id="path4" />
+    </clipPath>
+    <clipPath
+       id="clip-4">
+      <path
+         clip-rule="nonzero"
+         d="M 0 0 L 86 0 L 86 60.230469 L 0 60.230469 Z M 0 0 "
+         id="path5" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#clip-0)"
+     id="g6">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 114.6875 81.479688 C 101.132812 100.815625 82.695312 116.401563 61.09375 126.479688 L 3.984375 4.01875 Z M 114.6875 81.479688 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+       id="path6" />
+  </g>
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 797.382812 559.526563 C 809.609375 542.104688 829.84375 530.7375 852.734375 530.7375 C 862.929688 530.7375 872.617188 533.003125 881.289062 537.026563 L 852.734375 598.276563 Z M 797.382812 559.526563 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+     id="path7" />
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 769.726562 540.151563 C 788.046875 514.01875 818.398438 496.948438 852.734375 496.948438 C 868.046875 496.948438 882.578125 500.346875 895.585938 506.440625 L 852.734375 598.276563 Z M 769.726562 540.151563 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+     id="path8" />
+  <g
+     clip-path="url(#clip-1)"
+     id="g9">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 1101.289062 65.229688 C 1078.28125 54.4875 1062.304688 31.089063 1062.304688 4.01875 L 1129.84375 4.01875 Z M 1101.289062 65.229688 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+       id="path9" />
+  </g>
+  <g
+     clip-path="url(#clip-2)"
+     id="g10">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 1087.03125 95.854688 C 1052.460938 79.721875 1028.515625 44.64375 1028.515625 4.01875 L 1129.84375 4.01875 Z M 1087.03125 95.854688 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+       id="path10" />
+  </g>
+  <g
+     clip-path="url(#clip-3)"
+     id="g11">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 1072.734375 126.479688 C 1026.679688 104.95625 994.765625 58.198438 994.765625 4.01875 L 1129.84375 4.01875 Z M 1072.734375 126.479688 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+       id="path11" />
+  </g>
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 111.953125 315.425 L 173.164062 286.870313 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+     id="path12" />
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 1021.914062 315.425 L 960.703125 286.870313 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+     id="path13" />
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 3.984375 4.01875 L 281.132812 598.276563 L 852.734375 598.276563 L 1129.84375 4.01875 Z M 3.984375 4.01875 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+     id="path14" />
+  <g
+     clip-path="url(#clip-4)"
+     id="g15">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 4.01875 L 852.734375 598.276563 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 60.23)"
+       id="path15" />
+  </g>
+</svg>

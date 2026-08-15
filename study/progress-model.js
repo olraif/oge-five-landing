@@ -81,7 +81,14 @@ const TASK14_TOTALS = Object.freeze({
     '16.22': 5, '16.23': 10, '16.24': 10, '16.25': 10, '16.26': 10, '16.27': 10, '16.28': 10,
     '16.29': 10, '16.30': 11, '16.31': 10, '16.32': 10, '16.33': 10, '16.34': 10,
   });
-  const isAnswered = (value) => String(value ?? '').trim().length > 0;
+  const TASK17_TOTALS = Object.freeze({
+    '17.1': 5, '17.2': 6, '17.3': 11, '17.4': 6, '17.5': 4, '17.6': 10, '17.7': 8, '17.8': 7,
+    '17.9': 3, '17.10': 10, '17.11': 5, '17.12': 5, '17.13': 11, '17.14': 10, '17.15': 11,
+    '17.16': 10, '17.17': 10, '17.18': 10, '17.19': 10, '17.20': 10, '17.21': 11, '17.22': 5,
+    '17.23': 5, '17.24': 5, '17.25': 5, '17.26': 5, '17.27': 5, '17.28': 10, '17.29': 13,
+    '17.30': 9, '17.31': 10, '17.32': 10, '17.33': 3, '17.34': 2, '17.35': 10, '17.36': 11,
+    '17.37': 10, '17.38': 6, '17.39': 10, '17.40': 13,
+  });  const isAnswered = (value) => String(value ?? '').trim().length > 0;
   const normalizeAnswer = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
 
   const summarizePrototype = (key, attempt = {}, explicitTotal) => {
@@ -339,6 +346,26 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
   };
 
+  const summarizeTask17Prototype = (key, attempt = {}) => {
+    const total = TASK17_TOTALS[key] || Number(attempt.total) || 0;
+    const correctIds = Array.isArray(attempt.correctIds) ? attempt.correctIds : [];
+    const answeredIds = Array.isArray(attempt.answeredIds) ? attempt.answeredIds : Object.keys(attempt.answers || {}).filter((id) => isAnswered(attempt.answers[id]));
+    const correct = Math.min(total, correctIds.length);
+    const answered = Math.min(total, Math.max(correct, answeredIds.length));
+    const wrong = Math.max(0, answered - correct);
+    const untouched = Math.max(0, total - answered);
+    return { key, total, correct, wrong, untouched, cells: [...Array(correct).fill('green'), ...Array(wrong).fill('yellow'), ...Array(untouched).fill('pink')] };
+  };
+  const buildTask17Summary = (task17Progress = {}) => {
+    const prototypes = Object.keys(TASK17_TOTALS).map((key) => summarizeTask17Prototype(key, task17Progress?.[key]));
+    const totals = prototypes.reduce((result, prototype) => ({
+      total: result.total + prototype.total,
+      correct: result.correct + prototype.correct,
+      wrong: result.wrong + prototype.wrong,
+      untouched: result.untouched + prototype.untouched,
+    }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
+    return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
+  };
   const createAccountProgressStorage = (storage) => {
     const buildKey = (prefix, userId, itemId) => {
       if (!storage || !userId || !itemId) return null;
@@ -374,5 +401,5 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
     return savedAt >= accountCreatedAt;
   };
 
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
 });

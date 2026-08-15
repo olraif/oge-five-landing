@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="50.92pt"
+   height="113.39pt"
+   viewBox="0 0 50.92 113.39"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="poligons-171.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs5">
+    <clipPath
+       id="clip-0">
+      <path
+         clip-rule="nonzero"
+         d="M 0 56 L 50.921875 56 L 50.921875 58 L 0 58 Z M 0 56 "
+         id="path1" />
+    </clipPath>
+    <clipPath
+       id="clip-1">
+      <path
+         clip-rule="nonzero"
+         d="M 25 0 L 26 0 L 26 113.390625 L 25 113.390625 Z M 25 0 "
+         id="path2" />
+    </clipPath>
+    <clipPath
+       id="clip-2">
+      <path
+         clip-rule="nonzero"
+         d="M 46 53 L 50.921875 53 L 50.921875 57 L 46 57 Z M 46 53 "
+         id="path3" />
+    </clipPath>
+    <clipPath
+       id="clip-3">
+      <path
+         clip-rule="nonzero"
+         d="M 23 109 L 28 109 L 28 113.390625 L 23 113.390625 Z M 23 109 "
+         id="path4" />
+    </clipPath>
+    <clipPath
+       id="clip-4">
+      <path
+         clip-rule="nonzero"
+         d="M 22 107 L 28 107 L 28 113.390625 L 22 113.390625 Z M 22 107 "
+         id="path5" />
+    </clipPath>
+  </defs>
+  <path
+     fill="none"
+     stroke-width="8"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 3.984375 566.946875 L 254.609375 1129.876563 L 505.234375 566.946875 L 254.609375 4.017188 Z M 3.984375 566.946875 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+     id="path6" />
+  <g
+     clip-path="url(#clip-0)"
+     id="g7">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 3.984375 566.946875 L 505.234375 566.946875 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path7" />
+  </g>
+  <g
+     clip-path="url(#clip-1)"
+     id="g8">
+    <path
+       fill="none"
+       stroke-width="8"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 254.609375 1129.876563 L 254.609375 4.017188 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path8" />
+  </g>
+  <g
+     clip-path="url(#clip-2)"
+     id="g9">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 490.195312 600.696875 C 477.265625 594.954688 468.28125 581.985938 468.28125 566.946875 L 505.234375 566.946875 Z M 490.195312 600.696875 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path9" />
+  </g>
+  <g
+     clip-path="url(#clip-3)"
+     id="g10">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 269.648438 37.767188 C 265.078125 39.8375 259.960938 40.970313 254.609375 40.970313 C 249.257812 40.970313 244.179688 39.8375 239.570312 37.767188 L 254.609375 4.017188 Z M 269.648438 37.767188 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path10" />
+  </g>
+  <g
+     clip-path="url(#clip-4)"
+     id="g11">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 277.1875 54.68125 C 270.3125 57.767188 262.65625 59.446875 254.609375 59.446875 C 246.601562 59.446875 238.945312 57.767188 232.070312 54.68125 L 254.609375 4.017188 Z M 277.1875 54.68125 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 113.39)"
+       id="path11" />
+  </g>
+</svg>
