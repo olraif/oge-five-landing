@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="113.39pt"
+   height="59.91pt"
+   viewBox="0 0 113.39 59.91"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="circles-104.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs1">
+    <clipPath
+       id="clip-0">
+      <path
+         clip-rule="nonzero"
+         d="M 17 0 L 78 0 L 78 59.910156 L 17 59.910156 Z M 17 0 "
+         id="path1" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#clip-0)"
+     id="g2">
+    <path
+       fill="none"
+       stroke-width="5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke="rgb(0%, 0%, 0%)"
+       stroke-opacity="1"
+       stroke-miterlimit="10"
+       d="M 771.914062 299.56875 C 771.914062 463.63125 638.90625 596.639062 474.84375 596.639062 C 310.78125 596.639062 177.773438 463.63125 177.773438 299.56875 C 177.773438 135.50625 310.78125 2.498437 474.84375 2.498437 C 638.90625 2.498437 771.914062 135.50625 771.914062 299.56875 Z M 771.914062 299.56875 "
+       transform="matrix(0.1, 0, 0, -0.1, 0, 59.91)"
+       id="path2" />
+  </g>
+  <path
+     fill="none"
+     stroke-width="30"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 474.84375 299.56875 L 474.84375 299.56875 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 59.91)"
+     id="path3" />
+  <path
+     fill="none"
+     stroke-width="5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke="rgb(0%, 0%, 0%)"
+     stroke-opacity="1"
+     stroke-miterlimit="10"
+     d="M 2.5 2.498437 L 287.695312 596.639062 L 608.515625 596.639062 L 1131.367188 2.498437 Z M 2.5 2.498437 "
+     transform="matrix(0.1, 0, 0, -0.1, 0, 59.91)"
+     id="path4" />
+</svg>

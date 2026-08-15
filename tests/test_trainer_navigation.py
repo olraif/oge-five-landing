@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 PART_ONE = Path(__file__).resolve().parents[1] / "study" / "math" / "part-one"
-PAGES = ["index.html", *[f"task{number}.html" for number in range(7, 15)]]
+PAGES = ["index.html", *[f"task{number}.html" for number in range(7, 17)]]
 
 
 class TrainerNavigationTests(unittest.TestCase):
@@ -17,7 +17,7 @@ class TrainerNavigationTests(unittest.TestCase):
         script = (PART_ONE / "trainer-navigation.js").read_text(encoding="utf-8")
         expected_routes = {
             6: "index.html#trainer",
-            **{number: f"task{number}.html#trainer" for number in range(7, 15)},
+            **{number: f"task{number}.html#trainer" for number in range(7, 17)},
         }
         for number, route in expected_routes.items():
             with self.subTest(task=number):
