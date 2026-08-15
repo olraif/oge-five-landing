@@ -75,6 +75,7 @@ def decode_answer(raw):
 
 
 def make_item(prototype_id, number, internal_id, task_html, answer, answer_html="", answer_format="number"):
+    task_html = task_html.replace(r"\tg", r"\operatorname{tg}")
     return {
         "id": f"{prototype_id}.{number}",
         "internalId": internal_id,

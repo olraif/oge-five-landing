@@ -10,6 +10,15 @@ EXPECTED_TOTALS = [12, 10, 12, 12, 5, 12, 10, 10, 10, 12, 4, 4, 4, 4, 4, 4, 12, 
 
 
 class Task15DataContractTests(unittest.TestCase):
+
+    def test_tangent_uses_supported_math_notation(self):
+        """KaTeX must not receive the unsupported Russian command \tg."""
+        data = "".join(
+            path.read_text(encoding="utf-8")
+            for path in sorted(DATA_DIR.glob("task15-data-*.js"))
+        )
+        self.assertNotIn(r"\\tg", data)
+        self.assertIn(r"\\operatorname{tg}", data)
     def load_prototypes(self):
         files = sorted(DATA_DIR.glob("task15-data-*.js"))
         prototypes = []
