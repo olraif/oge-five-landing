@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
+const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
 
 assert.equal(
   typeof createAccountProgressStorage,
@@ -170,6 +170,19 @@ assert.equal(task13Summary.untouched, 127);
 assert.equal(task13Summary.percent, 2);
 assert.deepEqual(task13Summary.prototypes[0].cells.slice(0, 5), ["green", "green", "yellow", "pink", "pink"]);
 assert.deepEqual(task13Summary.prototypes[1].cells.slice(0, 3), ["green", "pink", "pink"]);
+assert.equal(typeof TASK14_TOTALS, "object");
+assert.equal(Object.values(TASK14_TOTALS).reduce((sum, value) => sum + value, 0), 117, "task 14 should count all 117 tasks");
+const task14Summary = buildTask14Summary({
+  "14.1": { total: 10, correctIds: ["14.1.1", "14.1.2"], answeredIds: ["14.1.1", "14.1.2", "14.1.3"] },
+  "14.2": { total: 10, correctIds: ["14.2.1"], answeredIds: ["14.2.1"] },
+});
+assert.equal(task14Summary.total, 117);
+assert.equal(task14Summary.correct, 3);
+assert.equal(task14Summary.wrong, 1);
+assert.equal(task14Summary.untouched, 113);
+assert.equal(task14Summary.percent, 3);
+assert.deepEqual(task14Summary.prototypes[0].cells.slice(0, 5), ["green", "green", "yellow", "pink", "pink"]);
+assert.deepEqual(task14Summary.prototypes[1].cells.slice(0, 3), ["green", "pink", "pink"]);
 assert.deepEqual(task12Summary.prototypes[0].cells.slice(0, 5), ['green', 'green', 'yellow', 'pink', 'pink']);
 assert.deepEqual(task12Summary.prototypes[1].cells.slice(0, 3), ['green', 'pink', 'pink']);
-console.log('progress-model: grouped task 6 through task 13 summaries passed');
+console.log('progress-model: grouped task 6 through task 14 summaries passed');
