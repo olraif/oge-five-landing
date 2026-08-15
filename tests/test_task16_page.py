@@ -15,6 +15,12 @@ class Task16PageContractTests(unittest.TestCase):
         navigation = (PART_ONE / "trainer-navigation.js").read_text(encoding="utf-8")
         self.assertIn("16: 'task16.html#trainer'", navigation)
 
+    def test_task16_marks_only_task16_as_current_in_sidebar(self):
+        html = (PART_ONE / "task16.html").read_text(encoding="utf-8")
+        self.assertIn('<a class="is-current" href="#trainer">16</a>', html)
+        self.assertIn('<a href="task15.html#trainer">15</a>', html)
+        self.assertNotIn('<a class="is-current" href="#trainer">15</a>', html)
+
     def test_student_dashboard_renders_task16_progress(self):
         html = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
         css = (ROOT / "study" / "study.css").read_text(encoding="utf-8")
