@@ -285,7 +285,7 @@
             <div class="bar bar--task12" style="--ok:0%;--work:0%"><div class="task12-progress-stack" data-task12-stack aria-hidden="true"></div><span>12<small data-task12-percent>0%</small></span></div>
             <div class="bar bar--task13" style="--ok:0%;--work:0%"><div class="task13-progress-stack" data-task13-stack aria-hidden="true"></div><span>13<small data-task13-percent>0%</small></span></div>
             <div class="bar bar--task14" style="--ok:0%;--work:0%"><div class="task14-progress-stack" data-task14-stack aria-hidden="true"></div><span>14<small data-task14-percent>0%</small></span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>15</span></div>
+            <div class="bar bar--task15" style="--ok:0%;--work:0%"><div class="task15-progress-stack" data-task15-stack aria-hidden="true"></div><span>15<small data-task15-percent>0%</small></span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>16</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>17</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>18</span></div>
@@ -629,6 +629,32 @@
         bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
         bar.title = 'Задание 14: ' + summary.percent + '%';
       };
+      const progressBar14 = () => document.querySelector('.progress-bars .bar--task15');
+      const renderTask15Progress = (task15Progress = {}) => {
+        const bar = progressBar14();
+        const model = window.OgeProgressModel;
+        if (!bar || !model?.buildTask15Summary) return;
+        const stack = bar.querySelector('[data-task15-stack]');
+        const percent = bar.querySelector('[data-task15-percent]');
+        const summary = model.buildTask15Summary(task15Progress);
+        const fragment = document.createDocumentFragment();
+        summary.prototypes.forEach((prototype) => {
+          const group = document.createElement('div');
+          group.className = 'task15-progress-prototype';
+          group.style.flexGrow = String(prototype.total);
+          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total;
+          prototype.cells.forEach((color) => {
+            const cell = document.createElement('i');
+            cell.className = 'task15-progress-cell task15-progress-cell--' + color;
+            group.append(cell);
+          });
+          fragment.append(group);
+        });
+        stack?.replaceChildren(fragment);
+        if (percent) percent.textContent = summary.percent + '%';
+        bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
+        bar.title = 'Задание 15: ' + summary.percent + '%';
+      };
       const resetTask6Progress = () => renderTask6Progress({});
       const resetTask7Progress = () => renderTask7Progress({});
       const resetTask8Progress = () => renderTask8Progress({});
@@ -638,6 +664,7 @@
       const resetTask12Progress = () => renderTask12Progress({});
       const resetTask13Progress = () => renderTask13Progress({});
       const resetTask14Progress = () => renderTask14Progress({});
+      const resetTask15Progress = () => renderTask15Progress({});
       const syncCloudTask6Progress = (user) => {
         if (!user) {
           resetTask6Progress();
@@ -649,6 +676,7 @@
           resetTask12Progress();
           resetTask13Progress();
           resetTask14Progress();
+          resetTask15Progress();
           return;
         }
         const keepOwnedAttempts = (progress = {}) => Object.fromEntries(
@@ -672,6 +700,8 @@
         renderTask13Progress(task13Progress);
         const task14Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task14);
         renderTask14Progress(task14Progress);
+        const task15Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task15);
+        renderTask15Progress(task15Progress);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
@@ -748,6 +778,7 @@
       resetTask12Progress();
       resetTask13Progress();
       resetTask14Progress();
+      resetTask15Progress();
       window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();
