@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
+const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
 
 assert.equal(
   typeof createAccountProgressStorage,
@@ -157,6 +157,19 @@ assert.equal(task12Summary.correct, 3);
 assert.equal(task12Summary.wrong, 1);
 assert.equal(task12Summary.untouched, 178);
 assert.equal(task12Summary.percent, 2);
+assert.equal(typeof TASK13_TOTALS, "object");
+assert.equal(Object.values(TASK13_TOTALS).reduce((sum, value) => sum + value, 0), 131, "task 13 should count all 131 tasks");
+const task13Summary = buildTask13Summary({
+  "13.1": { total: 10, correctIds: ["13.1.1", "13.1.2"], answeredIds: ["13.1.1", "13.1.2", "13.1.3"] },
+  "13.2": { total: 20, correctIds: ["13.2.1"], answeredIds: ["13.2.1"] },
+});
+assert.equal(task13Summary.total, 131);
+assert.equal(task13Summary.correct, 3);
+assert.equal(task13Summary.wrong, 1);
+assert.equal(task13Summary.untouched, 127);
+assert.equal(task13Summary.percent, 2);
+assert.deepEqual(task13Summary.prototypes[0].cells.slice(0, 5), ["green", "green", "yellow", "pink", "pink"]);
+assert.deepEqual(task13Summary.prototypes[1].cells.slice(0, 3), ["green", "pink", "pink"]);
 assert.deepEqual(task12Summary.prototypes[0].cells.slice(0, 5), ['green', 'green', 'yellow', 'pink', 'pink']);
 assert.deepEqual(task12Summary.prototypes[1].cells.slice(0, 3), ['green', 'pink', 'pink']);
-console.log('progress-model: grouped task 6 through task 12 summaries passed');
+console.log('progress-model: grouped task 6 through task 13 summaries passed');

@@ -58,7 +58,12 @@
   const TASK12_TOTALS = Object.freeze({
     '12.1': 8, '12.2': 4, '12.3': 20, '12.4': 20, '12.5': 18, '12.6': 20,
     '12.7': 20, '12.8': 20, '12.9': 22, '12.10': 23, '12.11': 7,
-  });  const isAnswered = (value) => String(value ?? '').trim().length > 0;
+  });
+  const TASK13_TOTALS = Object.freeze({
+    '13.1': 10, '13.2': 20, '13.3': 20, '13.4': 10, '13.5': 11,
+    '13.6': 10, '13.7': 10, '13.8': 10, '13.9': 10, '13.10': 20,
+  });
+  const isAnswered = (value) => String(value ?? '').trim().length > 0;
   const normalizeAnswer = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
 
   const summarizePrototype = (key, attempt = {}, explicitTotal) => {
@@ -233,6 +238,26 @@
     }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
   };
+  const summarizeTask13Prototype = (key, attempt = {}) => {
+    const total = TASK13_TOTALS[key] || Number(attempt.total) || 0;
+    const correctIds = Array.isArray(attempt.correctIds) ? attempt.correctIds : [];
+    const answeredIds = Array.isArray(attempt.answeredIds) ? attempt.answeredIds : Object.keys(attempt.answers || {}).filter((id) => isAnswered(attempt.answers[id]));
+    const correct = Math.min(total, correctIds.length);
+    const answered = Math.min(total, Math.max(correct, answeredIds.length));
+    const wrong = Math.max(0, answered - correct);
+    const untouched = Math.max(0, total - answered);
+    return { key, total, correct, wrong, untouched, cells: [...Array(correct).fill('green'), ...Array(wrong).fill('yellow'), ...Array(untouched).fill('pink')] };
+  };
+  const buildTask13Summary = (task13Progress = {}) => {
+    const prototypes = Object.keys(TASK13_TOTALS).map((key) => summarizeTask13Prototype(key, task13Progress?.[key]));
+    const totals = prototypes.reduce((result, prototype) => ({
+      total: result.total + prototype.total,
+      correct: result.correct + prototype.correct,
+      wrong: result.wrong + prototype.wrong,
+      untouched: result.untouched + prototype.untouched,
+    }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
+    return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
+  };
 
   const createAccountProgressStorage = (storage) => {
     const buildKey = (prefix, userId, itemId) => {
@@ -269,5 +294,5 @@
     return savedAt >= accountCreatedAt;
   };
 
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
 });
