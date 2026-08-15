@@ -629,9 +629,9 @@
         bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
         bar.title = 'Задание 14: ' + summary.percent + '%';
       };
-      const progressBar14 = () => document.querySelector('.progress-bars .bar--task15');
+      const progressBar15 = () => document.querySelector('.progress-bars .bar--task15');
       const renderTask15Progress = (task15Progress = {}) => {
-        const bar = progressBar14();
+        const bar = progressBar15();
         const model = window.OgeProgressModel;
         if (!bar || !model?.buildTask15Summary) return;
         const stack = bar.querySelector('[data-task15-stack]');
