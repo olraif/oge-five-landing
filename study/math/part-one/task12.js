@@ -14,6 +14,7 @@
   if (!prototypeNav || !quiz || !prototypes.length) return;
 
   const storagePrefix = 'ogeTrainer:v3:math:task12:';
+  const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
   const cloudPath = ['trainer_progress', 'math', 'task12'];
   let activeId = new URLSearchParams(location.search).get('prototype') || prototypes[0].id;
   if (!prototypeById.has(activeId)) activeId = prototypes[0].id;
@@ -24,7 +25,9 @@
     .replace(/\$\$([\s\S]*?)\$\$/g, (_, expression) => `\\(${expression.trim()}\\)`)
     .replace(/\$([^$]+)\$/g, (_, expression) => `\\(${expression.trim()}\\)`);
   const getSaved = (id) => {
-    try { return JSON.parse(localStorage.getItem(storagePrefix + id) || 'null'); } catch { return null; }
+    const cloudAttempt = cloudUser?.user_metadata?.trainer_progress?.math?.task12?.[id];
+    if (window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser)) return cloudAttempt;
+    return accountStorage?.read(storagePrefix, cloudUser?.id, id) || null;
   };
   const validSaved = (saved, proto) => {
     if (!saved || saved.prototype !== proto.id || typeof saved.answers !== 'object') return null;
@@ -99,11 +102,12 @@
       const { data } = await window.ogeSupabase.auth.getUser();
       const freshUser = data?.user || cloudUser;
       const current = freshUser.user_metadata?.trainer_progress || {};
+      const ownedPayload = { ...payload, ownerId: freshUser.id };
       const next = {
         ...current,
         math: {
           ...(current.math || {}),
-          task12: { ...(current.math?.task12 || {}), [payload.prototype]: payload },
+          task12: { ...(current.math?.task12 || {}), [ownedPayload.prototype]: ownedPayload },
         },
       };
       const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
@@ -120,8 +124,11 @@
       cloudUser = data?.session?.user || null;
       const cloudValue = cloudUser?.user_metadata?.trainer_progress?.math?.task12?.[activeId];
       const proto = prototypeById.get(activeId);
-      const cloudSaved = validSaved(cloudValue, proto);
-      if (cloudSaved) localStorage.setItem(storagePrefix + activeId, JSON.stringify(cloudSaved));
+      const cloudSaved = window.OgeProgressModel?.isAttemptOwnedByAccount(cloudValue, cloudUser)
+        ? validSaved(cloudValue, proto)
+        : null;
+      if (cloudSaved) accountStorage?.write(storagePrefix, cloudUser?.id, activeId, cloudSaved);
+      else accountStorage?.remove(storagePrefix, cloudUser?.id, activeId);
       render();
     } catch { /* offline mode keeps local progress */ }
   };
@@ -139,7 +146,7 @@
       if (expectedAnswers.some((expected) => normalize(raw) === normalize(expected))) correctIds.push(item.id);
     });
     const payload = { prototype: proto.id, answers, answeredIds, correctIds, score: correctIds.length, total: proto.items.length, savedAt: new Date().toISOString() };
-    localStorage.setItem(storagePrefix + proto.id, JSON.stringify(payload));
+    accountStorage?.write(storagePrefix, cloudUser?.id, proto.id, payload);
     applySaved(proto, payload);
     renderNav();
     renderOverall();

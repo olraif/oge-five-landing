@@ -1,7 +1,9 @@
 const quiz = document.getElementById("fractionQuiz");
 const result = document.getElementById("quizResult");
 const getCell = () => document.querySelector(`[data-prototype-cell="${activePrototype}"]`);
-let storageKey = "ogeTrainer:v3:math:task6:prototype6.1";
+const storagePrefix = "ogeTrainer:v3:math:task6:";
+const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
+let cloudUser = null;
 const cloudPath = ["trainer_progress", "math", "task6"];
 
 const syncCourseView = () => document.body.classList.toggle("task6-view", location.hash === "#trainer");
@@ -82,7 +84,9 @@ const showResult = (score, misses = []) => {
 };
 
 const getSaved = () => {
-  try { return JSON.parse(localStorage.getItem(storageKey) || "null"); } catch (error) { return null; }
+  const cloudAttempt = cloudUser?.user_metadata?.trainer_progress?.math?.task6?.[activePrototype];
+  if (window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser)) return cloudAttempt;
+  return accountStorage?.read(storagePrefix, cloudUser?.id, activePrototype) || null;
 };
 
 const validateSavedProgress = (saved, prototype = activePrototype) => {
@@ -122,7 +126,6 @@ const renderPrototype = (key, restore = true) => {
   if (!data || !quiz) return;
   activePrototype = key;
   activeAnswers = Object.fromEntries(data.items.map((item, index) => [`q${index + 1}`, [item[2]]]));
-  storageKey = `ogeTrainer:v3:math:task6:prototype${key}`;
 
   if (guideElement) {
     guideElement.className = 'trainer-guide trainer-guide--image';
@@ -188,10 +191,14 @@ const saveCloudProgress = async (payload) => {
   if (prototype !== activePrototype) return;
   const user = data?.session?.user;
   if (!user) return;
+  cloudUser = user;
   const current = user.user_metadata?.trainer_progress || {};
-  const normalizedPayload = { ...payload, prototype };
+  const normalizedPayload = { ...payload, prototype, ownerId: user.id };
   const next = { ...current, math: { ...(current.math || {}), task6: { ...(current.math?.task6 || {}), [prototype]: normalizedPayload } } };
-  await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+  const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+  if (error) throw error;
+  cloudUser = updated?.user || { ...user, user_metadata: { ...user.user_metadata, trainer_progress: next } };
+  accountStorage?.write(storagePrefix, user.id, prototype, normalizedPayload);
 };
 
 const loadCloudProgress = async () => {
@@ -200,25 +207,22 @@ const loadCloudProgress = async () => {
   const access = await window.ogeHasCourseAccess("math-first");
   if (requestedPrototype !== activePrototype) return;
   if (access.error || !access.data) {
-    localStorage.removeItem(storageKey);
+    accountStorage?.remove(storagePrefix, cloudUser?.id, requestedPrototype);
     clearCurrentAttempt();
     window.location.replace("../../login.html");
     return;
   }
-  const cloudValue = access.user?.user_metadata?.trainer_progress?.math?.task6?.[requestedPrototype];
-  const cloudSaved = validateSavedProgress(cloudValue, requestedPrototype);
+  cloudUser = access.user || null;
+  const cloudValue = cloudUser?.user_metadata?.trainer_progress?.math?.task6?.[requestedPrototype];
+  const cloudSaved = window.OgeProgressModel?.isAttemptOwnedByAccount(cloudValue, cloudUser)
+    ? validateSavedProgress(cloudValue, requestedPrototype)
+    : null;
   if (cloudSaved) {
     restoreAttempt(cloudSaved);
-    localStorage.setItem(storageKey, JSON.stringify(cloudSaved));
+    accountStorage?.write(storagePrefix, cloudUser?.id, requestedPrototype, cloudSaved);
     return;
   }
-  const localSaved = validateSavedProgress(getSaved(), requestedPrototype);
-  if (localSaved) {
-    restoreAttempt(localSaved);
-    await saveCloudProgress(localSaved);
-    return;
-  }
-  localStorage.removeItem(storageKey);
+  accountStorage?.remove(storagePrefix, cloudUser?.id, requestedPrototype);
   clearCurrentAttempt();
 };
 if (quiz && result) {
@@ -242,7 +246,7 @@ if (quiz && result) {
     showResult(score, misses);
     try {
       const payload = { prototype: activePrototype, score, total: Object.keys(activeAnswers).length, misses, answers: submittedAnswers, savedAt: new Date().toISOString() };
-      localStorage.setItem(storageKey, JSON.stringify(payload));
+      accountStorage?.write(storagePrefix, cloudUser?.id, activePrototype, payload);
       saveCloudProgress(payload);
     } catch (error) {
       // Visual result still works without storage.

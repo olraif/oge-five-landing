@@ -232,5 +232,42 @@
       untouched: result.untouched + prototype.untouched,
     }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
-  };  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary };
+  };
+
+  const createAccountProgressStorage = (storage) => {
+    const buildKey = (prefix, userId, itemId) => {
+      if (!storage || !userId || !itemId) return null;
+      return `${prefix}account:${encodeURIComponent(userId)}:${itemId}`;
+    };
+    return {
+      read(prefix, userId, itemId) {
+        const key = buildKey(prefix, userId, itemId);
+        if (!key) return null;
+        try { return JSON.parse(storage.getItem(key) || 'null'); } catch { return null; }
+      },
+      write(prefix, userId, itemId, value) {
+        const key = buildKey(prefix, userId, itemId);
+        if (!key) return false;
+        storage.setItem(key, JSON.stringify(value));
+        return true;
+      },
+      remove(prefix, userId, itemId) {
+        const key = buildKey(prefix, userId, itemId);
+        if (!key) return false;
+        storage.removeItem(key);
+        return true;
+      },
+    };
+  };
+
+  const isAttemptOwnedByAccount = (attempt, user) => {
+    if (!attempt || !user?.id) return false;
+    if (attempt.ownerId) return attempt.ownerId === user.id;
+    const savedAt = Date.parse(attempt.savedAt || '');
+    const accountCreatedAt = Date.parse(user.created_at || '');
+    if (!Number.isFinite(savedAt) || !Number.isFinite(accountCreatedAt)) return false;
+    return savedAt >= accountCreatedAt;
+  };
+
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
 });

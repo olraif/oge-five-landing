@@ -2,7 +2,53 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, getPrototypeStatus } = require(modelPath);
+const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
+
+assert.equal(
+  typeof createAccountProgressStorage,
+  'function',
+  'progress cache must be scoped to the authenticated student account',
+);
+
+const memory = new Map();
+const browserStorage = {
+  getItem: (key) => memory.get(key) ?? null,
+  setItem: (key, value) => memory.set(key, value),
+  removeItem: (key) => memory.delete(key),
+};
+const accountStorage = createAccountProgressStorage(browserStorage);
+const oldOlesyaAttempt = { prototype: '6.1', score: 9, answers: { q1: '9,4' } };
+browserStorage.setItem('ogeTrainer:v3:math:task6:prototype6.1', JSON.stringify(oldOlesyaAttempt));
+
+assert.equal(
+  accountStorage.read('ogeTrainer:v3:math:task6:', 'new-student-id', 'prototype6.1'),
+  null,
+  'a new student must not inherit a legacy unscoped browser attempt',
+);
+
+accountStorage.write('ogeTrainer:v3:math:task6:', 'olesya-id', 'prototype6.1', oldOlesyaAttempt);
+assert.deepEqual(
+  accountStorage.read('ogeTrainer:v3:math:task6:', 'olesya-id', 'prototype6.1'),
+  oldOlesyaAttempt,
+  'the owner must keep her own cached attempt',
+);
+assert.equal(
+  accountStorage.read('ogeTrainer:v3:math:task6:', 'new-student-id', 'prototype6.1'),
+  null,
+  'another authenticated student must start with empty progress',
+);
+
+const newStudent = { id: 'new-student-id', created_at: '2026-08-15T10:00:00.000Z' };
+assert.equal(
+  isAttemptOwnedByAccount({ savedAt: '2026-08-14T10:00:00.000Z' }, newStudent),
+  false,
+  'an attempt saved before registration cannot belong to the new student',
+);
+assert.equal(
+  isAttemptOwnedByAccount({ ownerId: 'new-student-id', savedAt: '2026-08-15T10:01:00.000Z' }, newStudent),
+  true,
+  'an explicitly owned attempt must remain visible to its student',
+);
 
 const attempt = (key, correct, wrong, empty) => {
   const answers = {};
