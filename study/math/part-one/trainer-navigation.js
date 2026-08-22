@@ -13,6 +13,7 @@
     16: 'task16.html#trainer',
     17: 'task17.html#trainer',
     18: 'task18.html#trainer',
+    19: 'task19.html#trainer',
   });
   const developmentMessage = 'Задание ещё не загружено. Оно находится в разработке.';
 

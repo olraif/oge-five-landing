@@ -289,7 +289,7 @@
             <div class="bar bar--task16" style="--ok:0%;--work:0%"><div class="task16-progress-stack" data-task16-stack aria-hidden="true"></div><span>16<small data-task16-percent>0%</small></span></div>
             <div class="bar bar--task17" style="--ok:0%;--work:0%"><div class="task17-progress-stack" data-task17-stack aria-hidden="true"></div><span>17<small data-task17-percent>0%</small></span></div>
             <div class="bar bar--task18" style="--ok:0%;--work:0%"><div class="task18-progress-stack" data-task18-stack aria-hidden="true"></div><span>18<small data-task18-percent>0%</small></span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>19</span></div>
+            <div class="bar bar--task19" style="--ok:0%;--work:0%"><div class="task19-progress-stack" data-task19-stack aria-hidden="true"></div><span>19<small data-task19-percent>0%</small></span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>20</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>21</span></div>
             <div class="bar" style="--ok:0%;--work:0%"><span>22</span></div>
@@ -746,6 +746,33 @@
         bar.title = 'Задание 18: ' + summary.percent + '%';
       };
       const resetTask18Progress = () => renderTask18Progress({});
+      const progressBar19 = () => document.querySelector('.progress-bars .bar--task19');
+      const renderTask19Progress = (task19Progress = {}) => {
+        const bar = progressBar19();
+        const model = window.OgeProgressModel;
+        if (!bar || !model?.buildTask19Summary) return;
+        const stack = bar.querySelector('[data-task19-stack]');
+        const percent = bar.querySelector('[data-task19-percent]');
+        const summary = model.buildTask19Summary(task19Progress);
+        const fragment = document.createDocumentFragment();
+        summary.prototypes.forEach((prototype) => {
+          const group = document.createElement('div');
+          group.className = 'task19-progress-prototype';
+          group.style.flexGrow = String(prototype.total);
+          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total;
+          prototype.cells.forEach((color) => {
+            const cell = document.createElement('i');
+            cell.className = 'task19-progress-cell task19-progress-cell--' + color;
+            group.append(cell);
+          });
+          fragment.append(group);
+        });
+        stack?.replaceChildren(fragment);
+        if (percent) percent.textContent = summary.percent + '%';
+        bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
+        bar.title = 'Задание 19: ' + summary.percent + '%';
+      };
+      const resetTask19Progress = () => renderTask19Progress({});
       const syncCloudTask6Progress = (user) => {
         if (!user) {
           resetTask6Progress();
@@ -761,6 +788,7 @@
           resetTask16Progress();
           resetTask17Progress();
           resetTask18Progress();
+          resetTask19Progress();
           return;
         }
         const keepOwnedAttempts = (progress = {}) => Object.fromEntries(
@@ -792,6 +820,8 @@
         renderTask17Progress(task17Progress);
         const task18Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task18);
         renderTask18Progress(task18Progress);
+        const task19Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task19);
+        renderTask19Progress(task19Progress);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
@@ -872,6 +902,7 @@
       resetTask16Progress();
       resetTask17Progress();
       resetTask18Progress();
+      resetTask19Progress();
       window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();
