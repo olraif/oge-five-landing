@@ -1,11 +1,19 @@
 const assert = require('node:assert/strict');
 const model = require('../study/math/part-one/task1-5-model.js');
 
-const checked = model.checkRouteAnswers({ 1: '342', 2: '41', 3: '29', 4: '116', 5: '930' });
+assert.equal(model.ROUTE_PROTOTYPES.length, 2);
+assert.equal(model.ROUTE_PROTOTYPES[0].analogs.length, 20);
+assert.equal(model.ROUTE_PROTOTYPES[1].analogs.length, 4);
+
+const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
+assert.equal(firstAnalog.id, 'routes-1.1.1');
+assert.deepEqual(firstAnalog.answers, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '930' });
+
+const checked = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '930' });
 assert.deepEqual(checked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 assert.deepEqual(checked.answeredQuestionNumbers, [1, 2, 3, 4, 5]);
 
-const partial = model.checkRouteAnswers({ 1: '342', 2: '8', 3: '', 4: '116', 5: '930' });
+const partial = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '8', 3: '', 4: '116', 5: '930' });
 assert.deepEqual(partial.correctQuestionNumbers, [1, 4, 5]);
 assert.deepEqual(partial.answeredQuestionNumbers, [1, 2, 4, 5]);
 assert.deepEqual(model.buildTaskProgress(partial), {
@@ -14,5 +22,17 @@ assert.deepEqual(model.buildTaskProgress(partial), {
   3: { correct: 0, answered: 0, total: 1 },
   4: { correct: 1, answered: 1, total: 1 },
   5: { correct: 1, answered: 1, total: 1 },
+});
+
+const aggregate = model.aggregateTaskProgress({
+  'routes-1.1.1': { taskProgress: model.buildTaskProgress(checked) },
+  'routes-1.1.2': { taskProgress: model.buildTaskProgress(partial) },
+});
+assert.deepEqual(aggregate, {
+  1: { correct: 2, answered: 2, total: 2 },
+  2: { correct: 1, answered: 2, total: 2 },
+  3: { correct: 1, answered: 1, total: 2 },
+  4: { correct: 2, answered: 2, total: 2 },
+  5: { correct: 2, answered: 2, total: 2 },
 });
 console.log('task1-5 progress tests passed');

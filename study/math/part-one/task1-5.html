@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Тренажёр заданий 1–5 · ОГЭ по математике</title>
-  <meta name="description" content="Практические задания 1–5 ОГЭ по математике, объединённые по общим прототипам.">
+  <meta name="description" content="Практические задания 1–5 ОГЭ по математике, объединённые по видам, прототипам и аналогам.">
   <link rel="stylesheet" href="../../study.css">
   <link rel="stylesheet" href="part-one.css">
   <link rel="stylesheet" href="task1-5.css">
@@ -14,6 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="../../auth-session.js" defer></script>
   <script src="../../progress-model.js" defer></script>
+  <script src="task1-5-routes-data.js" defer></script>
   <script src="task1-5-model.js" defer></script>
   <script src="task1-5.js" defer></script>
 </head>
@@ -33,63 +34,57 @@
 
     <section class="course-content">
       <section class="course-panel practical-panel" id="trainer">
-        <div class="practical-prototype-grid" aria-label="Прототипы заданий 1–5">
-          <article class="practical-prototype-card is-active" id="routes"><span>01</span><h2 class="practical-prototype-title">Маршруты</h2></article>
-          <article class="practical-prototype-card" id="tires"><span>02</span><h2 class="practical-prototype-title">Шины</h2></article>
-          <article class="practical-prototype-card" id="plots"><span>03</span><h2 class="practical-prototype-title">Участки</h2></article>
-          <article class="practical-prototype-card" id="sheets"><span>04</span><h2 class="practical-prototype-title">Листы</h2></article>
-          <article class="practical-prototype-card" id="stoves"><span>05</span><h2 class="practical-prototype-title">Печки</h2></article>
-          <article class="practical-prototype-card" id="apartments"><span>06</span><h2 class="practical-prototype-title">Квартиры</h2></article>
-          <article class="practical-prototype-card" id="tariffs"><span>07</span><h2 class="practical-prototype-title">Тарифы</h2></article>
+        <div class="practical-prototype-grid" aria-label="Виды заданий 1–5">
+          <button class="practical-prototype-card is-active" type="button" data-practical-type="routes"><span>01</span><h2 class="practical-prototype-title">Маршруты</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="tires" disabled><span>02</span><h2 class="practical-prototype-title">Шины</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="plots" disabled><span>03</span><h2 class="practical-prototype-title">Участки</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="sheets" disabled><span>04</span><h2 class="practical-prototype-title">Листы</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="stoves" disabled><span>05</span><h2 class="practical-prototype-title">Печки</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="apartments" disabled><span>06</span><h2 class="practical-prototype-title">Квартиры</h2></button>
+          <button class="practical-prototype-card" type="button" data-practical-type="tariffs" disabled><span>07</span><h2 class="practical-prototype-title">Тарифы</h2></button>
         </div>
 
-        <section class="route-set" aria-labelledby="route-set-title">
-          <div class="route-shared-condition">
-            <div class="route-condition-copy">
-              <h1 id="route-set-title">Маршруты</h1>
-              <p>Саша летом отдыхает у дедушки в деревне Масловка. В субботу они собираются съездить на велосипедах в село Захарово в магазин. Из деревни Масловка в село Захарово можно проехать по прямой лесной дорожке.</p>
-              <p>Есть более длинный путь: по прямолинейному шоссе через деревню Весенка до деревни Полянка, где нужно повернуть под прямым углом направо на другое шоссе, ведущее в село Захарово. Есть и третий маршрут: в деревне Весенка можно свернуть на прямую тропинку в село Захарово, которая идёт мимо пруда.</p>
-              <p>Лесная дорожка и тропинка образуют с шоссе прямоугольные треугольники. По шоссе едут со скоростью 20 км/ч, а по лесной дорожке и тропинке — 15 км/ч. Сторона каждой клетки на плане равна 1 км.</p>
+        <nav class="route-prototype-tabs" aria-label="Прототипы маршрутов"></nav>
+        <nav class="route-analog-tabs" aria-label="Аналоги выбранного прототипа"></nav>
+
+        <section class="route-set" aria-labelledby="route-set-title" aria-live="polite">
+          <header class="route-set-header">
+            <div>
+              <p class="route-set-kicker">Маршруты</p>
+              <h1 id="route-set-title">Прототип 1.1 · аналог 1</h1>
             </div>
-            <img class="route-map" src="assets/task1-5/routes-1.1.1.png" alt="План маршрутов между населёнными пунктами">
+            <div class="route-set-result"><strong>0/5</strong><span>верных ответов</span></div>
+          </header>
+
+          <div class="route-source-condition">
+            <p>Задание загружается…</p>
+            <img class="route-map" src="assets/task1-5/trips-2.svg" alt="План маршрутов между населёнными пунктами">
           </div>
 
           <form class="route-questions" novalidate>
             <label class="route-question" data-question-number="1">
               <span class="route-question-number">1</span>
-              <span class="route-question-text">Пользуясь описанием, определите, какими цифрами на плане обозначены деревня Полянка, село Захарово и деревня Весенка. В ответ запишите три цифры подряд.</span>
+              <span class="route-question-text">Задание загружается…</span>
               <input inputmode="numeric" autocomplete="off" aria-label="Ответ на задание 1">
             </label>
             <label class="route-question" data-question-number="2">
               <span class="route-question-number">2</span>
-              <span class="route-question-text">Сколько километров проедут Саша с дедушкой от деревни Масловка до села Захарово, если они поедут по шоссе через деревню Полянка?</span>
+              <span class="route-question-text">Задание загружается…</span>
               <input inputmode="decimal" autocomplete="off" aria-label="Ответ на задание 2">
             </label>
             <label class="route-question" data-question-number="3">
               <span class="route-question-number">3</span>
-              <span class="route-question-text">Найдите расстояние от деревни Масловка до села Захарово по прямой. Ответ дайте в километрах.</span>
+              <span class="route-question-text">Задание загружается…</span>
               <input inputmode="decimal" autocomplete="off" aria-label="Ответ на задание 3">
             </label>
             <label class="route-question" data-question-number="4">
               <span class="route-question-number">4</span>
-              <span class="route-question-text">Сколько минут затратят на дорогу из деревни Масловка в село Захарово, если поедут по прямой лесной дорожке?</span>
+              <span class="route-question-text">Задание загружается…</span>
               <input inputmode="decimal" autocomplete="off" aria-label="Ответ на задание 4">
             </label>
-            <label class="route-question route-question--table" data-question-number="5">
+            <label class="route-question" data-question-number="5">
               <span class="route-question-number">5</span>
-              <span class="route-question-text">
-                Саша с дедушкой хотят купить 2 л молока, 2 кг говядины и 4 кг картофеля. В каком магазине набор будет стоить дешевле всего? В ответ запишите стоимость набора.
-                <span class="route-table-wrap"><table class="route-table">
-                  <thead><tr><th>Продукт</th><th>Масловка</th><th>Захарово</th><th>Весенка</th><th>Полянка</th></tr></thead>
-                  <tbody>
-                    <tr><td>Молоко, 1 л</td><td>45</td><td>40</td><td>42</td><td>52</td></tr>
-                    <tr><td>Хлеб, 1 батон</td><td>29</td><td>28</td><td>31</td><td>22</td></tr>
-                    <tr><td>Сыр, 1 кг</td><td>250</td><td>270</td><td>290</td><td>280</td></tr>
-                    <tr><td>Говядина, 1 кг</td><td>350</td><td>380</td><td>360</td><td>390</td></tr>
-                    <tr><td>Картофель, 1 кг</td><td>35</td><td>25</td><td>32</td><td>24</td></tr>
-                  </tbody>
-                </table></span>
-              </span>
+              <span class="route-question-text">Задание загружается…</span>
               <input inputmode="decimal" autocomplete="off" aria-label="Ответ на задание 5">
             </label>
             <button class="route-check-button" type="button">Проверить ответы</button>

@@ -2,13 +2,43 @@
   const form = document.querySelector('.route-questions');
   const rows = [...document.querySelectorAll('.route-question[data-question-number]')];
   const submit = document.querySelector('.route-check-button');
+  const prototypeTabs = document.querySelector('.route-prototype-tabs');
+  const analogTabs = document.querySelector('.route-analog-tabs');
+  const condition = document.querySelector('.route-source-condition');
+  const title = document.querySelector('#route-set-title');
+  const result = document.querySelector('.route-set-result');
   const model = window.OgeTaskOneToFiveModel;
-  if (!form || !rows.length || !submit || !model) return;
+  if (!form || !rows.length || !submit || !prototypeTabs || !analogTabs || !condition || !model) return;
 
-  const attemptId = 'routes-1.1.1';
   const storagePrefix = 'ogeTrainer:v3:math:task1to5:';
   const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
+  const prototypes = model.ROUTE_PROTOTYPES || [];
+  let selectedPrototype = prototypes[0] || null;
+  let selectedAnalog = selectedPrototype?.analogs?.[0] || null;
   let cloudUser = null;
+  let allAttempts = {};
+
+  const cleanMarkup = (markup = '') => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(String(markup).replace(/\$([^$]+)\$/g, '$1'), 'text/html');
+    doc.querySelectorAll('script,style,link,iframe,object').forEach((element) => element.remove());
+    doc.querySelectorAll('*').forEach((element) => {
+      [...element.attributes].forEach((attribute) => {
+        if (attribute.name.toLowerCase().startsWith('on')) element.removeAttribute(attribute.name);
+      });
+    });
+    doc.querySelectorAll('img').forEach((image) => {
+      const src = image.getAttribute('src') || '';
+      image.src = src.includes('trips-1.svg')
+        ? 'assets/task1-5/trips-1.svg'
+        : 'assets/task1-5/trips-2.svg';
+      image.alt = 'План маршрутов между населёнными пунктами';
+      image.classList.add('route-map');
+    });
+    return doc.body.innerHTML;
+  };
+
+  const currentAttempt = () => allAttempts[selectedAnalog?.id] || null;
 
   const readAnswers = () => Object.fromEntries(rows.map((row) => [
     Number(row.dataset.questionNumber),
@@ -27,14 +57,86 @@
       if (correct.has(number)) row.classList.add('is-correct');
       else if (answered.has(number)) row.classList.add('is-wrong');
     });
+    const correctCount = correct.size;
+    result.innerHTML = '<strong>' + correctCount + '/5</strong><span>верных ответов</span>';
   };
 
-  const getCloudAttempt = () => {
-    const attempt = cloudUser?.user_metadata?.trainer_progress?.math?.task1to5?.[attemptId];
-    return window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, cloudUser) ? attempt : null;
+  const attemptCounts = (attempt) => ({
+    correct: attempt?.correctQuestionNumbers?.length || 0,
+    answered: attempt?.answeredQuestionNumbers?.length || 0,
+  });
+
+  const tabClass = (attempt, active) => {
+    const counts = attemptCounts(attempt);
+    return [
+      'route-tab',
+      active ? 'is-active' : '',
+      counts.correct === 5 ? 'is-complete' : '',
+      counts.answered > 0 && counts.correct < 5 ? 'is-started' : '',
+    ].filter(Boolean).join(' ');
   };
 
-  const saveCloud = async (payload) => {
+  const renderPrototypeTabs = () => {
+    prototypeTabs.innerHTML = '';
+    prototypes.forEach((prototype) => {
+      const attempts = (prototype.analogs || []).map((analog) => allAttempts[analog.id]).filter(Boolean);
+      const correct = attempts.reduce((sum, attempt) => sum + attemptCounts(attempt).correct, 0);
+      const total = (prototype.analogs?.length || 0) * 5;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'route-tab route-tab--prototype'
+        + (prototype.id === selectedPrototype?.id ? ' is-active' : '')
+        + (correct === total && total ? ' is-complete' : '')
+        + (correct > 0 && correct < total ? ' is-started' : '');
+      button.innerHTML = '<strong>Прототип ' + prototype.number + '</strong><small>'
+        + prototype.analogs.length + ' аналогов · ' + correct + '/' + total + '</small>';
+      button.addEventListener('click', () => {
+        selectedPrototype = prototype;
+        selectedAnalog = prototype.analogs[0];
+        renderAll();
+      });
+      prototypeTabs.append(button);
+    });
+  };
+
+  const renderAnalogTabs = () => {
+    analogTabs.innerHTML = '';
+    (selectedPrototype?.analogs || []).forEach((analog, index) => {
+      const counts = attemptCounts(allAttempts[analog.id]);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = tabClass(allAttempts[analog.id], analog.id === selectedAnalog?.id);
+      button.innerHTML = '<strong>Аналог ' + (index + 1) + '</strong><small>' + counts.correct + '/5</small>';
+      button.addEventListener('click', () => {
+        selectedAnalog = analog;
+        renderAll();
+      });
+      analogTabs.append(button);
+    });
+  };
+
+  const renderAnalog = () => {
+    if (!selectedAnalog) return;
+    title.textContent = 'Прототип ' + selectedPrototype.number + ' · аналог '
+      + (selectedPrototype.analogs.indexOf(selectedAnalog) + 1);
+    condition.innerHTML = cleanMarkup(selectedAnalog.taskHtml);
+    const questions = selectedAnalog.questions || [];
+    rows.forEach((row) => {
+      const number = Number(row.dataset.questionNumber);
+      const question = questions.find((item) => Number(item.number) === number);
+      const text = row.querySelector('.route-question-text');
+      if (text) text.innerHTML = cleanMarkup(question?.html || '');
+    });
+    applyAttempt(currentAttempt());
+  };
+
+  const renderAll = () => {
+    renderPrototypeTabs();
+    renderAnalogTabs();
+    renderAnalog();
+  };
+
+  const saveCloud = async (attemptId, payload) => {
     if (!window.ogeSupabase || !cloudUser) return;
     try {
       const { data } = await window.ogeSupabase.auth.getUser();
@@ -57,20 +159,25 @@
   };
 
   const check = () => {
+    if (!selectedAnalog) return;
     const answers = readAnswers();
-    const checked = model.checkRouteAnswers(answers);
+    const checked = model.checkRouteAnswers(selectedAnalog, answers);
     const payload = {
-      prototype: attemptId,
+      prototype: selectedPrototype.id,
+      analog: selectedAnalog.id,
       answers,
       ...checked,
       taskProgress: model.buildTaskProgress(checked),
       savedAt: new Date().toISOString(),
       ownerId: cloudUser?.id || null,
     };
+    allAttempts[selectedAnalog.id] = payload;
     applyAttempt(payload);
+    renderPrototypeTabs();
+    renderAnalogTabs();
     if (cloudUser?.id) {
-      accountStorage?.write(storagePrefix, cloudUser.id, attemptId, payload);
-      saveCloud(payload);
+      accountStorage?.write(storagePrefix, cloudUser.id, selectedAnalog.id, payload);
+      saveCloud(selectedAnalog.id, payload);
     }
   };
 
@@ -79,12 +186,25 @@
     try {
       const { data } = await window.ogeSupabase.auth.getSession();
       cloudUser = data?.session?.user || null;
-      if (!cloudUser) return;
-      const cloudAttempt = getCloudAttempt();
-      const localAttempt = accountStorage?.read(storagePrefix, cloudUser.id, attemptId);
-      const attempt = cloudAttempt || localAttempt;
-      if (attempt) applyAttempt(attempt);
-    } catch { /* В гостевом режиме ответы не сохраняются. */ }
+      if (!cloudUser) {
+        allAttempts = {};
+        renderAll();
+        return;
+      }
+      const cloudAttempts = cloudUser.user_metadata?.trainer_progress?.math?.task1to5 || {};
+      allAttempts = Object.fromEntries(Object.entries(cloudAttempts).filter(([, attempt]) => (
+        window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, cloudUser)
+      )));
+      prototypes.flatMap((prototype) => prototype.analogs || []).forEach((analog) => {
+        if (allAttempts[analog.id]) return;
+        const localAttempt = accountStorage?.read(storagePrefix, cloudUser.id, analog.id);
+        if (localAttempt) allAttempts[analog.id] = localAttempt;
+      });
+      renderAll();
+    } catch {
+      allAttempts = {};
+      renderAll();
+    }
   };
 
   submit.addEventListener('click', check);
@@ -94,5 +214,6 @@
     check();
   });
   window.addEventListener('oge-auth-ready', load);
+  renderAll();
   setTimeout(load, 700);
 })();

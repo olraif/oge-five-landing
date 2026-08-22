@@ -1,21 +1,35 @@
 (function initTaskOneToFiveModel(root, factory) {
-  const api = factory();
+  const api = factory(root);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.OgeTaskOneToFiveModel = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function createTaskOneToFiveModel() {
-  const ROUTE_ANSWERS = Object.freeze({ 1: '342', 2: '41', 3: '29', 4: '116', 5: '930' });
-  const normalize = (value) => String(value ?? '').trim().replace(/\s+/g, '').replace('.', ',').toLowerCase();
-  const checkRouteAnswers = (answers = {}) => {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createTaskOneToFiveModel(root) {
+  const ROUTE_PROTOTYPES = root?.OgeTaskOneToFiveRoutes
+    || (typeof require === 'function' ? require('./task1-5-routes-data.js') : []);
+
+  const normalize = (value) => String(value ?? '')
+    .trim()
+    .replace(/\s+/g, '')
+    .replace('.', ',')
+    .toLowerCase();
+
+  const findAnalog = (attemptId) => ROUTE_PROTOTYPES
+    .flatMap((prototype) => prototype.analogs || [])
+    .find((analog) => analog.id === attemptId) || null;
+
+  const checkRouteAnswers = (analog, answers = {}) => {
+    const expected = analog?.answers || {};
     const answeredQuestionNumbers = [];
     const correctQuestionNumbers = [];
-    Object.keys(ROUTE_ANSWERS).forEach((key) => {
-      const number = Number(key);
-      const value = answers[number] ?? answers[key] ?? '';
+    [1, 2, 3, 4, 5].forEach((number) => {
+      const value = answers[number] ?? answers[String(number)] ?? '';
       if (normalize(value)) answeredQuestionNumbers.push(number);
-      if (normalize(value) === normalize(ROUTE_ANSWERS[key])) correctQuestionNumbers.push(number);
+      if (normalize(value) === normalize(expected[number] ?? expected[String(number)])) {
+        correctQuestionNumbers.push(number);
+      }
     });
     return { answeredQuestionNumbers, correctQuestionNumbers };
   };
+
   const buildTaskProgress = (checked = {}) => Object.fromEntries(
     [1, 2, 3, 4, 5].map((number) => [number, {
       correct: checked.correctQuestionNumbers?.includes(number) ? 1 : 0,
@@ -23,5 +37,29 @@
       total: 1,
     }]),
   );
-  return { ROUTE_ANSWERS, checkRouteAnswers, buildTaskProgress };
+
+  const aggregateTaskProgress = (attempts = {}) => {
+    const totals = Object.fromEntries(
+      [1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: 0 }]),
+    );
+    Object.values(attempts || {}).forEach((attempt) => {
+      [1, 2, 3, 4, 5].forEach((number) => {
+        const value = attempt?.taskProgress?.[number] || attempt?.taskProgress?.[String(number)];
+        if (!value) return;
+        totals[number].correct += Number(value.correct || 0);
+        totals[number].answered += Number(value.answered || 0);
+        totals[number].total += Number(value.total || 0);
+      });
+    });
+    return totals;
+  };
+
+  return {
+    ROUTE_PROTOTYPES,
+    findAnalog,
+    normalize,
+    checkRouteAnswers,
+    buildTaskProgress,
+    aggregateTaskProgress,
+  };
 });

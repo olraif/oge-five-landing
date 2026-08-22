@@ -76,6 +76,10 @@ class TaskOneToFivePageTests(unittest.TestCase):
         page = parse_page(PART_ONE / "task1-5.html")
         self.assertEqual(page.route_questions, ["1", "2", "3", "4", "5"])
         self.assertEqual(page.route_image_alt, "План маршрутов между населёнными пунктами")
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertIn('class="route-prototype-tabs"', html)
+        self.assertIn('class="route-analog-tabs"', html)
+        self.assertIn('aria-live="polite"', html)
 
     def test_student_progress_reads_routes_results(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
