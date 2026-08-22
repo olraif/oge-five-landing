@@ -5,6 +5,12 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createTaskOneToFiveModel(root) {
   const ROUTE_PROTOTYPES = root?.OgeTaskOneToFiveRoutes
     || (typeof require === 'function' ? require('./task1-5-routes-data.js') : []);
+  const TIRE_PROTOTYPES = root?.OgeTaskOneToFiveTires
+    || (typeof require === 'function' ? require('./task1-5-tires-data.js') : []);
+  const PRACTICAL_TYPES = {
+    routes: { id: 'routes', label: 'Маршруты', prototypes: ROUTE_PROTOTYPES },
+    tires: { id: 'tires', label: 'Шины', prototypes: TIRE_PROTOTYPES },
+  };
 
   const normalize = (value) => String(value ?? '')
     .trim()
@@ -12,11 +18,12 @@
     .replace('.', ',')
     .toLowerCase();
 
-  const findAnalog = (attemptId) => ROUTE_PROTOTYPES
+  const findAnalog = (attemptId) => Object.values(PRACTICAL_TYPES)
+    .flatMap((type) => type.prototypes || [])
     .flatMap((prototype) => prototype.analogs || [])
     .find((analog) => analog.id === attemptId) || null;
 
-  const checkRouteAnswers = (analog, answers = {}) => {
+  const checkAnswers = (analog, answers = {}) => {
     const expected = analog?.answers || {};
     const answeredQuestionNumbers = [];
     const correctQuestionNumbers = [];
@@ -54,11 +61,16 @@
     return totals;
   };
 
+  const checkRouteAnswers = checkAnswers;
+
   return {
     ROUTE_PROTOTYPES,
+    TIRE_PROTOTYPES,
+    PRACTICAL_TYPES,
     findAnalog,
     normalize,
     checkRouteAnswers,
+    checkAnswers,
     buildTaskProgress,
     aggregateTaskProgress,
   };

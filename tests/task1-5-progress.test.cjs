@@ -4,6 +4,14 @@ const model = require('../study/math/part-one/task1-5-model.js');
 assert.equal(model.ROUTE_PROTOTYPES.length, 2);
 assert.equal(model.ROUTE_PROTOTYPES[0].analogs.length, 20);
 assert.equal(model.ROUTE_PROTOTYPES[1].analogs.length, 4);
+assert.equal(model.TIRE_PROTOTYPES.length, 1);
+assert.equal(model.TIRE_PROTOTYPES[0].number, '2.1');
+assert.equal(model.TIRE_PROTOTYPES[0].analogs.length, 21);
+
+const firstTireAnalog = model.TIRE_PROTOTYPES[0].analogs[0];
+assert.equal(firstTireAnalog.id, 'tires-2.1.1');
+assert.deepEqual(firstTireAnalog.answers, { 1: '185', 2: '112,75', 3: '603', 4: '13,3', 5: '2,2' });
+assert.equal(model.PRACTICAL_TYPES.tires.prototypes, model.TIRE_PROTOTYPES);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');
@@ -23,6 +31,9 @@ assert.deepEqual(model.buildTaskProgress(partial), {
   4: { correct: 1, answered: 1, total: 1 },
   5: { correct: 1, answered: 1, total: 1 },
 });
+
+const tireChecked = model.checkAnswers(firstTireAnalog, { 1: '185', 2: '112.75', 3: '603', 4: '13,3', 5: '2,2' });
+assert.deepEqual(tireChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const aggregate = model.aggregateTaskProgress({
   'routes-1.1.1': { taskProgress: model.buildTaskProgress(checked) },

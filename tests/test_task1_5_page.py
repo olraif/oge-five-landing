@@ -81,6 +81,28 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertIn('class="route-analog-tabs"', html)
         self.assertIn('aria-live="polite"', html)
 
+    def test_tires_are_enabled_and_loaded_as_a_complete_trainer_type(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertIn('src="task1-5-tires-data.js"', html)
+        self.assertIn('data-practical-type="tires"', html)
+        self.assertNotIn('data-practical-type="tires" disabled', html)
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("model.PRACTICAL_TYPES", script)
+        self.assertIn("tires-1.svg", script)
+        self.assertIn("tires-2.svg", script)
+
+    def test_practical_progress_uses_green_yellow_and_pink_only(self):
+        studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
+        css = (PART_ONE.parents[1] / "study.css").read_text(encoding="utf-8")
+        self.assertIn("total.answered - total.correct", studio)
+        self.assertIn("#69d18a 0 var(--ok)", css)
+        self.assertIn("#f7d77c var(--ok) calc(var(--ok) + var(--work))", css)
+        self.assertNotIn("#4b74ff var(--ok) calc(var(--ok) + var(--work))", css)
+    def test_tire_math_markup_is_cleaned_for_students(self):
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn(".replace(/\\\\cdot/g, '&middot;')", script)
+        self.assertIn(".replace(/\\\\%/g, '%')", script)
+        self.assertIn(".replace(/\\\\\\s/g, ' ')", script)
     def test_student_progress_reads_routes_results(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
         self.assertEqual(studio.count('<div class="bar bar--practical"'), 5)

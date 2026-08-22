@@ -5,6 +5,8 @@
   const prototypeTabs = document.querySelector('.route-prototype-tabs');
   const analogTabs = document.querySelector('.route-analog-tabs');
   const condition = document.querySelector('.route-source-condition');
+  const typeButtons = [...document.querySelectorAll('[data-practical-type]')];
+  const kicker = document.querySelector('.route-set-kicker');
   const title = document.querySelector('#route-set-title');
   const result = document.querySelector('.route-set-result');
   const model = window.OgeTaskOneToFiveModel;
@@ -12,7 +14,8 @@
 
   const storagePrefix = 'ogeTrainer:v3:math:task1to5:';
   const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
-  const prototypes = model.ROUTE_PROTOTYPES || [];
+  let selectedType = model.PRACTICAL_TYPES?.routes || { id: 'routes', label: 'Маршруты', prototypes: model.ROUTE_PROTOTYPES || [] };
+  let prototypes = selectedType.prototypes || [];
   let selectedPrototype = prototypes[0] || null;
   let selectedAnalog = selectedPrototype?.analogs?.[0] || null;
   let cloudUser = null;
@@ -20,19 +23,33 @@
 
   const cleanMarkup = (markup = '') => {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(String(markup).replace(/\$([^$]+)\$/g, '$1'), 'text/html');
+    const normalizedMarkup = String(markup)
+      .replace(/\$([^$]+)\$/g, '$1')
+      .replace(/\\cdot/g, '&middot;')
+      .replace(/\\%/g, '%')
+      .replace(/\\\s/g, ' ');
+    const doc = parser.parseFromString(normalizedMarkup, 'text/html');
     doc.querySelectorAll('script,style,link,iframe,object').forEach((element) => element.remove());
     doc.querySelectorAll('*').forEach((element) => {
       [...element.attributes].forEach((attribute) => {
         if (attribute.name.toLowerCase().startsWith('on')) element.removeAttribute(attribute.name);
       });
     });
+    const imageAssets = {
+      'trips-1.svg': ['assets/task1-5/trips-1.svg', 'План маршрутов между населёнными пунктами'],
+      'trips-2.svg': ['assets/task1-5/trips-2.svg', 'Схема маршрутов'],
+      'tires-1.svg': ['assets/task1-5/tires-1.svg', 'Маркировка автомобильной шины'],
+      'tires-2.svg': ['assets/task1-5/tires-2.svg', 'Размеры автомобильной шины и диска'],
+    };
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      image.src = src.includes('trips-1.svg')
-        ? 'assets/task1-5/trips-1.svg'
-        : 'assets/task1-5/trips-2.svg';
-      image.alt = 'План маршрутов между населёнными пунктами';
+      const asset = Object.entries(imageAssets).find(([name]) => src.includes(name))?.[1];
+      if (!asset) {
+        image.remove();
+        return;
+      }
+      image.src = asset[0];
+      image.alt = asset[1];
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;
@@ -76,6 +93,11 @@
     ].filter(Boolean).join(' ');
   };
 
+  const renderTypeTabs = () => {
+    typeButtons.forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.practicalType === selectedType.id);
+    });
+  };
   const renderPrototypeTabs = () => {
     prototypeTabs.innerHTML = '';
     prototypes.forEach((prototype) => {
@@ -117,6 +139,7 @@
 
   const renderAnalog = () => {
     if (!selectedAnalog) return;
+    if (kicker) kicker.textContent = selectedType.label;
     title.textContent = 'Прототип ' + selectedPrototype.number + ' · аналог '
       + (selectedPrototype.analogs.indexOf(selectedAnalog) + 1);
     condition.innerHTML = cleanMarkup(selectedAnalog.taskHtml);
@@ -131,6 +154,7 @@
   };
 
   const renderAll = () => {
+    renderTypeTabs();
     renderPrototypeTabs();
     renderAnalogTabs();
     renderAnalog();
@@ -163,6 +187,7 @@
     const answers = readAnswers();
     const checked = model.checkRouteAnswers(selectedAnalog, answers);
     const payload = {
+      type: selectedType.id,
       prototype: selectedPrototype.id,
       analog: selectedAnalog.id,
       answers,
@@ -195,7 +220,7 @@
       allAttempts = Object.fromEntries(Object.entries(cloudAttempts).filter(([, attempt]) => (
         window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, cloudUser)
       )));
-      prototypes.flatMap((prototype) => prototype.analogs || []).forEach((analog) => {
+      Object.values(model.PRACTICAL_TYPES || {}).flatMap((type) => type.prototypes || []).flatMap((prototype) => prototype.analogs || []).forEach((analog) => {
         if (allAttempts[analog.id]) return;
         const localAttempt = accountStorage?.read(storagePrefix, cloudUser.id, analog.id);
         if (localAttempt) allAttempts[analog.id] = localAttempt;
@@ -207,6 +232,17 @@
     }
   };
 
+  typeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const nextType = model.PRACTICAL_TYPES?.[button.dataset.practicalType];
+      if (!nextType) return;
+      selectedType = nextType;
+      prototypes = selectedType.prototypes || [];
+      selectedPrototype = prototypes[0] || null;
+      selectedAnalog = selectedPrototype?.analogs?.[0] || null;
+      renderAll();
+    });
+  });
   submit.addEventListener('click', check);
   form.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
