@@ -71,3 +71,5 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 }
 .header-contacts{display:flex;gap:6px}.header-contacts .header-message{padding:10px 12px;font-size:12px}
 @media (max-width:1000px){.header-contacts{display:none}}
+
+@media (max-width:720px){.mobile-contact{grid-template-columns:repeat(4,1fr);gap:6px}.mobile-contact .mobile-max{display:grid!important}.mobile-contact .mobile-channel,.mobile-contact .mobile-cabinet{display:grid}.mobile-contact>a{min-width:0}}
