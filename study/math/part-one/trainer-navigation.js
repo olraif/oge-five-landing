@@ -1,5 +1,6 @@
 (() => {
   const taskRoutes = Object.freeze({
+    '1-5': 'task1-5.html#trainer',
     6: 'index.html#trainer',
     7: 'task7.html#trainer',
     8: 'task8.html#trainer',
@@ -35,8 +36,11 @@
 
   const initializeTrainerNavigation = () => {
     document.querySelectorAll('.task-nav a').forEach((link) => {
-      const taskNumber = Number.parseInt(link.textContent.trim(), 10);
-      const route = taskRoutes[taskNumber];
+      const label = link.textContent.trim().replace(/\s+/g, '');
+      const taskKey = label === '1–5' || label === '1-5'
+        ? '1-5'
+        : Number.parseInt(label, 10);
+      const route = taskRoutes[taskKey];
       if (route) {
         link.href = route;
         link.classList.remove('is-unavailable');

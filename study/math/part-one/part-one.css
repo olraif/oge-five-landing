@@ -17,3 +17,5 @@
 .trainer-progress-link{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border-radius:12px;color:#4966d8;font-weight:700;text-decoration:none}.trainer-progress-link:hover{background:#eef2ff}
 .task-nav--sidebar a{min-height:28px!important;height:28px!important;padding:5px 8px!important}.task-nav--sidebar{gap:4px}
 .task-nav a.is-unavailable{cursor:pointer;opacity:.66}.trainer-development-toast{position:fixed;z-index:1000;left:50%;bottom:28px;max-width:min(420px,calc(100vw - 32px));padding:13px 18px;border:1px solid #dbe4f7;border-radius:14px;background:#172443;color:#fff;font:700 13px/1.4 Arial,sans-serif;box-shadow:0 16px 36px rgba(23,36,67,.22);opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}.trainer-development-toast.is-visible{opacity:1;transform:translate(-50%,0)}
+
+.task-nav a.task-range-link{grid-column:1/-1;min-height:34px!important;height:34px!important}
