@@ -40,26 +40,9 @@ class MobileCabinetEntryTests(unittest.TestCase):
             r'\.header-cabinet\{display:inline-flex',
         )
 
-    def test_fixed_mobile_panel_contains_contacts_and_student_cabinet(self):
-        panel = re.search(
-            r'<div class="mobile-contact"[^>]*>(.*?)</div>',
-            self.html,
-            re.S,
-        ).group(1)
-
-        self.assertIn('>MAX</a>', panel)
-        self.assertIn('>ВК</a>', panel)
-        self.assertIn('>Telegram</a>', panel)
-        self.assertRegex(
-            panel,
-            r'<a class="mobile-cabinet" href="study/index\.html">'
-            r'Кабинет ученика</a>',
-        )
-        self.assertRegex(
-            self.css,
-            r'@media \(max-width:720px\)\{\.mobile-contact\{'
-            r'grid-template-columns:repeat\(4,1fr\)',
-        )
+    def test_fixed_mobile_panel_is_removed(self):
+        self.assertNotIn('class="mobile-contact"', self.html)
+        self.assertNotIn('class="mobile-cabinet"', self.html)
 
 if __name__ == "__main__":
     unittest.main()
