@@ -271,11 +271,11 @@
             <span>0%</span>
           </div>
           <div class="progress-bars">
-            <div class="bar" style="--ok:0%;--work:0%"><span>1</span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>2</span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>3</span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>4</span></div>
-            <div class="bar" style="--ok:0%;--work:0%"><span>5</span></div>
+            <div class="bar bar--practical" data-practical-task="1" style="--ok:0%;--work:0%"><span>1<small data-practical-percent>0%</small></span></div>
+            <div class="bar bar--practical" data-practical-task="2" style="--ok:0%;--work:0%"><span>2<small data-practical-percent>0%</small></span></div>
+            <div class="bar bar--practical" data-practical-task="3" style="--ok:0%;--work:0%"><span>3<small data-practical-percent>0%</small></span></div>
+            <div class="bar bar--practical" data-practical-task="4" style="--ok:0%;--work:0%"><span>4<small data-practical-percent>0%</small></span></div>
+            <div class="bar bar--practical" data-practical-task="5" style="--ok:0%;--work:0%"><span>5<small data-practical-percent>0%</small></span></div>
             <div class="bar bar--task6" style="--ok:0%;--work:0%"><div class="task6-progress-stack" data-task6-stack aria-hidden="true"></div><span>6<small data-task6-percent>0%</small></span></div>
             <div class="bar bar--task7" style="--ok:0%;--work:0%"><div class="task7-progress-stack" data-task7-stack aria-hidden="true"></div><span>7<small data-task7-percent>0%</small></span></div>
             <div class="bar bar--task8" style="--ok:0%;--work:0%"><div class="task8-progress-stack" data-task8-stack aria-hidden="true"></div><span>8<small data-task8-percent>0%</small></span></div>
@@ -387,6 +387,33 @@
       window.addEventListener('hashchange', showView);
       showView();
 
+      const renderTask1to5Progress = (attempts = {}) => {
+        const totals = Object.fromEntries([1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: 0 }]));
+        Object.values(attempts || {}).forEach((attempt) => {
+          const progress = attempt?.taskProgress || {};
+          [1, 2, 3, 4, 5].forEach((number) => {
+            const value = progress[number] || progress[String(number)];
+            if (!value) return;
+            totals[number].correct += Number(value.correct) || 0;
+            totals[number].answered += Number(value.answered) || 0;
+            totals[number].total += Number(value.total) || 0;
+          });
+        });
+        [1, 2, 3, 4, 5].forEach((number) => {
+          const bar = document.querySelector(`.bar--practical[data-practical-task="${number}"]`);
+          if (!bar) return;
+          const total = totals[number];
+          const ok = total.total ? Math.round((total.correct / total.total) * 100) : 0;
+          const work = total.total ? Math.round((Math.max(0, total.answered - total.correct) / total.total) * 100) : 0;
+          bar.style.setProperty('--ok', `${ok}%`);
+          bar.style.setProperty('--work', `${work}%`);
+          bar.classList.toggle('is-started', total.answered > 0);
+          const percent = bar.querySelector('[data-practical-percent]');
+          if (percent) percent.textContent = `${ok}%`;
+          bar.title = `Задание ${number}: ${ok}%`;
+        });
+      };
+      const resetTask1to5Progress = () => renderTask1to5Progress({});
       const progressBar6 = () => document.querySelector('.progress-bars .bar:nth-child(6)');
       const renderTask6Progress = (task6Progress = {}) => {
         const bar = progressBar6();
@@ -775,6 +802,7 @@
       const resetTask19Progress = () => renderTask19Progress({});
       const syncCloudTask6Progress = (user) => {
         if (!user) {
+          resetTask1to5Progress();
           resetTask6Progress();
           resetTask7Progress();
           resetTask8Progress();
@@ -794,6 +822,8 @@
         const keepOwnedAttempts = (progress = {}) => Object.fromEntries(
           Object.entries(progress).filter(([, attempt]) => window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, user)),
         );
+        const task1to5Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task1to5);
+        renderTask1to5Progress(task1to5Progress);
         const task6Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task6);
         renderTask6Progress(task6Progress);
         const task7Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task7);
@@ -889,6 +919,7 @@
         syncCloudTask6Progress(user);
         syncCourseAccess(user);
       };
+      resetTask1to5Progress();
       resetTask6Progress();
       resetTask7Progress();
       resetTask8Progress();

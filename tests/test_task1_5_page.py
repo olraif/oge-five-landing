@@ -22,6 +22,8 @@ class LinkAndPrototypeParser(HTMLParser):
         self.prototype_titles = []
         self._link = None
         self._prototype = None
+        self.route_questions = []
+        self.route_image_alt = None
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
@@ -30,6 +32,10 @@ class LinkAndPrototypeParser(HTMLParser):
             self._link = {"href": attributes.get("href", ""), "text": ""}
         if tag == "h2" and "practical-prototype-title" in classes:
             self._prototype = ""
+        if tag == "label" and "route-question" in classes:
+            self.route_questions.append(attributes.get("data-question-number"))
+        if tag == "img" and "route-map" in classes:
+            self.route_image_alt = attributes.get("alt")
 
     def handle_data(self, data):
         if self._link is not None:
@@ -65,6 +71,23 @@ class TaskOneToFivePageTests(unittest.TestCase):
     def test_combined_page_lists_prototypes_from_the_collection(self):
         page = parse_page(PART_ONE / "task1-5.html")
         self.assertEqual(page.prototype_titles, PROTOTYPES)
+
+    def test_routes_prototype_renders_one_shared_map_and_five_answer_fields(self):
+        page = parse_page(PART_ONE / "task1-5.html")
+        self.assertEqual(page.route_questions, ["1", "2", "3", "4", "5"])
+        self.assertEqual(page.route_image_alt, "План маршрутов между населёнными пунктами")
+
+    def test_student_progress_reads_routes_results(self):
+        studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(studio.count('<div class="bar bar--practical"'), 5)
+        self.assertIn("renderTask1to5Progress", studio)
+        self.assertIn("trainer_progress?.math?.task1to5", studio)
+        self.assertGreaterEqual(studio.count("resetTask1to5Progress();"), 2)
+    def test_combined_page_does_not_repeat_explanatory_heading_or_note(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertNotIn("Практические задачи", html)
+        self.assertNotIn("Выберите прототип", html)
+        self.assertNotIn("Ответы на пять вопросов будут учитываться отдельно", html)
 
 
 if __name__ == "__main__":
