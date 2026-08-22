@@ -7,6 +7,8 @@ assert.equal(model.ROUTE_PROTOTYPES[1].analogs.length, 4);
 assert.equal(model.TIRE_PROTOTYPES.length, 1);
 assert.equal(model.TIRE_PROTOTYPES[0].number, '2.1');
 assert.equal(model.TIRE_PROTOTYPES[0].analogs.length, 21);
+assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
+assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
 
 const firstTireAnalog = model.TIRE_PROTOTYPES[0].analogs[0];
 assert.equal(firstTireAnalog.id, 'tires-2.1.1');
@@ -40,10 +42,10 @@ const aggregate = model.aggregateTaskProgress({
   'routes-1.1.2': { taskProgress: model.buildTaskProgress(partial) },
 });
 assert.deepEqual(aggregate, {
-  1: { correct: 2, answered: 2, total: 2 },
-  2: { correct: 1, answered: 2, total: 2 },
-  3: { correct: 1, answered: 1, total: 2 },
-  4: { correct: 2, answered: 2, total: 2 },
-  5: { correct: 2, answered: 2, total: 2 },
+  1: { correct: 2, answered: 2, total: 76 },
+  2: { correct: 1, answered: 2, total: 76 },
+  3: { correct: 1, answered: 1, total: 76 },
+  4: { correct: 2, answered: 2, total: 76 },
+  5: { correct: 2, answered: 2, total: 76 },
 });
 console.log('task1-5 progress tests passed');

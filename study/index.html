@@ -387,8 +387,9 @@
       window.addEventListener('hashchange', showView);
       showView();
 
+      const practicalTaskTotal = 76; // 380 подзаданий: 76 комплектов по пять вопросов.
       const renderTask1to5Progress = (attempts = {}) => {
-        const totals = Object.fromEntries([1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: 0 }]));
+        const totals = Object.fromEntries([1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: practicalTaskTotal }]));
         Object.values(attempts || {}).forEach((attempt) => {
           const progress = attempt?.taskProgress || {};
           [1, 2, 3, 4, 5].forEach((number) => {
@@ -396,7 +397,6 @@
             if (!value) return;
             totals[number].correct += Number(value.correct) || 0;
             totals[number].answered += Number(value.answered) || 0;
-            totals[number].total += Number(value.total) || 0;
           });
         });
         [1, 2, 3, 4, 5].forEach((number) => {

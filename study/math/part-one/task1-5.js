@@ -35,21 +35,17 @@
         if (attribute.name.toLowerCase().startsWith('on')) element.removeAttribute(attribute.name);
       });
     });
-    const imageAssets = {
-      'trips-1.svg': ['assets/task1-5/trips-1.svg', 'План маршрутов между населёнными пунктами'],
-      'trips-2.svg': ['assets/task1-5/trips-2.svg', 'Схема маршрутов'],
-      'tires-1.svg': ['assets/task1-5/tires-1.svg', 'Маркировка автомобильной шины'],
-      'tires-2.svg': ['assets/task1-5/tires-2.svg', 'Размеры автомобильной шины и диска'],
-    };
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      const asset = Object.entries(imageAssets).find(([name]) => src.includes(name))?.[1];
-      if (!asset) {
+      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12])\.svg/i)?.[0]?.toLowerCase();
+      if (!fileName) {
         image.remove();
         return;
       }
-      image.src = asset[0];
-      image.alt = asset[1];
+      image.src = `assets/task1-5/${fileName}`;
+      image.alt = fileName.startsWith('trips-')
+        ? 'Схема маршрутов между населёнными пунктами'
+        : 'Схема автомобильной шины';
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;

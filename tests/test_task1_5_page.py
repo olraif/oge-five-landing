@@ -1,4 +1,5 @@
 import unittest
+import re
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -88,8 +89,7 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertNotIn('data-practical-type="tires" disabled', html)
         script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
         self.assertIn("model.PRACTICAL_TYPES", script)
-        self.assertIn("tires-1.svg", script)
-        self.assertIn("tires-2.svg", script)
+        self.assertIn("tires-[12]", script)
 
     def test_practical_progress_uses_green_yellow_and_pink_only(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
@@ -109,6 +109,22 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertIn("renderTask1to5Progress", studio)
         self.assertIn("trainer_progress?.math?.task1to5", studio)
         self.assertGreaterEqual(studio.count("resetTask1to5Progress();"), 2)
+    def test_progress_uses_full_fipi_denominator_for_each_subtask(self):
+        studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
+        self.assertIn("const practicalTaskTotal = 76", studio)
+        self.assertIn("total: practicalTaskTotal", studio)
+        self.assertNotIn("totals[number].total += Number(value.total)", studio)
+
+    def test_every_route_drawing_has_a_local_asset(self):
+        data = (PART_ONE / "task1-5-routes-data.js").read_text(encoding="utf-8")
+        drawings = set(re.findall(r"trips-\d+\.svg", data))
+        self.assertEqual(drawings, {f"trips-{number}.svg" for number in range(1, 12)})
+        for drawing in drawings:
+            self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
+
+    def test_image_sanitizer_accepts_all_route_drawings(self):
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("trips-(?:[1-9]|1[01])", script)
     def test_combined_page_does_not_repeat_explanatory_heading_or_note(self):
         html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
         self.assertNotIn("Практические задачи", html)

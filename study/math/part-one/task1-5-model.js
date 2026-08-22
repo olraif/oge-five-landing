@@ -11,6 +11,11 @@
     routes: { id: 'routes', label: 'Маршруты', prototypes: ROUTE_PROTOTYPES },
     tires: { id: 'tires', label: 'Шины', prototypes: TIRE_PROTOTYPES },
   };
+  // В банке 380 практических подзаданий: 76 комплектов по пять вопросов.
+  const PRACTICAL_TASK_SET_COUNT = 76;
+  const PRACTICAL_TASK_TOTALS = Object.fromEntries(
+    [1, 2, 3, 4, 5].map((number) => [number, PRACTICAL_TASK_SET_COUNT]),
+  );
 
   const normalize = (value) => String(value ?? '')
     .trim()
@@ -47,7 +52,7 @@
 
   const aggregateTaskProgress = (attempts = {}) => {
     const totals = Object.fromEntries(
-      [1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: 0 }]),
+      [1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: PRACTICAL_TASK_TOTALS[number] }]),
     );
     Object.values(attempts || {}).forEach((attempt) => {
       [1, 2, 3, 4, 5].forEach((number) => {
@@ -55,7 +60,6 @@
         if (!value) return;
         totals[number].correct += Number(value.correct || 0);
         totals[number].answered += Number(value.answered || 0);
-        totals[number].total += Number(value.total || 0);
       });
     });
     return totals;
@@ -67,6 +71,8 @@
     ROUTE_PROTOTYPES,
     TIRE_PROTOTYPES,
     PRACTICAL_TYPES,
+    PRACTICAL_TASK_SET_COUNT,
+    PRACTICAL_TASK_TOTALS,
     findAnalog,
     normalize,
     checkRouteAnswers,
