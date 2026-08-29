@@ -13,12 +13,15 @@
     || (typeof require === 'function' ? require('./task1-5-sheets-data.js') : []);
   const STOVE_PROTOTYPES = root?.OgeTaskOneToFiveStoves
     || (typeof require === 'function' ? require('./task1-5-stoves-data.js') : []);
+  const APARTMENT_PROTOTYPES = root?.OgeTaskOneToFiveApartments
+    || (typeof require === 'function' ? require('./task1-5-apartments-data.js') : []);
   const PRACTICAL_TYPES = {
     routes: { id: 'routes', label: 'Маршруты', prototypes: ROUTE_PROTOTYPES },
     tires: { id: 'tires', label: 'Шины', prototypes: TIRE_PROTOTYPES },
     plots: { id: 'plots', label: 'Участки', prototypes: PLOT_PROTOTYPES },
     sheets: { id: 'sheets', label: 'Листы', prototypes: SHEET_PROTOTYPES },
     stoves: { id: 'stoves', label: 'Печки', prototypes: STOVE_PROTOTYPES },
+    apartments: { id: 'apartments', label: 'Квартиры', prototypes: APARTMENT_PROTOTYPES },
   };
   // В банке 380 практических подзаданий: 76 комплектов по пять вопросов.
   const PRACTICAL_TASK_SET_COUNT = 76;
@@ -84,6 +87,7 @@
     PLOT_PROTOTYPES,
     SHEET_PROTOTYPES,
     STOVE_PROTOTYPES,
+    APARTMENT_PROTOTYPES,
     PRACTICAL_TYPES,
     PRACTICAL_TASK_SET_COUNT,
     PRACTICAL_TASK_TOTALS,

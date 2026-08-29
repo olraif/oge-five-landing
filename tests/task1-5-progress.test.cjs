@@ -16,6 +16,9 @@ assert.equal(model.SHEET_PROTOTYPES[0].analogs.length, 4);
 assert.equal(model.STOVE_PROTOTYPES.length, 1);
 assert.equal(model.STOVE_PROTOTYPES[0].number, '5.1');
 assert.equal(model.STOVE_PROTOTYPES[0].analogs.length, 2);
+assert.equal(model.APARTMENT_PROTOTYPES.length, 1);
+assert.equal(model.APARTMENT_PROTOTYPES[0].number, '6.1');
+assert.equal(model.APARTMENT_PROTOTYPES[0].analogs.length, 8);
 assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
 assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
 
@@ -50,6 +53,17 @@ const stoveChecked = model.checkAnswers(firstStoveAnalog, {
   1: '312', 2: '15,4', 3: '2000', 4: '16200', 5: '65',
 });
 assert.deepEqual(stoveChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
+
+const firstApartmentAnalog = model.APARTMENT_PROTOTYPES[0].analogs[0];
+assert.equal(firstApartmentAnalog.id, 'apartments-6.1.1');
+assert.deepEqual(firstApartmentAnalog.answers, {
+  1: '2346', 2: '3.2', 3: '12', 4: '680', 5: '29700',
+});
+assert.equal(model.PRACTICAL_TYPES.apartments.prototypes, model.APARTMENT_PROTOTYPES);
+const apartmentChecked = model.checkAnswers(firstApartmentAnalog, {
+  1: '2346', 2: '3,2', 3: '12', 4: '680', 5: '29700',
+});
+assert.deepEqual(apartmentChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');

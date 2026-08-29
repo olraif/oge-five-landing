@@ -40,7 +40,7 @@
     });
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+|papers-\d+|stoves-\d+)\.svg/i)?.[0]?.toLowerCase();
+      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+|papers-\d+|stoves-\d+|flats-\d+)\.svg/i)?.[0]?.toLowerCase();
       if (!fileName) {
         image.remove();
         return;
@@ -54,7 +54,9 @@
             ? 'План дачного участка'
             : fileName.startsWith('papers-')
               ? 'Схема листа бумаги'
-              : 'Схема печи для бани';
+              : fileName.startsWith('stoves-')
+                ? 'Схема печи для бани'
+                : 'План квартиры';
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;
