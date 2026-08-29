@@ -9,10 +9,13 @@
     || (typeof require === 'function' ? require('./task1-5-tires-data.js') : []);
   const PLOT_PROTOTYPES = root?.OgeTaskOneToFivePlots
     || (typeof require === 'function' ? require('./task1-5-plots-data.js') : []);
+  const SHEET_PROTOTYPES = root?.OgeTaskOneToFiveSheets
+    || (typeof require === 'function' ? require('./task1-5-sheets-data.js') : []);
   const PRACTICAL_TYPES = {
     routes: { id: 'routes', label: 'Маршруты', prototypes: ROUTE_PROTOTYPES },
     tires: { id: 'tires', label: 'Шины', prototypes: TIRE_PROTOTYPES },
     plots: { id: 'plots', label: 'Участки', prototypes: PLOT_PROTOTYPES },
+    sheets: { id: 'sheets', label: 'Листы', prototypes: SHEET_PROTOTYPES },
   };
   // В банке 380 практических подзаданий: 76 комплектов по пять вопросов.
   const PRACTICAL_TASK_SET_COUNT = 76;
@@ -38,7 +41,9 @@
     [1, 2, 3, 4, 5].forEach((number) => {
       const value = answers[number] ?? answers[String(number)] ?? '';
       if (normalize(value)) answeredQuestionNumbers.push(number);
-      if (normalize(value) === normalize(expected[number] ?? expected[String(number)])) {
+      const expectedValue = expected[number] ?? expected[String(number)];
+      const acceptedValues = Array.isArray(expectedValue) ? expectedValue : [expectedValue];
+      if (acceptedValues.some((accepted) => normalize(value) === normalize(accepted))) {
         correctQuestionNumbers.push(number);
       }
     });
@@ -74,6 +79,7 @@
     ROUTE_PROTOTYPES,
     TIRE_PROTOTYPES,
     PLOT_PROTOTYPES,
+    SHEET_PROTOTYPES,
     PRACTICAL_TYPES,
     PRACTICAL_TASK_SET_COUNT,
     PRACTICAL_TASK_TOTALS,

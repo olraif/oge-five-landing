@@ -40,7 +40,7 @@
     });
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+)\.svg/i)?.[0]?.toLowerCase();
+      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+|papers-\d+)\.svg/i)?.[0]?.toLowerCase();
       if (!fileName) {
         image.remove();
         return;
@@ -50,7 +50,9 @@
         ? 'Схема маршрутов между населёнными пунктами'
         : fileName.startsWith('tires-')
           ? 'Схема автомобильной шины'
-          : 'План дачного участка';
+          : fileName.startsWith('homesteads-')
+            ? 'План дачного участка'
+            : 'Схема листа бумаги';
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;

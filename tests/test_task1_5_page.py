@@ -110,6 +110,25 @@ class TaskOneToFivePageTests(unittest.TestCase):
         for drawing in drawings:
             self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
 
+    def test_sheets_are_enabled_and_loaded_as_a_complete_trainer_type(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertIn('src="task1-5-sheets-data.js"', html)
+        self.assertIn('data-practical-type="sheets"', html)
+        self.assertNotIn('data-practical-type="sheets" disabled', html)
+        model = (PART_ONE / "task1-5-model.js").read_text(encoding="utf-8")
+        self.assertIn("OgeTaskOneToFiveSheets", model)
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("papers-", script)
+
+    def test_every_sheet_drawing_has_a_local_asset(self):
+        data_path = PART_ONE / "task1-5-sheets-data.js"
+        self.assertTrue(data_path.is_file())
+        data = data_path.read_text(encoding="utf-8")
+        drawings = set(re.findall(r"papers-\d+\.svg", data))
+        self.assertGreaterEqual(len(drawings), 1)
+        for drawing in drawings:
+            self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
+
     def test_practical_progress_uses_green_yellow_and_pink_only(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
         css = (PART_ONE.parents[1] / "study.css").read_text(encoding="utf-8")

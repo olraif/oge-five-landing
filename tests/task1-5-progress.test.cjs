@@ -10,6 +10,9 @@ assert.equal(model.TIRE_PROTOTYPES[0].analogs.length, 21);
 assert.equal(model.PLOT_PROTOTYPES.length, 1);
 assert.equal(model.PLOT_PROTOTYPES[0].number, '3.1');
 assert.equal(model.PLOT_PROTOTYPES[0].analogs.length, 8);
+assert.equal(model.SHEET_PROTOTYPES.length, 1);
+assert.equal(model.SHEET_PROTOTYPES[0].number, '4.1');
+assert.equal(model.SHEET_PROTOTYPES[0].analogs.length, 4);
 assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
 assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
 
@@ -22,6 +25,17 @@ const firstPlotAnalog = model.PLOT_PROTOTYPES[0].analogs[0];
 assert.equal(firstPlotAnalog.id, 'plots-3.1.1');
 assert.deepEqual(firstPlotAnalog.answers, { 1: '7425', 2: '7', 3: '36', 4: '29', 5: '500' });
 assert.equal(model.PRACTICAL_TYPES.plots.prototypes, model.PLOT_PROTOTYPES);
+
+const firstSheetAnalog = model.SHEET_PROTOTYPES[0].analogs[0];
+assert.equal(firstSheetAnalog.id, 'sheets-4.1.1');
+assert.deepEqual(firstSheetAnalog.answers, {
+  1: '2413', 2: '2', 3: ['1250', '1247.4'], 4: '840', 5: '1250',
+});
+assert.equal(model.PRACTICAL_TYPES.sheets.prototypes, model.SHEET_PROTOTYPES);
+const sheetChecked = model.checkAnswers(firstSheetAnalog, {
+  1: '2413', 2: '2', 3: '1247,4', 4: '840', 5: '1250',
+});
+assert.deepEqual(sheetChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');
