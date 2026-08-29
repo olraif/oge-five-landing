@@ -72,6 +72,33 @@ async page => {
   expect(Math.abs(task6.submitHeight - reference.submitHeight) < 1, `Задание 6: высота кнопки проверки отличается (${task6.submitHeight} вместо ${reference.submitHeight})`);
   expect(!task6.guideVisible, 'В задании 6 остался лишний блок «Как пройти тип»');
 
+  await page.goto(base + 'index.html#trainer');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.waitForSelector('#fractionQuiz input');
+  await page.locator('#fractionQuiz input').nth(0).fill('9,4');
+  await page.locator('#fractionQuiz input').nth(1).fill('0');
+  await page.locator('#fractionQuiz input').nth(1).press('Enter');
+  const task6Colours = await page.evaluate(() => {
+    const background = selector => getComputedStyle(document.querySelector(selector)).backgroundColor;
+    return {
+      correctClass: document.querySelector('[data-question="q1"]').className,
+      wrongClass: document.querySelector('[data-question="q2"]').className,
+      emptyClass: document.querySelector('[data-question="q3"]').className,
+      correctBackground: background('[data-question="q1"]'),
+      wrongBackground: background('[data-question="q2"]'),
+      emptyBackground: background('[data-question="q3"]'),
+      prototypeBackground: background('[data-prototype-cell="6.1"]'),
+    };
+  });
+  expect(task6Colours.correctClass.includes('question-correct'), 'Правильный ответ шестого задания должен получить класс question-correct');
+  expect(task6Colours.wrongClass.includes('question-wrong'), 'Неправильный ответ шестого задания должен получить класс question-wrong');
+  expect(task6Colours.emptyClass.includes('question-empty'), 'Пустой ответ шестого задания должен получить класс question-empty');
+  expect(task6Colours.correctBackground === 'rgb(223, 248, 231)', `Правильный ответ должен быть зелёным, получено ${task6Colours.correctBackground}`);
+  expect(task6Colours.wrongBackground === 'rgb(255, 245, 216)', `Неправильный ответ должен быть жёлтым, получено ${task6Colours.wrongBackground}`);
+  expect(task6Colours.emptyBackground === 'rgb(255, 241, 245)', `Пустой ответ должен быть розовым, получено ${task6Colours.emptyBackground}`);
+  expect(task6Colours.prototypeBackground === 'rgb(255, 245, 216)', `Частично решённый тип должен быть жёлтым, получено ${task6Colours.prototypeBackground}`);
+
   const taskPages = ['task1-5.html', ...Array.from({ length: 13 }, (_, index) => `task${index + 7}.html`)];
   for (const taskPage of taskPages) {
     await page.goto(base + taskPage + '#trainer');
@@ -80,5 +107,5 @@ async page => {
   }
 
   if (failures.length) throw new Error(failures.join('\n'));
-  return { reference, task6, checkedOverviewIcons: taskPages.length };
+  return { reference, task6, task6Colours, checkedOverviewIcons: taskPages.length };
 }
