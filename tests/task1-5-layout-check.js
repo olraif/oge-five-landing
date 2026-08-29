@@ -29,7 +29,10 @@ async page => {
   await page.locator('[data-practical-type="sheets"]').click();
   await page.waitForTimeout(150);
   const sheets = await measure('Листы');
-  const results = [routes, tires, plots, sheets];
+  await page.locator('[data-practical-type="stoves"]').click();
+  await page.waitForTimeout(150);
+  const stoves = await measure('Печки');
+  const results = [routes, tires, plots, sheets, stoves];
   const failures = results.filter(item => (
     item.documentWidth > item.viewportWidth
     || item.panelWidth > 1100
@@ -38,6 +41,7 @@ async page => {
     || (item.label === 'Шины' && item.conditionHeight > 500)
     || (item.label === 'Участки' && item.conditionHeight > 520)
     || (item.label === 'Листы' && item.conditionHeight > 520)
+    || (item.label === 'Печки' && item.conditionHeight > 520)
   ));
 
   if (failures.length) {

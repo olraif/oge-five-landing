@@ -13,6 +13,9 @@ assert.equal(model.PLOT_PROTOTYPES[0].analogs.length, 8);
 assert.equal(model.SHEET_PROTOTYPES.length, 1);
 assert.equal(model.SHEET_PROTOTYPES[0].number, '4.1');
 assert.equal(model.SHEET_PROTOTYPES[0].analogs.length, 4);
+assert.equal(model.STOVE_PROTOTYPES.length, 1);
+assert.equal(model.STOVE_PROTOTYPES[0].number, '5.1');
+assert.equal(model.STOVE_PROTOTYPES[0].analogs.length, 2);
 assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
 assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
 
@@ -36,6 +39,17 @@ const sheetChecked = model.checkAnswers(firstSheetAnalog, {
   1: '2413', 2: '2', 3: '1247,4', 4: '840', 5: '1250',
 });
 assert.deepEqual(sheetChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
+
+const firstStoveAnalog = model.STOVE_PROTOTYPES[0].analogs[0];
+assert.equal(firstStoveAnalog.id, 'stoves-5.1.1');
+assert.deepEqual(firstStoveAnalog.answers, {
+  1: '312', 2: '15.4', 3: '2000', 4: '16200', 5: '65',
+});
+assert.equal(model.PRACTICAL_TYPES.stoves.prototypes, model.STOVE_PROTOTYPES);
+const stoveChecked = model.checkAnswers(firstStoveAnalog, {
+  1: '312', 2: '15,4', 3: '2000', 4: '16200', 5: '65',
+});
+assert.deepEqual(stoveChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');
