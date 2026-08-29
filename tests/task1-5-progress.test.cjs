@@ -19,6 +19,9 @@ assert.equal(model.STOVE_PROTOTYPES[0].analogs.length, 2);
 assert.equal(model.APARTMENT_PROTOTYPES.length, 1);
 assert.equal(model.APARTMENT_PROTOTYPES[0].number, '6.1');
 assert.equal(model.APARTMENT_PROTOTYPES[0].analogs.length, 8);
+assert.equal(model.TARIFF_PROTOTYPES.length, 1);
+assert.equal(model.TARIFF_PROTOTYPES[0].number, '7.1');
+assert.equal(model.TARIFF_PROTOTYPES[0].analogs.length, 5);
 assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
 assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
 
@@ -64,6 +67,17 @@ const apartmentChecked = model.checkAnswers(firstApartmentAnalog, {
   1: '2346', 2: '3,2', 3: '12', 4: '680', 5: '29700',
 });
 assert.deepEqual(apartmentChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
+
+const firstTariffAnalog = model.TARIFF_PROTOTYPES[0].analogs[0];
+assert.equal(firstTariffAnalog.id, 'tariffs-7.1.1');
+assert.deepEqual(firstTariffAnalog.answers, {
+  1: '83117', 2: '425', 3: '4', 4: '50', 5: '350',
+});
+assert.equal(model.PRACTICAL_TYPES.tariffs.prototypes, model.TARIFF_PROTOTYPES);
+const tariffChecked = model.checkAnswers(firstTariffAnalog, {
+  1: '83117', 2: '425', 3: '4', 4: '50', 5: '350',
+});
+assert.deepEqual(tariffChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');

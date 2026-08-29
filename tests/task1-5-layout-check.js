@@ -35,7 +35,10 @@ async page => {
   await page.locator('[data-practical-type="apartments"]').click();
   await page.waitForTimeout(150);
   const apartments = await measure('Квартиры');
-  const results = [routes, tires, plots, sheets, stoves, apartments];
+  await page.locator('[data-practical-type="tariffs"]').click();
+  await page.waitForTimeout(150);
+  const tariffs = await measure('Тарифы');
+  const results = [routes, tires, plots, sheets, stoves, apartments, tariffs];
   const failures = results.filter(item => (
     item.documentWidth > item.viewportWidth
     || item.panelWidth > 1100
@@ -46,6 +49,7 @@ async page => {
     || (item.label === 'Листы' && item.conditionHeight > 520)
     || (item.label === 'Печки' && item.conditionHeight > 520)
     || (item.label === 'Квартиры' && item.conditionHeight > 520)
+    || (item.label === 'Тарифы' && item.conditionHeight > 560)
   ));
 
   if (failures.length) {

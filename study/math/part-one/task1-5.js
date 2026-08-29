@@ -40,7 +40,7 @@
     });
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+|papers-\d+|stoves-\d+|flats-\d+)\.svg/i)?.[0]?.toLowerCase();
+      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+|papers-\d+|stoves-\d+|flats-\d+|tariffs-\d+)\.svg/i)?.[0]?.toLowerCase();
       if (!fileName) {
         image.remove();
         return;
@@ -56,7 +56,9 @@
               ? 'Схема листа бумаги'
               : fileName.startsWith('stoves-')
                 ? 'Схема печи для бани'
-                : 'План квартиры';
+                : fileName.startsWith('flats-')
+                  ? 'План квартиры'
+                  : 'Схема тарифов';
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;

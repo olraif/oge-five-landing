@@ -167,6 +167,25 @@ class TaskOneToFivePageTests(unittest.TestCase):
         for drawing in drawings:
             self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
 
+    def test_tariffs_are_enabled_and_loaded_without_empty_source_card(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertIn('src="task1-5-tariffs-data.js"', html)
+        self.assertIn('data-practical-type="tariffs"', html)
+        self.assertNotIn('data-practical-type="tariffs" disabled', html)
+        model = (PART_ONE / "task1-5-model.js").read_text(encoding="utf-8")
+        self.assertIn("OgeTaskOneToFiveTariffs", model)
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("tariffs-", script)
+
+    def test_every_tariff_drawing_has_a_local_asset(self):
+        data_path = PART_ONE / "task1-5-tariffs-data.js"
+        self.assertTrue(data_path.is_file())
+        data = data_path.read_text(encoding="utf-8")
+        drawings = set(re.findall(r"tariffs-\d+\.svg", data))
+        self.assertEqual(drawings, {"tariffs-1.svg"})
+        for drawing in drawings:
+            self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
+
     def test_practical_progress_uses_green_yellow_and_pink_only(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
         css = (PART_ONE.parents[1] / "study.css").read_text(encoding="utf-8")
