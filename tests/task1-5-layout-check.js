@@ -23,13 +23,17 @@ async page => {
   await page.locator('[data-practical-type="tires"]').click();
   await page.waitForTimeout(150);
   const tires = await measure('Шины');
-  const results = [routes, tires];
+  await page.locator('[data-practical-type="plots"]').click();
+  await page.waitForTimeout(150);
+  const plots = await measure('Участки');
+  const results = [routes, tires, plots];
   const failures = results.filter(item => (
     item.documentWidth > item.viewportWidth
     || item.panelWidth > 1100
     || item.overflowingTables > 0
     || (item.label === 'Маршруты' && item.conditionHeight > 340)
     || (item.label === 'Шины' && item.conditionHeight > 500)
+    || (item.label === 'Участки' && item.conditionHeight > 520)
   ));
 
   if (failures.length) {

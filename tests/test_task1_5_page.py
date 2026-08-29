@@ -91,6 +91,25 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertIn("model.PRACTICAL_TYPES", script)
         self.assertIn("tires-[12]", script)
 
+    def test_plots_are_enabled_and_loaded_as_a_complete_trainer_type(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        self.assertIn('src="task1-5-plots-data.js"', html)
+        self.assertIn('data-practical-type="plots"', html)
+        self.assertNotIn('data-practical-type="plots" disabled', html)
+        model = (PART_ONE / "task1-5-model.js").read_text(encoding="utf-8")
+        self.assertIn("OgeTaskOneToFivePlots", model)
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("homesteads-", script)
+
+    def test_every_plot_drawing_has_a_local_asset(self):
+        data_path = PART_ONE / "task1-5-plots-data.js"
+        self.assertTrue(data_path.is_file())
+        data = data_path.read_text(encoding="utf-8")
+        drawings = set(re.findall(r"homesteads-\d+\.svg", data))
+        self.assertGreaterEqual(len(drawings), 1)
+        for drawing in drawings:
+            self.assertTrue((PART_ONE / "assets" / "task1-5" / drawing).is_file(), drawing)
+
     def test_practical_progress_uses_green_yellow_and_pink_only(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
         css = (PART_ONE.parents[1] / "study.css").read_text(encoding="utf-8")
@@ -103,6 +122,9 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertIn(".replace(/\\\\cdot/g, '&middot;')", script)
         self.assertIn(".replace(/\\\\%/g, '%')", script)
         self.assertIn(".replace(/\\\\\\s/g, ' ')", script)
+        self.assertIn(".replace(/\\\\text\\{([^{}]*)\\}/g, '$1')", script)
+        self.assertIn(".replace(/\\\\times/g, '&times;')", script)
+        self.assertIn(".replace(/\\^\\{?(\\d+)\\}?/g, '<sup>$1</sup>')", script)
     def test_student_progress_reads_routes_results(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
         self.assertEqual(studio.count('<div class="bar bar--practical"'), 5)

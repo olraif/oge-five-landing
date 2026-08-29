@@ -27,6 +27,9 @@
       .replace(/\$([^$]+)\$/g, '$1')
       .replace(/\\cdot/g, '&middot;')
       .replace(/\\%/g, '%')
+      .replace(/\\text\{([^{}]*)\}/g, '$1')
+      .replace(/\\times/g, '&times;')
+      .replace(/\^\{?(\d+)\}?/g, '<sup>$1</sup>')
       .replace(/\\\s/g, ' ');
     const doc = parser.parseFromString(normalizedMarkup, 'text/html');
     doc.querySelectorAll('script,style,link,iframe,object').forEach((element) => element.remove());
@@ -37,7 +40,7 @@
     });
     doc.querySelectorAll('img').forEach((image) => {
       const src = image.getAttribute('src') || '';
-      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12])\.svg/i)?.[0]?.toLowerCase();
+      const fileName = src.match(/(trips-(?:[1-9]|1[01])|tires-[12]|homesteads-\d+)\.svg/i)?.[0]?.toLowerCase();
       if (!fileName) {
         image.remove();
         return;
@@ -45,7 +48,9 @@
       image.src = `assets/task1-5/${fileName}`;
       image.alt = fileName.startsWith('trips-')
         ? 'Схема маршрутов между населёнными пунктами'
-        : 'Схема автомобильной шины';
+        : fileName.startsWith('tires-')
+          ? 'Схема автомобильной шины'
+          : 'План дачного участка';
       image.classList.add('route-map');
     });
     return doc.body.innerHTML;

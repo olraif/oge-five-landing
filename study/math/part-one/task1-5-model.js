@@ -7,9 +7,12 @@
     || (typeof require === 'function' ? require('./task1-5-routes-data.js') : []);
   const TIRE_PROTOTYPES = root?.OgeTaskOneToFiveTires
     || (typeof require === 'function' ? require('./task1-5-tires-data.js') : []);
+  const PLOT_PROTOTYPES = root?.OgeTaskOneToFivePlots
+    || (typeof require === 'function' ? require('./task1-5-plots-data.js') : []);
   const PRACTICAL_TYPES = {
     routes: { id: 'routes', label: 'Маршруты', prototypes: ROUTE_PROTOTYPES },
     tires: { id: 'tires', label: 'Шины', prototypes: TIRE_PROTOTYPES },
+    plots: { id: 'plots', label: 'Участки', prototypes: PLOT_PROTOTYPES },
   };
   // В банке 380 практических подзаданий: 76 комплектов по пять вопросов.
   const PRACTICAL_TASK_SET_COUNT = 76;
@@ -70,6 +73,7 @@
   return {
     ROUTE_PROTOTYPES,
     TIRE_PROTOTYPES,
+    PLOT_PROTOTYPES,
     PRACTICAL_TYPES,
     PRACTICAL_TASK_SET_COUNT,
     PRACTICAL_TASK_TOTALS,
