@@ -78,7 +78,7 @@ const showResult = (score, misses = []) => {
   const complete = total > 0 && score === total;
   result.innerHTML = `
     <strong>${score}/${total}</strong>
-    <p>${complete ? "\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043f\u0440\u043e\u0439\u0434\u0435\u043d" : `\u041f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e: ${score} \u0438\u0437 ${total}`}</p>
+    <p>${complete ? "\u0422\u0438\u043f \u043f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043f\u0440\u043e\u0439\u0434\u0435\u043d" : `\u041f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e: ${score} \u0438\u0437 ${total}`}</p>
     ${misses.length ? `<ul>${misses.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
   `;
 };
@@ -132,9 +132,9 @@ const renderPrototype = (key, restore = true) => {
     guideElement.innerHTML = "";
   }
   const caption = document.querySelector(".quiz-caption");
-  if (caption) caption.textContent = `\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f ${key} - ${data.title}`;
+  if (caption) caption.textContent = `\u0422\u0438\u043f ${key} - ${data.title}`;
   const submitButton = quiz.querySelector('button[type="submit"]');
-  if (submitButton) submitButton.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + key;
+  if (submitButton) submitButton.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0442\u0438\u043f " + key;
   let formatNote = quiz.querySelector(".answer-format-note");
   if (!formatNote) {
     formatNote = document.createElement("p");
@@ -319,12 +319,12 @@ renderPrototype(activePrototype);
   instruction.textContent = taskText[activePrototype] || "";
   caption?.after(instruction);
   const submit = quiz?.querySelector('button[type="submit"]');
-  if (submit) submit.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + activePrototype;
+  if (submit) submit.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0442\u0438\u043f " + activePrototype;
   document.querySelectorAll("[data-prototype-cell]").forEach((cell) => cell.addEventListener("click", () => setTimeout(() => {
     document.querySelector(".task-instruction")?.remove();
     const c = quiz?.querySelector(".quiz-caption");
     const i = document.createElement("p"); i.className = "task-instruction"; i.textContent = taskText[activePrototype] || ""; c?.after(i);
-    const b = quiz?.querySelector('button[type="submit"]'); if (b) b.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f " + activePrototype;
+    const b = quiz?.querySelector('button[type="submit"]'); if (b) b.textContent = "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0442\u0438\u043f " + activePrototype;
   }, 0)));
 })();function formatComplexFraction(value) {
   const match = value.match(/1 \/ \((\d+\/\d+) ([+\-]) (\d+\/\d+)\)/);

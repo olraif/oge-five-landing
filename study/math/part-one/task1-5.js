@@ -119,8 +119,8 @@
         + (prototype.id === selectedPrototype?.id ? ' is-active' : '')
         + (correct === total && total ? ' is-complete' : '')
         + (correct > 0 && correct < total ? ' is-started' : '');
-      button.innerHTML = '<strong>Прототип ' + prototype.number + '</strong><small>'
-        + prototype.analogs.length + ' аналогов · ' + correct + '/' + total + '</small>';
+      button.innerHTML = '<strong>Тип ' + prototype.number + '</strong><small>'
+        + prototype.analogs.length + ' заданий · ' + correct + '/' + total + '</small>';
       button.addEventListener('click', () => {
         selectedPrototype = prototype;
         selectedAnalog = prototype.analogs[0];
@@ -137,7 +137,7 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = tabClass(allAttempts[analog.id], analog.id === selectedAnalog?.id);
-      button.innerHTML = '<strong>Аналог ' + (index + 1) + '</strong><small>' + counts.correct + '/5</small>';
+      button.innerHTML = '<strong>' + selectedPrototype.number + '.' + (index + 1) + '</strong><small>' + counts.correct + '/5</small>';
       button.addEventListener('click', () => {
         selectedAnalog = analog;
         renderAll();
@@ -149,7 +149,7 @@
   const renderAnalog = () => {
     if (!selectedAnalog) return;
     if (kicker) kicker.textContent = selectedType.label;
-    title.textContent = 'Прототип ' + selectedPrototype.number + ' · аналог '
+    title.textContent = 'Тип ' + selectedPrototype.number + ' · ' + selectedPrototype.number + '.'
       + (selectedPrototype.analogs.indexOf(selectedAnalog) + 1);
     condition.innerHTML = cleanMarkup(selectedAnalog.taskHtml);
     const questions = selectedAnalog.questions || [];
