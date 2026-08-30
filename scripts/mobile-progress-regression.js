@@ -21,6 +21,7 @@ async (page) => {
     return {
       left: Math.round(rect.left),
       right: Math.round(rect.right),
+      top: Math.round(rect.top),
       width: Math.round(rect.width),
       clientWidth: element.clientWidth,
       scrollWidth: element.scrollWidth,
@@ -38,6 +39,9 @@ async (page) => {
   const scale = await metric('.progress-scale');
   expect(scale.right <= 390, 'progress chart fits inside the mobile viewport', scale);
   expect(scale.scrollWidth > scale.clientWidth, 'progress chart scrolls horizontally to tasks 20-25', scale);
+  const bars = await metric('.progress-bars');
+  const firstBar = await metric('.progress-bars .bar:first-child');
+  expect(firstBar.top - bars.top <= 20, 'pink task columns reach the 100% line', { bars, firstBar });
   await page.locator('.progress-scale').evaluate(element => { element.scrollLeft = element.scrollWidth; });
   const lastBar = await metric('.progress-bars .bar:last-child');
   expect(lastBar.left >= 0 && lastBar.right <= 390, 'task 25 becomes visible after horizontal scroll', lastBar);
