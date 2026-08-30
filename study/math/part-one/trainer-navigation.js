@@ -34,6 +34,17 @@
     showDevelopmentMessage.timeoutId = window.setTimeout(() => toast.classList.remove('is-visible'), 3200);
   };
 
+  const revealCurrentTaskOnMobile = () => {
+    if (!window.matchMedia('(max-width: 720px)').matches) return;
+    const strip = document.querySelector('.task-nav--sidebar');
+    const current = strip?.querySelector('.is-current');
+    if (!strip || !current) return;
+    window.requestAnimationFrame(() => {
+      const centered = current.offsetLeft - ((strip.clientWidth - current.offsetWidth) / 2);
+      strip.scrollLeft = Math.max(0, centered);
+    });
+  };
+
   const initializeTrainerNavigation = () => {
     document.querySelectorAll('.task-nav a').forEach((link) => {
       const label = link.textContent.trim().replace(/\s+/g, '');
@@ -56,6 +67,7 @@
         showDevelopmentMessage();
       });
     });
+    revealCurrentTaskOnMobile();
   };
 
   window.OgeTrainerNavigation = {
