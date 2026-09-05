@@ -9,8 +9,17 @@ create table if not exists public.profiles (
   subject text not null default 'math' check (subject in ('math', 'informatics')),
   avatar text not null default '🎓',
   role text not null default 'student' check (role in ('student', 'admin')),
+  consent_accepted_at timestamptz,
+  consent_version text,
+  terms_accepted_at timestamptz,
+  terms_version text,
   created_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists consent_accepted_at timestamptz;
+alter table public.profiles add column if not exists consent_version text;
+alter table public.profiles add column if not exists terms_accepted_at timestamptz;
+alter table public.profiles add column if not exists terms_version text;
 
 create table if not exists public.courses (
   id text primary key,
@@ -88,8 +97,22 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, display_name)
-  values (new.id, coalesce(new.raw_user_meta_data->>'display_name', 'Ученик'))
+  insert into public.profiles (
+    id,
+    display_name,
+    consent_accepted_at,
+    consent_version,
+    terms_accepted_at,
+    terms_version
+  )
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'display_name', 'Ученик'),
+    case when new.raw_user_meta_data->>'personal_data_consent' = 'true' then now() end,
+    case when new.raw_user_meta_data->>'personal_data_consent' = 'true' then nullif(new.raw_user_meta_data->>'consent_version', '') end,
+    case when new.raw_user_meta_data->>'trainer_terms_accepted' = 'true' then now() end,
+    case when new.raw_user_meta_data->>'trainer_terms_accepted' = 'true' then nullif(new.raw_user_meta_data->>'terms_version', '') end
+  )
   on conflict (id) do nothing;
   return new;
 end;
