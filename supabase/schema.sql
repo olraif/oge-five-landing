@@ -156,7 +156,7 @@ begin
   insert into public.coupon_redemptions (code, user_id) values (c.code, auth.uid());
   insert into public.enrollments (user_id, course_id)
   values (auth.uid(), c.course_id)
-  on conflict (user_id, course_id) do nothing;
+  on conflict on constraint enrollments_pkey do nothing;
   update public.coupons set used_count = used_count + 1 where code = c.code;
 
   return query

@@ -111,6 +111,11 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(schema, r"(?is)handle_new_user.*consent_accepted_at.*now\(\)")
         self.assertRegex(schema, r"(?is)handle_new_user.*raw_user_meta_data.*consent_version")
 
+    def test_coupon_activation_uses_the_enrollment_primary_key_constraint(self):
+        schema = (ROOT / "supabase" / "schema.sql").read_text(encoding="utf-8")
+        self.assertIn("on conflict on constraint enrollments_pkey do nothing", schema)
+        self.assertNotIn("on conflict (user_id, course_id) do nothing", schema)
+
     def test_yandex_metrika_is_not_loaded_by_published_html(self):
         offenders = []
         for path in ROOT.rglob("*.html"):

@@ -28,11 +28,11 @@
 **Interfaces:**
 - Produces: проверки публичных документов, регистрации, футера, покупки, активации и отключённой аналитики.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Проверить существование пяти страниц, отсутствие авторизационных скриптов в документах, два обязательных флажка, версии `1.0`, подключение футера ко всем страницам кабинета, ссылку на оферту возле покупки, условия возле активации и отсутствие `mc.yandex.ru` в HTML.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `python -m unittest tests.test_legal_flow -v`
 Expected: FAIL because pages and controls do not exist and Metrika is active.
@@ -52,10 +52,10 @@ Expected: FAIL because pages and controls do not exist and Metrika is active.
 **Interfaces:**
 - Produces: `<script src=".../legal/legal-footer.js" data-study-root="...">` and a footer with links to `privacy.html` and `index.html`.
 
-- [ ] **Step 1: Convert the four approved Markdown drafts to semantic static HTML**
-- [ ] **Step 2: Add the shared document index, styles and footer script**
-- [ ] **Step 3: Connect the footer to login, cabinet, admin and every trainer page**
-- [ ] **Step 4: Run `python -m unittest tests.test_legal_flow -v` and verify the page/footer tests pass**
+- [x] **Step 1: Convert the four approved Markdown drafts to semantic static HTML**
+- [x] **Step 2: Add the shared document index, styles and footer script**
+- [x] **Step 3: Connect the footer to login, cabinet, admin and every trainer page**
+- [x] **Step 4: Run `python -m unittest tests.test_legal_flow -v` and verify the page/footer tests pass**
 
 ### Task 3: Регистрация и фиксация согласий
 
@@ -69,10 +69,10 @@ Expected: FAIL because pages and controls do not exist and Metrika is active.
 - Consumes: versions `consent_version=1.0`, `terms_version=1.0` from registration metadata.
 - Produces: profile fields `consent_accepted_at`, `consent_version`, `terms_accepted_at`, `terms_version` populated by `public.handle_new_user()` with `now()`.
 
-- [ ] **Step 1: Add two hidden-in-login required checkboxes and accessible document links**
-- [ ] **Step 2: Pass acceptance flags and document versions only during `signUp`**
-- [ ] **Step 3: Add idempotent SQL columns and update the new-user trigger**
-- [ ] **Step 4: Run the legal contract tests**
+- [x] **Step 1: Add two hidden-in-login required checkboxes and accessible document links**
+- [x] **Step 2: Pass acceptance flags and document versions only during `signUp`**
+- [x] **Step 3: Add idempotent SQL columns and update the new-user trigger**
+- [x] **Step 4: Run the legal contract tests**
 
 ### Task 4: Покупка и активация
 
@@ -84,9 +84,9 @@ Expected: FAIL because pages and controls do not exist and Metrika is active.
 **Interfaces:**
 - Produces: offer links next to purchase actions and terms/minor notice inside every activation form.
 
-- [ ] **Step 1: Add the offer link to each pricing/purchase block**
-- [ ] **Step 2: Add one-time binding, 24-month term and minor-representative text to activation forms**
-- [ ] **Step 3: Run the legal contract tests**
+- [x] **Step 1: Add the offer link to each pricing/purchase block**
+- [x] **Step 2: Add one-time binding, 24-month term and minor-representative text to activation forms**
+- [x] **Step 3: Run the legal contract tests**
 
 ### Task 5: Отключение аналитики, полная проверка и публикация
 
@@ -96,8 +96,7 @@ Expected: FAIL because pages and controls do not exist and Metrika is active.
 **Interfaces:**
 - Produces: no active Yandex Metrika loader or noscript pixel on published HTML.
 
-- [ ] **Step 1: Remove the four active Metrika snippets without touching functional scripts**
-- [ ] **Step 2: Run targeted legal tests, existing unaffected tests and `git diff --check`**
-- [ ] **Step 3: Use Playwright at desktop and mobile widths to inspect registration and a legal page**
+- [x] **Step 1: Remove the four active Metrika snippets without touching functional scripts**
+- [x] **Step 2: Run targeted legal tests, existing unaffected tests and `git diff --check`**
+- [x] **Step 3: Use Playwright at desktop and mobile widths to inspect registration and a legal page**
 - [ ] **Step 4: Commit, integrate into `main`, push, wait for GitHub Pages and verify the live URLs**
-

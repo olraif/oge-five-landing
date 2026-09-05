@@ -34,9 +34,9 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn('<strong>5</strong><span>в аттестате</span>', self.html)
         self.assertIn("математического округления", self.html)
 
-    def test_phone_is_the_only_conversion_mechanism(self):
-        self.assertGreaterEqual(self.html.count('href="tel:+79603837857"'), 3)
-        self.assertIn("+7 960 383-78-57", self.html)
+    def test_marketing_page_uses_message_calls_to_action(self):
+        self.assertGreaterEqual(self.html.count("Написать в MAX"), 3)
+        self.assertNotIn('href="tel:', self.html)
         self.assertNotRegex(self.html.lower(), r"<form\b")
 
     def test_page_has_mobile_and_accessibility_basics(self):
@@ -100,9 +100,8 @@ class LandingContractTests(unittest.TestCase):
         html = self.html.lower()
         self.assertIn("занятия проходят онлайн", html)
         self.assertIn("совместной онлайн-доске", html)
-        self.assertIn("всё сохраняется", html)
         self.assertIn("вместе или по отдельности", html)
-        self.assertIn("когэ", html)
+        self.assertIn("информатика за компьютером", html)
         self.assertIn("точный ввод", html)
 
     def test_strong_student_confidence_hook_is_present(self):
@@ -129,33 +128,28 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn('a[href*="max.ru"]', self.js)
         self.assertIn("window.METRIKA_COUNTER_ID", self.js)
 
-    def test_yandex_metrika_counter_is_installed(self):
-        self.assertIn("window.METRIKA_COUNTER_ID = 111088885", self.html)
-        self.assertIn("window.METRIKA_COUNTER_ID = 111088885", self.study_html)
-        self.assertIn('ym(111088885, "init"', self.html)
-        self.assertIn("https://mc.yandex.ru/metrika/tag.js", self.html)
-        self.assertIn("https://mc.yandex.ru/watch/111088885", self.html)
-        self.assertIn("accurateTrackBounce", self.html)
-        self.assertIn("trackLinks", self.html)
+    def test_yandex_metrika_is_temporarily_disabled(self):
+        for page in (self.html, self.study_html):
+            self.assertNotIn("METRIKA_COUNTER_ID", page)
+            self.assertNotIn("mc.yandex.ru", page)
+            self.assertNotIn("webvisor:", page)
 
     def test_study_studio_entry_and_page_exist(self):
-        self.assertIn('href="study/">Кабинет</a>', self.html)
-        self.assertIn("Студия ОГЭ на 5", self.study_html)
+        self.assertIn('href="study/index.html">Кабинет ученика</a>', self.html)
+        self.assertIn("ОГЭ-студия — математика", self.study_html)
         self.assertIn("Кабинет ученика", self.study_html)
-        self.assertIn("Мои курсы", self.study_html)
+        self.assertIn("Мои тренажёры", self.study_html)
         self.assertIn("Мой прогресс", self.study_html)
         self.assertIn("Бонусы", self.study_html)
-        self.assertIn("Три тарифа студии", self.study_html)
-        self.assertIn("Привёл друга", self.study_html)
-        self.assertIn("бонусный индивидуальный урок", self.study_html)
+        self.assertIn("тарифы", self.study_html)
+        self.assertIn("индивидуальное занятие", self.study_html)
         self.assertIn("study.css", self.study_html)
         self.assertIn(".studio-sidebar", self.study_css)
-        self.assertIn('href="math/part-one/"', self.study_html)
+        self.assertIn('href="math/part-one/index.html#trainer"', self.study_html)
 
     def test_math_part_one_course_shell_exists(self):
         self.assertIn("Первая часть ОГЭ по математике", self.part_one_html)
-        self.assertIn("Курс по прототипам банка ФИПИ", self.part_one_html)
-        self.assertIn("Демо-плашка", self.part_one_html)
+        self.assertIn("задания по типам банка ФИПИ", self.part_one_html)
         self.assertIn("Первая часть даёт уверенную базу", self.part_one_html)
         self.assertIn("Вторая часть — только с проверкой", self.part_one_html)
         self.assertEqual(self.part_one_html.count("сюда вставим видео"), 10)
@@ -172,7 +166,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertTrue((ROOT / "assets" / "parent-thinking.png").is_file())
 
     def test_individual_lesson_call_to_action_is_explicit(self):
-        self.assertIn("Звоните прямо сейчас", self.html)
+        self.assertIn("Напишите в MAX", self.html)
         self.assertIn("индивидуальные занятия", self.html.lower())
         self.assertIn("Количество мест ограничено", self.html)
         self.assertIn("Как эффективно подготовить ребёнка к ОГЭ на 5?", self.html)
