@@ -82,7 +82,7 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/privacy\.html"')
         self.assertRegex(html, r'href="\./legal/offer\.html"')
         self.assertIn("consent_version: '1.0'", html)
-        self.assertIn("terms_version: '1.0'", html)
+        self.assertIn("terms_version: '1.1'", html)
 
     def test_legal_footer_is_loaded_by_login_cabinet_admin_and_every_trainer_page(self):
         pages = [STUDY / "login.html", STUDY / "admin.html", STUDY / "index.html", STUDY / "informatics" / "index.html"]
@@ -93,16 +93,14 @@ class LegalFlowTests(unittest.TestCase):
                 scripts = [item for item in page.scripts if "data-legal-footer" in item]
                 self.assertEqual(len(scripts), 1)
 
-    def test_purchase_and_activation_show_applicable_documents_and_actual_terms(self):
+    def test_purchase_and_activation_keep_legal_copy_in_documents(self):
         for relative in ("index.html", "informatics/index.html"):
             with self.subTest(page=relative):
                 html = (STUDY / relative).read_text(encoding="utf-8")
-                self.assertIn("Условия покупки — в публичной оферте", html)
-                self.assertIn("Промокод активируется один раз", html)
-                self.assertIn("24 месяца", html)
-                self.assertIn("несовершеннолетнего пользователя", html)
-                self.assertRegex(html, r'href="[^\"]*legal/terms\.html"')
-                self.assertRegex(html, r'href="[^\"]*legal/offer\.html"')
+                self.assertNotIn('class="course-legal-link"', html)
+                self.assertNotIn('class="access-legal-note"', html)
+                self.assertIn('data-code-form', html)
+                self.assertIn('data-legal-footer', html)
 
     def test_schema_records_acceptances_with_server_time(self):
         schema = (ROOT / "supabase" / "schema.sql").read_text(encoding="utf-8")
