@@ -48,7 +48,6 @@ def parse(path):
 class LegalFlowTests(unittest.TestCase):
     def test_public_legal_pages_are_complete_and_do_not_require_auth(self):
         expected = {
-            "index.html": "Документы тренажёра",
             "privacy.html": "Политика в отношении обработки персональных данных",
             "consent.html": "Согласие на обработку персональных данных",
             "offer.html": "Публичная оферта о предоставлении доступа к онлайн-тренажёру",
@@ -79,8 +78,8 @@ class LegalFlowTests(unittest.TestCase):
         html = (STUDY / "login.html").read_text(encoding="utf-8")
         self.assertRegex(html, r'href="\./legal/consent\.html"')
         self.assertRegex(html, r'href="\./legal/terms\.html"')
-        self.assertRegex(html, r'href="\./legal/privacy\.html"')
-        self.assertRegex(html, r'href="\./legal/offer\.html"')
+        self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
+        self.assertNotRegex(html, r'href="\./legal/offer\.html"')
         self.assertIn("consent_version: '1.0'", html)
         self.assertIn("terms_version: '1.1'", html)
 
@@ -101,6 +100,16 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertNotIn('class="access-legal-note"', html)
                 self.assertIn('data-code-form', html)
                 self.assertIn('data-legal-footer', html)
+
+    def test_footer_links_directly_to_policy_and_offer_without_catalog(self):
+        footer = (LEGAL / "legal-footer.js").read_text(encoding="utf-8")
+        self.assertIn("legal/privacy.html", footer)
+        self.assertIn("legal/offer.html", footer)
+        self.assertNotIn("legal/index.html", footer)
+        self.assertNotIn(">Документы<", footer)
+        index = (LEGAL / "index.html").read_text(encoding="utf-8")
+        self.assertIn('http-equiv="refresh" content="0; url=./privacy.html"', index)
+        self.assertNotIn("legal-index-grid", index)
 
     def test_schema_records_acceptances_with_server_time(self):
         schema = (ROOT / "supabase" / "schema.sql").read_text(encoding="utf-8")

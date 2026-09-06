@@ -12,10 +12,10 @@
     footer.className = 'app-legal-footer';
     footer.dataset.appLegalFooter = '';
     footer.innerHTML = `
-      <nav aria-label="Юридические документы">
+      <nav aria-label="Правовая информация">
         <a href="${new URL('legal/privacy.html', studyRoot).href}">Политика конфиденциальности</a>
         <span aria-hidden="true">·</span>
-        <a href="${new URL('legal/index.html', studyRoot).href}">Документы</a>
+        <a href="${new URL('legal/offer.html', studyRoot).href}">Публичная оферта</a>
       </nav>`;
     document.body.append(footer);
   };
@@ -26,4 +26,3 @@
     render();
   }
 })();
-

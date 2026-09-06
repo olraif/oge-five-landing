@@ -80,11 +80,7 @@ function markdownToDocument(markdown) {
   return { title, revision, sections, body };
 }
 
-const navigation = (current = '') => `<nav class="legal-doc-nav" aria-label="Другие документы">
-  ${documents.map(([, filename, label]) => `<a${filename === current ? ' aria-current="page"' : ''} href="./${filename}">${label}</a>`).join('\n  ')}
-</nav>`;
-
-function pageTemplate(document, filename) {
+function pageTemplate(document) {
   return `<!doctype html>
 <html lang="ru">
 <head>
@@ -99,12 +95,11 @@ function pageTemplate(document, filename) {
   <main class="legal-shell">
     <a class="legal-back" href="../login.html">← Вернуться к входу</a>
     <article class="legal-card">
-      <p class="legal-kicker">ОГЭ-студия · документы</p>
+      <p class="legal-kicker">ОГЭ-студия</p>
       <h1>${escapeHtml(document.title)}</h1>
       <p class="legal-meta">${escapeHtml(document.revision)}</p>
       <nav class="legal-toc" aria-label="Содержание"><strong>Содержание</strong><ol>${document.sections.map((section) => `<li><a href="#${section.id}">${inline(section.title)}</a></li>`).join('')}</ol></nav>
       <div class="legal-body">${document.body}</div>
-      ${navigation(filename)}
       <p class="legal-contact">Вопросы, отзыв согласия и обращения: <a href="mailto:olesy.raif@mail.ru">olesy.raif@mail.ru</a></p>
     </article>
   </main>
@@ -116,14 +111,13 @@ function pageTemplate(document, filename) {
 fs.mkdirSync(outputDir, { recursive: true });
 for (const [source, filename] of documents) {
   const markdown = fs.readFileSync(path.join(sourceDir, source), 'utf8');
-  fs.writeFileSync(path.join(outputDir, filename), pageTemplate(markdownToDocument(markdown), filename), 'utf8');
+  fs.writeFileSync(path.join(outputDir, filename), pageTemplate(markdownToDocument(markdown)), 'utf8');
 }
 
 const index = `<!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="index,follow"><title>Документы тренажёра — ОГЭ-студия</title><meta name="description" content="Документы, правила и контакты онлайн-тренажёра ОГЭ-студия."><link rel="stylesheet" href="./legal.css"></head>
-<body class="legal-page"><main class="legal-shell"><a class="legal-back" href="../login.html">← Вернуться к входу</a><article class="legal-card"><p class="legal-kicker">ОГЭ-студия</p><h1>Документы тренажёра</h1><p class="legal-meta">Здесь собраны документы, относящиеся к регистрации, использованию тренажёра и покупке доступа.</p><div class="legal-index-grid"><a href="./privacy.html"><strong>Политика конфиденциальности</strong><span>Какие данные обрабатываются и как обратиться к оператору.</span></a><a href="./consent.html"><strong>Согласие на обработку данных</strong><span>Условия согласия, которое даётся при регистрации.</span></a><a href="./terms.html"><strong>Правила тренажёра</strong><span>Аккаунт, прогресс, промокоды и допустимое использование.</span></a><a href="./offer.html"><strong>Публичная оферта</strong><span>Условия платного доступа; акцептом является оплата.</span></a></div><p class="legal-note">Если тренажёром пользуется несовершеннолетний, необходимые решения и согласия принимает его законный представитель. Регистрироваться и учиться ребёнок может со своим email либо с email, доступ к которому обеспечивает представитель.</p><p class="legal-contact">Вопросы, отзыв согласия, удаление аккаунта, возвраты и претензии: <a href="mailto:olesy.raif@mail.ru">olesy.raif@mail.ru</a></p></article></main></body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=./privacy.html"><title>Политика конфиденциальности — ОГЭ-студия</title></head>
+<body><a href="./privacy.html">Политика конфиденциальности</a></body>
 </html>
 `;
 fs.writeFileSync(path.join(outputDir, 'index.html'), index, 'utf8');
-
