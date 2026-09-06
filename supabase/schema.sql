@@ -123,6 +123,11 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+-- Пользователь может редактировать только обычные поля своего профиля.
+-- Роль и серверные свидетельства согласий через клиентский API неизменяемы.
+revoke insert, delete, update on public.profiles from authenticated;
+grant update (display_name, subject, avatar) on public.profiles to authenticated;
+
 create or replace function public.activate_coupon(p_code text)
 returns table (course_id text, course_title text)
 language plpgsql

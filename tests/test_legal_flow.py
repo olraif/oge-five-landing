@@ -80,8 +80,13 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/terms\.html"')
         self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
         self.assertNotRegex(html, r'href="\./legal/offer\.html"')
-        self.assertIn("consent_version: '1.0'", html)
+        self.assertIn("consent_version: '1.1'", html)
         self.assertIn("terms_version: '1.1'", html)
+
+    def test_registration_failure_does_not_blame_the_password_for_server_errors(self):
+        html = (STUDY / "login.html").read_text(encoding="utf-8")
+        self.assertIn("Регистрация не выполнена. Попробуйте ещё раз позднее.", html)
+        self.assertNotIn("Не удалось зарегистрироваться. Проверьте email и пароль.", html)
 
     def test_legal_footer_is_loaded_by_login_cabinet_admin_and_every_trainer_page(self):
         pages = [STUDY / "login.html", STUDY / "admin.html", STUDY / "index.html", STUDY / "informatics" / "index.html"]
@@ -117,6 +122,11 @@ class LegalFlowTests(unittest.TestCase):
             self.assertIn(column, schema)
         self.assertRegex(schema, r"(?is)handle_new_user.*consent_accepted_at.*now\(\)")
         self.assertRegex(schema, r"(?is)handle_new_user.*raw_user_meta_data.*consent_version")
+
+    def test_acceptance_evidence_cannot_be_changed_through_the_student_profile(self):
+        migration = (ROOT / "supabase" / "migrations" / "20260905_legal_acceptances.sql").read_text(encoding="utf-8")
+        self.assertRegex(migration, r"(?is)revoke\s+insert\s*,\s*delete\s*,\s*update\s+on\s+public\.profiles\s+from\s+authenticated")
+        self.assertRegex(migration, r"(?is)grant\s+update\s*\(\s*display_name\s*,\s*subject\s*,\s*avatar\s*\)\s+on\s+public\.profiles\s+to\s+authenticated")
 
     def test_coupon_activation_uses_the_enrollment_primary_key_constraint(self):
         schema = (ROOT / "supabase" / "schema.sql").read_text(encoding="utf-8")

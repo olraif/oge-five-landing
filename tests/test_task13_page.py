@@ -9,7 +9,7 @@ class Task13PageContractTests(unittest.TestCase):
     def test_task13_page_loads_full_dataset_and_trainer_hooks(self):
         html = (PART_ONE / "task13.html").read_text(encoding="utf-8")
         self.assertEqual(10, html.count('src="task13-data-'))
-        for marker in ("data-task13-prototypes", "data-task13-quiz", "data-task13-score", "data-task13-current-total", 'href="../../index.html#progress"', 'src="task13.js"', 'href="task13.css"', "mathjax@3"):
+        for marker in ("data-task13-prototypes", "data-task13-quiz", "data-task13-score", "data-task13-current-total", 'href="../../index.html#progress"', 'src="task13.js"', 'href="task13.css"', "/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js"):
             self.assertIn(marker, html)
 
     def test_task13_is_linked_from_existing_trainer_navigation(self):

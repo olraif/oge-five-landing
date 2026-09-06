@@ -15,7 +15,7 @@
     <section class="admin-panel"><h2>Промокоды</h2><form class="admin-form" id="coupon-form"><label>Код<input name="code" placeholder="MATH-4900"></label><label>Курс<select name="course_id" id="course-select"></select></label><label>Использований<input name="max_uses" type="number" min="1" value="1"></label><button class="admin-button" type="submit">Создать</button></form><p class="admin-message" id="coupon-message"></p><div id="coupons-list" class="admin-empty">Загрузка…</div></section>
     <section class="admin-panel"><h2>Ученики</h2><div id="students-list" class="admin-empty">Загрузка…</div></section>
   </main>
-  <script src="./supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script><script src="/study/vendor/supabase-js-2.115.0/supabase.js"></script>
   <script>
     (() => {
       const client = window.supabase.createClient(window.OGE_SUPABASE.url, window.OGE_SUPABASE.publishableKey);

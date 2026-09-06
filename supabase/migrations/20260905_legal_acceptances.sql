@@ -32,4 +32,9 @@ begin
 end;
 $$;
 
+-- Пользователь может редактировать только обычные поля своего профиля.
+-- Роль и серверные свидетельства согласий через клиентский API неизменяемы.
+revoke insert, delete, update on public.profiles from authenticated;
+grant update (display_name, subject, avatar) on public.profiles to authenticated;
+
 commit;

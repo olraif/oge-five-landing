@@ -18,7 +18,7 @@ class Task8PageContractTests(unittest.TestCase):
             'href="../../index.html#progress"',
             'src="task8.js"',
             'href="task8.css"',
-            'mathjax@3',
+            '/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js',
         ):
             self.assertIn(marker, html)
 
