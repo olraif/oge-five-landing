@@ -272,3 +272,5 @@ create policy "students see own redemptions" on public.coupon_redemptions
 revoke all on public.coupons from anon, authenticated;
 revoke all on public.coupon_redemptions from anon, authenticated;
 grant execute on function public.activate_coupon(text) to authenticated;
+
+notify pgrst, 'reload schema';

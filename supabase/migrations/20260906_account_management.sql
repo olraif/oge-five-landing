@@ -71,4 +71,6 @@ revoke all on function public.admin_delete_account(uuid) from public;
 revoke all on function public.admin_delete_account(uuid) from anon;
 grant execute on function public.admin_delete_account(uuid) to authenticated;
 
+notify pgrst, 'reload schema';
+
 commit;
