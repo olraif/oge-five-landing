@@ -1,4 +1,4 @@
-// Публичные параметры Supabase для студии.
+// Публичные параметры Supabase для тренажёра.
 // Secret/service_role ключи в сайт не добавляются.
 window.OGE_SUPABASE = Object.freeze({
   url: 'https://db.oge-na-5.ru',

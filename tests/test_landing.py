@@ -1,9 +1,33 @@
 import re
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 
 ROOT = Path(__file__).absolute().parents[1]
+
+
+class PublishedPageParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.hidden_depth = 0
+        self.text = []
+        self.links = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in {"script", "style", "template"}:
+            self.hidden_depth += 1
+        for name, value in attrs:
+            if name == "href" and value:
+                self.links.append(value)
+
+    def handle_endtag(self, tag):
+        if tag in {"script", "style", "template"} and self.hidden_depth:
+            self.hidden_depth -= 1
+
+    def handle_data(self, data):
+        if not self.hidden_depth and data.strip():
+            self.text.append(data.strip())
 
 
 class LandingContractTests(unittest.TestCase):
@@ -35,9 +59,29 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("математического округления", self.html)
 
     def test_marketing_page_uses_message_calls_to_action(self):
-        self.assertGreaterEqual(self.html.count("Написать в MAX"), 3)
+        self.assertGreaterEqual(self.html.count("https://vk.com/olraif"), 3)
+        self.assertGreaterEqual(self.html.count("https://t.me/olraif"), 3)
         self.assertNotIn('href="tel:', self.html)
         self.assertNotRegex(self.html.lower(), r"<form\b")
+
+    def test_published_pages_use_vk_and_telegram_without_max_or_studio_branding(self):
+        pages = [ROOT / "index.html", *(ROOT / "study").rglob("*.html")]
+        max_pages = []
+        studio_pages = []
+
+        for page in pages:
+            parser = PublishedPageParser()
+            parser.feed(page.read_text(encoding="utf-8"))
+            visible_text = " ".join(parser.text)
+            if any("max.ru" in link.lower() for link in parser.links) or re.search(r"\bMAX\b", visible_text):
+                max_pages.append(str(page.relative_to(ROOT)))
+            if re.search(r"\bстуди(?:я|и|ю|ей|е)\b", visible_text, re.I):
+                studio_pages.append(str(page.relative_to(ROOT)))
+
+        self.assertEqual(max_pages, [])
+        self.assertEqual(studio_pages, [])
+        self.assertIn("https://vk.com/olraif", self.html)
+        self.assertIn("https://t.me/olraif", self.html)
 
     def test_page_has_mobile_and_accessibility_basics(self):
         self.assertIn('name="viewport"', self.html)
@@ -78,9 +122,10 @@ class LandingContractTests(unittest.TestCase):
         self.assertTrue((ROOT / "assets" / "student-boy.png").is_file())
         self.assertTrue((ROOT / "assets" / "student-girl-v2.png").is_file())
 
-    def test_max_is_available_as_secondary_contact(self):
-        self.assertGreaterEqual(self.html.count('href="https://max.ru/u/f9LHodD0cOJ-WhJxLmY8QmF0qkpfQyUtIpdxsmy0NXN-tXKcYjrT8ztesFg"'), 3)
-        self.assertIn("Написать в MAX", self.html)
+    def test_vk_is_primary_and_telegram_is_secondary_contact(self):
+        self.assertIn('class="button button--primary" href="https://vk.com/olraif"', self.html)
+        self.assertIn('href="https://t.me/olraif"', self.html)
+        self.assertNotIn("max.ru", self.html)
         self.assertNotIn("WhatsApp", self.html)
 
     def test_callback_scenario_is_clear(self):
@@ -88,7 +133,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertIn("подойдёт ли формат занятий", self.html)
         self.assertIn("Если не дозвонились", self.html)
         self.assertIn("у меня идёт урок", self.html)
-        self.assertIn("напишите в MAX, и я вам перезвоню", self.html)
+        self.assertIn("напишите в ВК, и я вам перезвоню", self.html)
 
     def test_new_stability_and_self_check_cases_are_present(self):
         self.assertIn("То 5, то 3", self.html)
@@ -123,9 +168,10 @@ class LandingContractTests(unittest.TestCase):
 
     def test_yandex_direct_goals_are_wired(self):
         self.assertIn("CALL_CLICK", self.js)
-        self.assertIn("MAX_CLICK", self.js)
         self.assertIn('a[href^="tel:"]', self.js)
-        self.assertIn('a[href*="max.ru"]', self.js)
+        self.assertIn("https://vk.com/olraif", self.js)
+        self.assertIn("https://t.me/olraif", self.js)
+        self.assertNotIn("MAX_CLICK", self.js)
         self.assertIn("window.METRIKA_COUNTER_ID", self.js)
 
     def test_yandex_metrika_is_temporarily_disabled(self):
@@ -134,9 +180,9 @@ class LandingContractTests(unittest.TestCase):
             self.assertNotIn("mc.yandex.ru", page)
             self.assertNotIn("webvisor:", page)
 
-    def test_study_studio_entry_and_page_exist(self):
+    def test_study_trainer_entry_and_page_exist(self):
         self.assertIn('href="study/index.html">Кабинет ученика</a>', self.html)
-        self.assertIn("ОГЭ-студия — математика", self.study_html)
+        self.assertIn("ОГЭ-тренажёр — математика", self.study_html)
         self.assertIn("Кабинет ученика", self.study_html)
         self.assertIn("Мои тренажёры", self.study_html)
         self.assertIn("Мой прогресс", self.study_html)
@@ -166,7 +212,7 @@ class LandingContractTests(unittest.TestCase):
         self.assertTrue((ROOT / "assets" / "parent-thinking.png").is_file())
 
     def test_individual_lesson_call_to_action_is_explicit(self):
-        self.assertIn("Напишите в MAX", self.html)
+        self.assertIn("Напишите в ВК", self.html)
         self.assertIn("индивидуальные занятия", self.html.lower())
         self.assertIn("Количество мест ограничено", self.html)
         self.assertIn("Как эффективно подготовить ребёнка к ОГЭ на 5?", self.html)

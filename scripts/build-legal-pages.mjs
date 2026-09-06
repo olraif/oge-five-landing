@@ -87,15 +87,15 @@ function pageTemplate(document) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index,follow">
-  <title>${escapeHtml(document.title)} — ОГЭ-студия</title>
-  <meta name="description" content="${escapeHtml(document.title)} онлайн-тренажёра ОГЭ-студия.">
+  <title>${escapeHtml(document.title)} — ОГЭ-тренажёр</title>
+  <meta name="description" content="${escapeHtml(document.title)} сервиса «ОГЭ-тренажёр».">
   <link rel="stylesheet" href="./legal.css">
 </head>
 <body class="legal-page">
   <main class="legal-shell">
     <a class="legal-back" href="../login.html">← Вернуться к входу</a>
     <article class="legal-card">
-      <p class="legal-kicker">ОГЭ-студия</p>
+      <p class="legal-kicker">ОГЭ-тренажёр</p>
       <h1>${escapeHtml(document.title)}</h1>
       <p class="legal-meta">${escapeHtml(document.revision)}</p>
       <nav class="legal-toc" aria-label="Содержание"><strong>Содержание</strong><ol>${document.sections.map((section) => `<li><a href="#${section.id}">${inline(section.title)}</a></li>`).join('')}</ol></nav>
@@ -116,7 +116,7 @@ for (const [source, filename] of documents) {
 
 const index = `<!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=./privacy.html"><title>Политика конфиденциальности — ОГЭ-студия</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=./privacy.html"><title>Политика конфиденциальности — ОГЭ-тренажёр</title></head>
 <body><a href="./privacy.html">Политика конфиденциальности</a></body>
 </html>
 `;
