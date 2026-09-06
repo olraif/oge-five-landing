@@ -88,6 +88,20 @@ class LegalFlowTests(unittest.TestCase):
         self.assertIn("Регистрация не выполнена. Попробуйте ещё раз позднее.", html)
         self.assertNotIn("Не удалось зарегистрироваться. Проверьте email и пароль.", html)
 
+    def test_login_explains_confirmation_and_supports_password_recovery(self):
+        html = (STUDY / "login.html").read_text(encoding="utf-8")
+        self.assertIn('id="forgot-password"', html)
+        self.assertIn('id="resend-confirmation"', html)
+        self.assertIn("email_not_confirmed", html)
+        self.assertIn("resetPasswordForEmail", html)
+        self.assertIn("client.auth.resend", html)
+        self.assertIn("./reset-password.html", html)
+
+        reset = (STUDY / "reset-password.html").read_text(encoding="utf-8")
+        self.assertIn("PASSWORD_RECOVERY", reset)
+        self.assertIn("client.auth.updateUser({ password })", reset)
+        self.assertIn('data-legal-footer', reset)
+
     def test_legal_footer_is_loaded_by_login_cabinet_admin_and_every_trainer_page(self):
         pages = [STUDY / "login.html", STUDY / "admin.html", STUDY / "index.html", STUDY / "informatics" / "index.html"]
         pages += sorted((STUDY / "math" / "part-one").glob("*.html"))
@@ -127,6 +141,21 @@ class LegalFlowTests(unittest.TestCase):
         migration = (ROOT / "supabase" / "migrations" / "20260905_legal_acceptances.sql").read_text(encoding="utf-8")
         self.assertRegex(migration, r"(?is)revoke\s+insert\s*,\s*delete\s*,\s*update\s+on\s+public\.profiles\s+from\s+authenticated")
         self.assertRegex(migration, r"(?is)grant\s+update\s*\(\s*display_name\s*,\s*subject\s*,\s*avatar\s*\)\s+on\s+public\.profiles\s+to\s+authenticated")
+
+    def test_only_an_admin_can_list_and_delete_accounts(self):
+        migration = (ROOT / "supabase" / "migrations" / "20260906_account_management.sql").read_text(encoding="utf-8")
+        self.assertIn("admin_list_accounts", migration)
+        self.assertIn("admin_delete_account", migration)
+        self.assertRegex(migration, r"(?is)auth\.uid\(\).*role\s*=\s*'admin'")
+        self.assertRegex(migration, r"(?is)p_user_id\s*=\s*auth\.uid\(\)")
+        self.assertRegex(migration, r"(?is)delete\s+from\s+auth\.users")
+        self.assertRegex(migration, r"(?is)revoke\s+all\s+on\s+function.*from\s+public")
+        self.assertRegex(migration, r"(?is)grant\s+execute\s+on\s+function.*to\s+authenticated")
+
+        admin = (STUDY / "admin.html").read_text(encoding="utf-8")
+        self.assertIn("admin_list_accounts", admin)
+        self.assertIn("admin_delete_account", admin)
+        self.assertNotIn("service_role", admin)
 
     def test_coupon_activation_uses_the_enrollment_primary_key_constraint(self):
         schema = (ROOT / "supabase" / "schema.sql").read_text(encoding="utf-8")

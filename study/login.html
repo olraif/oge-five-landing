@@ -23,6 +23,10 @@
         </fieldset>
         <button class="auth-submit" id="auth-submit" type="submit">Войти</button>
         <p id="auth-message" class="auth-message" role="status"></p>
+        <div class="auth-help-actions">
+          <button class="auth-help-button" id="forgot-password" type="button">Забыли пароль?</button>
+          <button class="auth-help-button" id="resend-confirmation" type="button" hidden>Отправить письмо ещё раз</button>
+        </div>
       </form>
       <button class="auth-mode-toggle" id="mode-toggle" type="button">Зарегистрироваться</button>
     </section>
@@ -39,8 +43,25 @@
       const confirmInput = document.querySelector('#password-confirm');
       const legalAcceptances = document.querySelector('#legal-acceptances');
       const acceptanceInputs = legalAcceptances.querySelectorAll('input[type="checkbox"]');
+      const emailInput = form.elements.email;
+      const forgotPassword = document.querySelector('#forgot-password');
+      const resendConfirmation = document.querySelector('#resend-confirmation');
       const client = window.supabase.createClient(window.OGE_SUPABASE.url, window.OGE_SUPABASE.publishableKey);
       let registerMode = false;
+      const recoveryRedirect = new URL('./reset-password.html', window.location.href).href;
+      const confirmationRedirect = new URL('./index.html', window.location.href).href;
+      const setMessage = (text, isError = false) => {
+        message.textContent = text;
+        message.className = `auth-message${isError ? ' is-error' : ''}`;
+      };
+      const currentEmail = () => String(emailInput.value || '').trim().toLowerCase();
+      const requireEmail = () => {
+        const email = currentEmail();
+        if (email && emailInput.checkValidity()) return email;
+        setMessage('Сначала укажите правильный email.', true);
+        emailInput.focus();
+        return '';
+      };
       const updateSubmitState = () => {
         submit.disabled = registerMode && !Array.from(acceptanceInputs).every((input) => input.checked);
       };
@@ -54,7 +75,9 @@
         acceptanceInputs.forEach((input) => { input.disabled = !registerMode; });
         submit.textContent = registerMode ? 'Зарегистрироваться' : 'Войти';
         modeToggle.textContent = registerMode ? 'Уже есть аккаунт? Войти' : 'Зарегистрироваться';
-        message.textContent = '';
+        forgotPassword.hidden = registerMode;
+        resendConfirmation.hidden = true;
+        setMessage('');
         updateSubmitState();
       });
       document.querySelectorAll('.password-toggle').forEach((toggle) => toggle.addEventListener('click', () => {
@@ -64,21 +87,32 @@
         toggle.setAttribute('aria-pressed', String(!visible));
         toggle.setAttribute('aria-label', visible ? 'Показать пароль' : 'Скрыть пароль');
       }));
+      forgotPassword.addEventListener('click', async () => {
+        const email = requireEmail();
+        if (!email) return;
+        setMessage('Отправляем письмо для смены пароля…');
+        const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirect });
+        setMessage(error ? 'Не удалось отправить письмо. Попробуйте ещё раз позднее.' : 'Письмо отправлено. Откройте ссылку из письма и задайте новый пароль.', Boolean(error));
+      });
+      resendConfirmation.addEventListener('click', async () => {
+        const email = requireEmail();
+        if (!email) return;
+        setMessage('Отправляем письмо ещё раз…');
+        const { error } = await client.auth.resend({ type: 'signup', email, options: { emailRedirectTo: confirmationRedirect } });
+        setMessage(error ? 'Не удалось отправить письмо. Попробуйте ещё раз позднее.' : 'Письмо отправлено повторно. Проверьте также папку «Спам».', Boolean(error));
+      });
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const data = new FormData(form);
-        message.textContent = 'Проверяем данные…';
-        message.className = 'auth-message';
+        setMessage('Проверяем данные…');
         const email = String(data.get('email') || '').trim().toLowerCase();
         const password = String(data.get('password') || '');
         if (registerMode && password !== String(data.get('password-confirm') || '')) {
-          message.textContent = 'Пароли не совпадают.';
-          message.classList.add('is-error');
+          setMessage('Пароли не совпадают.', true);
           return;
         }
         if (registerMode && (data.get('personal-data-consent') !== 'on' || data.get('trainer-terms') !== 'on')) {
-          message.textContent = 'Для регистрации необходимо принять Согласие и Правила.';
-          message.classList.add('is-error');
+          setMessage('Для регистрации необходимо принять Согласие и Правила.', true);
           return;
         }
         const { data: authData, error } = registerMode
@@ -86,6 +120,7 @@
               email,
               password,
               options: {
+                emailRedirectTo: confirmationRedirect,
                 data: {
                   display_name: email.split('@')[0],
                   personal_data_consent: true,
@@ -97,16 +132,28 @@
             })
           : await client.auth.signInWithPassword({ email, password });
         if (error) {
-          message.textContent = registerMode ? 'Регистрация не выполнена. Попробуйте ещё раз позднее.' : 'Не удалось войти. Проверьте email и пароль.';
-          message.classList.add('is-error');
+          const code = String(error.code || '');
+          if (registerMode && ['user_already_exists', 'email_exists'].includes(code)) {
+            setMessage('Аккаунт с таким email уже существует. Подтвердите email из письма или восстановите пароль.', true);
+            resendConfirmation.hidden = false;
+          } else if (!registerMode && code === 'email_not_confirmed') {
+            setMessage('Аккаунт создан, но email ещё не подтверждён. Откройте письмо или отправьте его повторно.', true);
+            resendConfirmation.hidden = false;
+          } else if (!registerMode && code === 'invalid_credentials') {
+            setMessage('Email или пароль не подошли. Если аккаунт новый, сначала подтвердите email из письма.', true);
+          } else {
+            setMessage(registerMode ? 'Регистрация не выполнена. Попробуйте ещё раз позднее.' : 'Не удалось войти. Попробуйте ещё раз или восстановите пароль.', true);
+          }
           return;
         }
         if (registerMode && !authData.session) {
-          message.textContent = 'Регистрация выполнена. Подтвердите email, затем войдите.';
+          setMessage('Аккаунт создан. Мы отправили письмо: подтвердите email, затем войдите.');
           form.reset();
+          emailInput.value = email;
+          resendConfirmation.hidden = false;
           return;
         }
-        message.textContent = 'Вход выполнен. Открываем студию…';
+        setMessage('Вход выполнен. Открываем студию…');
         const { data: profile } = await client.from('profiles').select('role').eq('id', authData.user.id).single();
         const next = new URLSearchParams(window.location.search).get('next');
         window.location.href = profile?.role === 'admin' && (next === 'admin.html' || !next) ? './admin.html' : './index.html';
