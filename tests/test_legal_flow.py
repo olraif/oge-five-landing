@@ -15,6 +15,7 @@ class PageParser(HTMLParser):
         self.links = []
         self.inputs = []
         self.scripts = []
+        self.stylesheets = []
         self.headings = []
         self._heading = None
 
@@ -26,6 +27,8 @@ class PageParser(HTMLParser):
             self.inputs.append(attrs)
         elif tag == "script":
             self.scripts.append(attrs)
+        elif tag == "link" and "stylesheet" in attrs.get("rel", "").split():
+            self.stylesheets.append(attrs)
         elif tag in {"h1", "h2"}:
             self._heading = []
 
@@ -122,10 +125,10 @@ class LegalFlowTests(unittest.TestCase):
 
     def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
-            ("index.html", 3, "./legal/offer.html", "./purchase-offer.js"),
-            ("informatics/index.html", 2, "../legal/offer.html", "../purchase-offer.js"),
+            ("index.html", 3, "./legal/offer.html", "study.css?v=20260908-2", "./purchase-offer.js?v=20260908-2"),
+            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260908-2", "../purchase-offer.js?v=20260908-2"),
         )
-        for relative, purchase_count, offer_url, script_url in cases:
+        for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
             with self.subTest(page=relative):
                 page = parse(STUDY / relative)
                 purchase_links = [item for item in page.links if "data-purchase-open" in item]
@@ -143,7 +146,14 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertEqual({item.get("href") for item in contact_links}, {"https://vk.com/olraif", "https://t.me/olraif"})
                 self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
                 self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
+                self.assertTrue(any(item.get("href") == stylesheet_url for item in page.stylesheets))
                 self.assertTrue(any(item.get("src") == script_url for item in page.scripts))
+
+    def test_purchase_dialog_uses_the_site_controls_instead_of_native_dialog_styling(self):
+        css = (STUDY / "study.css").read_text(encoding="utf-8")
+        self.assertRegex(css, r"\.purchase-offer-dialog\{[^}]*border:1px solid #d7deea")
+        self.assertRegex(css, r"\.purchase-offer-close\{[^}]*position:absolute;[^}]*right:18px")
+        self.assertRegex(css, r"\.purchase-offer-actions a\{[^}]*display:flex;[^}]*background:var\(--blue\)")
 
     def test_footer_links_directly_to_policy_and_offer_without_catalog(self):
         footer = (LEGAL / "legal-footer.js").read_text(encoding="utf-8")
