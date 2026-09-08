@@ -129,7 +129,7 @@
               <li>подходит, если нужно спокойно закрыть первую часть и видеть реальную динамику.</li>
             </ul>
             <div class="course-actions">
-              <a class="course-link" href="https://vk.com/olraif" target="_blank" rel="noopener">Купить тренажёр · 4 900 ₽</a>
+              <a class="course-link" href="#purchase-offer" data-purchase-open>Купить тренажёр · 4 900 ₽</a>
             </div>
           </article>
 
@@ -146,8 +146,8 @@
               <li>можно взять алгебру или геометрию отдельно, без покупки лишнего блока.</li>
             </ul>
             <div class="course-actions">
-              <a class="course-link" href="https://vk.com/olraif" target="_blank" rel="noopener">Купить тренажёр: алгебра · 6 900 ₽</a>
-              <a class="course-link" href="https://vk.com/olraif" target="_blank" rel="noopener">Купить тренажёр: геометрия · 6 900 ₽</a>
+              <a class="course-link" href="#purchase-offer" data-purchase-open>Купить тренажёр: алгебра · 6 900 ₽</a>
+              <a class="course-link" href="#purchase-offer" data-purchase-open>Купить тренажёр: геометрия · 6 900 ₽</a>
             </div>
           </article>
 
@@ -954,6 +954,23 @@
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
     })();
   </script>
+  <dialog class="purchase-offer-dialog" id="purchase-offer" data-purchase-dialog aria-labelledby="purchase-offer-title">
+    <div class="purchase-offer-card">
+      <button class="purchase-offer-close" type="button" data-purchase-close aria-label="Закрыть окно">×</button>
+      <p class="eyebrow"><span></span> перед покупкой</p>
+      <h2 id="purchase-offer-title">Ознакомьтесь с офертой</h2>
+      <p class="purchase-offer-selection" data-purchase-selection></p>
+      <label class="purchase-offer-accept">
+        <input type="checkbox" data-purchase-accept>
+        <span>Я ознакомился(ась) и согласен(на) с условиями <a href="./legal/offer.html" target="_blank" rel="noopener" data-purchase-offer-link>публичной оферты</a>.</span>
+      </label>
+      <div class="purchase-offer-actions">
+        <a href="https://vk.com/olraif" target="_blank" rel="noopener" data-purchase-contact aria-disabled="true" tabindex="-1">Продолжить в ВК</a>
+        <a href="https://t.me/olraif" target="_blank" rel="noopener" data-purchase-contact aria-disabled="true" tabindex="-1">Продолжить в Telegram</a>
+      </div>
+    </div>
+  </dialog>
+  <script src="./purchase-offer.js"></script>
   <script src="./legal/legal-footer.js" data-legal-footer></script>
 </body>
 </html>

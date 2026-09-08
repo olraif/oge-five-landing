@@ -120,6 +120,31 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertIn('data-code-form', html)
                 self.assertIn('data-legal-footer', html)
 
+    def test_purchase_requires_offer_acceptance_before_contact(self):
+        cases = (
+            ("index.html", 3, "./legal/offer.html", "./purchase-offer.js"),
+            ("informatics/index.html", 2, "../legal/offer.html", "../purchase-offer.js"),
+        )
+        for relative, purchase_count, offer_url, script_url in cases:
+            with self.subTest(page=relative):
+                page = parse(STUDY / relative)
+                purchase_links = [item for item in page.links if "data-purchase-open" in item]
+                self.assertEqual(len(purchase_links), purchase_count)
+                self.assertTrue(all(item.get("href") == "#purchase-offer" for item in purchase_links))
+
+                acceptance = [item for item in page.inputs if "data-purchase-accept" in item]
+                self.assertEqual(len(acceptance), 1)
+                self.assertEqual(acceptance[0].get("type"), "checkbox")
+                self.assertNotIn("checked", acceptance[0])
+
+                offer_links = [item for item in page.links if "data-purchase-offer-link" in item]
+                self.assertEqual([item.get("href") for item in offer_links], [offer_url])
+                contact_links = [item for item in page.links if "data-purchase-contact" in item]
+                self.assertEqual({item.get("href") for item in contact_links}, {"https://vk.com/olraif", "https://t.me/olraif"})
+                self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
+                self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
+                self.assertTrue(any(item.get("src") == script_url for item in page.scripts))
+
     def test_footer_links_directly_to_policy_and_offer_without_catalog(self):
         footer = (LEGAL / "legal-footer.js").read_text(encoding="utf-8")
         self.assertIn("legal/privacy.html", footer)
