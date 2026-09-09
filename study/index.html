@@ -82,7 +82,7 @@
           <article>
             <b>Актуальность</b>
             <h2>Авторский банк</h2>
-            <p>Мы готовим авторские тренировочные задания с учётом актуальной демоверсии, спецификации и кодификатора ОГЭ, опубликованных ФИПИ.</p>
+            <p>Авторский банк тренировочных заданий составлен с учётом актуальной демоверсии, спецификации и кодификатора ОГЭ, опубликованных ФИПИ.</p>
           </article>
           <article>
             <b>Время + наставник</b>
@@ -191,7 +191,7 @@
           <article class="access-card is-locked" data-course-card data-course-id="math-first" data-code="MATH-4900">
             <span class="access-status">доступ закрыт</span>
             <h3>Первая часть ОГЭ</h3>
-            <p>После покупки здесь появится вход в авторский тренажёр первой части с отслеживанием прогресса.</p>
+            <p data-access-description data-locked-text="После активации доступа здесь откроется авторский тренажёр первой части ОГЭ с отслеживанием прогресса." data-active-text="Авторский тренажёр первой части ОГЭ с отслеживанием прогресса.">После активации доступа здесь откроется авторский тренажёр первой части ОГЭ с отслеживанием прогресса.</p>
             <button class="access-activate" type="button" data-activate>Активировать</button>
             <form class="access-code-form" data-code-form>
               <label>
@@ -206,7 +206,7 @@
           <article class="access-card is-locked" data-course-card data-course-id="math-algebra" data-code="ALGEBRA-6900">
             <span class="access-status">доступ закрыт</span>
             <h3>Вторая часть ОГЭ: алгебра</h3>
-            <p>После покупки здесь откроется тренажёр алгебраических заданий второй части с проверкой только по правильному ответу.</p>
+            <p data-access-description data-locked-text="После активации доступа здесь откроется тренажёр алгебраических заданий второй части с проверкой по правильному ответу." data-active-text="Тренажёр алгебраических заданий второй части с проверкой по правильному ответу.">После активации доступа здесь откроется тренажёр алгебраических заданий второй части с проверкой по правильному ответу.</p>
             <button class="access-activate" type="button" data-activate>Активировать</button>
             <form class="access-code-form" data-code-form>
               <label>
@@ -221,7 +221,7 @@
           <article class="access-card is-locked" data-course-card data-course-id="math-geometry" data-code="GEOMETRY-6900">
             <span class="access-status">доступ закрыт</span>
             <h3>Вторая часть ОГЭ: геометрия</h3>
-            <p>После покупки здесь откроется тренажёр геометрических заданий второй части с проверкой только по правильному ответу.</p>
+            <p data-access-description data-locked-text="После активации доступа здесь откроется тренажёр геометрических заданий второй части с проверкой по правильному ответу." data-active-text="Тренажёр геометрических заданий второй части с проверкой по правильному ответу.">После активации доступа здесь откроется тренажёр геометрических заданий второй части с проверкой по правильному ответу.</p>
             <button class="access-activate" type="button" data-activate>Активировать</button>
             <form class="access-code-form" data-code-form>
               <label>
@@ -884,11 +884,15 @@
         card.classList.remove('is-active', 'is-code-open');
         card.classList.add('is-locked');
         card.querySelector('.access-status').textContent = 'доступ закрыт';
+        const description = card.querySelector('[data-access-description]');
+        if (description) description.textContent = description.dataset.lockedText;
       };
       const activateCourse = (card) => {
         card.classList.remove('is-locked', 'is-code-open');
         card.classList.add('is-active');
         card.querySelector('.access-status').textContent = 'доступ открыт';
+        const description = card.querySelector('[data-access-description]');
+        if (description) description.textContent = description.dataset.activeText;
       };
       const syncCourseAccess = async (user) => {
         courseCards.forEach(lockCourse);
