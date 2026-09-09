@@ -26,10 +26,10 @@ class SupportContractTests(unittest.TestCase):
             self.assertNotIn("Напишите в ВК или Telegram. Укажите email", html)
             self.assertNotIn("Не нашли ответ?", html)
             self.assertIn("Как часто обновляются задания?", html)
-            self.assertIn("Когда откроется доступ к тренажёру?", html)
+            self.assertIn("Как купить доступ к тренажёру?", html)
             self.assertIn("Где посмотреть свой прогресс?", html)
-            self.assertIn("Будет ли доступ для группы или класса?", html)
-            self.assertIn("возможная скидка будут рассматриваться индивидуально", html)
+            self.assertIn("Можно ли приобрести доступ для группы или класса?", html)
+            self.assertIn("возможная скидка рассматриваются индивидуально", html)
             self.assertIn('href="https://vk.com/olraif"', html)
             self.assertIn('href="https://t.me/olraif"', html)
 

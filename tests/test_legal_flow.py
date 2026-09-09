@@ -66,6 +66,12 @@ class LegalFlowTests(unittest.TestCase):
                 hrefs = {item.get("href") for item in page.links}
                 self.assertIn("../login.html", hrefs)
                 self.assertIn("mailto:olesy.raif@mail.ru", hrefs)
+                self.assertEqual(
+                    sum(item.get("href") == "mailto:olesy.raif@mail.ru" for item in page.links),
+                    1,
+                )
+                visible_text = re.sub(r"<[^>]+>", "", path.read_text(encoding="utf-8"))
+                self.assertEqual(visible_text.count("olesy.raif@mail.ru"), 1)
 
     def test_registration_requires_two_separate_unchecked_acceptances(self):
         page = parse(STUDY / "login.html")
@@ -83,8 +89,8 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/terms\.html"')
         self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
         self.assertNotRegex(html, r'href="\./legal/offer\.html"')
-        self.assertIn("consent_version: '1.1'", html)
-        self.assertIn("terms_version: '1.1'", html)
+        self.assertIn("consent_version: '1.2'", html)
+        self.assertIn("terms_version: '1.2'", html)
 
     def test_registration_failure_does_not_blame_the_password_for_server_errors(self):
         html = (STUDY / "login.html").read_text(encoding="utf-8")
@@ -123,27 +129,34 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertIn('data-code-form', html)
                 self.assertIn('data-legal-footer', html)
 
-    def test_unreleased_trainers_offer_launch_notification_instead_of_purchase(self):
+    def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
-            ("index.html", 3),
-            ("informatics/index.html", 2),
+            ("index.html", 3, "./legal/offer.html", "study.css?v=20260909-2", "./purchase-offer.js?v=20260909-1"),
+            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260909-2", "../purchase-offer.js?v=20260909-1"),
         )
-        for relative, notification_count in cases:
+        for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
             with self.subTest(page=relative):
                 page = parse(STUDY / relative)
                 purchase_links = [item for item in page.links if "data-purchase-open" in item]
-                self.assertEqual(purchase_links, [])
+                self.assertEqual(len(purchase_links), purchase_count)
+                self.assertTrue(all(item.get("href") == "#purchase-offer" for item in purchase_links))
+
+                acceptance = [item for item in page.inputs if "data-purchase-accept" in item]
+                self.assertEqual(len(acceptance), 1)
+                self.assertEqual(acceptance[0].get("type"), "checkbox")
+                self.assertNotIn("checked", acceptance[0])
+
+                offer_links = [item for item in page.links if "data-purchase-offer-link" in item]
+                self.assertEqual([item.get("href") for item in offer_links], [offer_url])
+                contact_links = [item for item in page.links if "data-purchase-contact" in item]
+                self.assertEqual({item.get("href") for item in contact_links}, {"https://vk.com/olraif", "https://t.me/olraif"})
+                self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
+                self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
 
                 html = (STUDY / relative).read_text(encoding="utf-8")
-                notification_links = [
-                    item for item in page.links
-                    if item.get("href") == "https://vk.com/olraif"
-                    and item.get("class") == "course-link"
-                ]
-                self.assertEqual(len(notification_links), notification_count)
-                self.assertEqual(html.count(">Сообщить о запуске</a>"), notification_count)
-                self.assertNotIn("data-purchase-dialog", html)
-                self.assertFalse(any("purchase-offer.js" in item.get("src", "") for item in page.scripts))
+                self.assertNotIn("data-purchase-selection", html)
+                self.assertTrue(any(item.get("href") == stylesheet_url for item in page.stylesheets))
+                self.assertTrue(any(item.get("src") == script_url for item in page.scripts))
 
     def test_purchase_dialog_uses_the_site_controls_instead_of_native_dialog_styling(self):
         css = (STUDY / "study.css").read_text(encoding="utf-8")
@@ -151,7 +164,7 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(css, r"\.purchase-offer-close\{[^}]*position:absolute;[^}]*right:18px")
         self.assertRegex(css, r"\.purchase-offer-actions a\{[^}]*display:flex;[^}]*background:var\(--blue\)")
 
-    def test_tariff_prices_are_marked_as_planned_while_sales_are_closed(self):
+    def test_tariff_prices_are_separate_from_buttons_that_sell_access(self):
         cases = {
             "index.html": ("Первая часть", "Алгебра", "Геометрия"),
             "informatics/index.html": ("Первая часть", "Вторая часть"),
@@ -159,10 +172,29 @@ class LegalFlowTests(unittest.TestCase):
         for relative, option_labels in cases.items():
             with self.subTest(page=relative):
                 html = (STUDY / relative).read_text(encoding="utf-8")
+                purchase_labels = re.findall(r'<a[^>]*data-purchase-open[^>]*>(.*?)</a>', html, re.S)
+                self.assertTrue(purchase_labels)
+                self.assertTrue(all("Приобрести доступ" in label for label in purchase_labels))
+                self.assertTrue(all("₽" not in label for label in purchase_labels))
                 self.assertEqual(html.count('class="course-buy-title"'), 2)
-                self.assertEqual(html.count('class="course-buy-title">Планируемая стоимость доступа'), 2)
+                self.assertEqual(html.count('class="course-buy-title">Стоимость доступа'), 2)
                 for option_label in option_labels:
                     self.assertIn(f"<span>{option_label}</span>", html)
+
+    def test_public_legal_copy_omits_inactive_services_and_internal_history(self):
+        forbidden = (
+            "Яндекс Метрика",
+            "в текущей версии Сервиса",
+            "в текущей редакции Сервиса",
+            "если аналитика будет подключена",
+            "при будущем подключении",
+        )
+        for path in (LEGAL / "privacy.html", LEGAL / "consent.html", LEGAL / "offer.html", LEGAL / "terms.html"):
+            with self.subTest(page=path.name):
+                html = path.read_text(encoding="utf-8")
+                for phrase in forbidden:
+                    self.assertNotIn(phrase, html)
+        self.assertFalse((LEGAL / "consent-1.0.html").exists())
 
     def test_public_copy_describes_the_author_bank_as_in_preparation(self):
         required = "с учётом актуальной демоверсии, спецификации и кодификатора ОГЭ, опубликованных ФИПИ"

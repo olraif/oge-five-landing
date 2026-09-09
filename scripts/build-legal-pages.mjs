@@ -100,7 +100,6 @@ function pageTemplate(document) {
       <p class="legal-meta">${escapeHtml(document.revision)}</p>
       <nav class="legal-toc" aria-label="Содержание"><strong>Содержание</strong><ol>${document.sections.map((section) => `<li><a href="#${section.id}">${inline(section.title)}</a></li>`).join('')}</ol></nav>
       <div class="legal-body">${document.body}</div>
-      <p class="legal-contact">Вопросы, отзыв согласия и обращения: <a href="mailto:olesy.raif@mail.ru">olesy.raif@mail.ru</a></p>
     </article>
   </main>
 </body>
