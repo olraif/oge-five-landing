@@ -228,3 +228,8 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 
 /* Keep the purchase window inside the site's light visual system. */
 .purchase-offer-dialog{border:1px solid #d7deea;background:#fff}
+
+/* Keep every tariff price block compact and structurally consistent. */
+.course-buy b{font-size:15px;white-space:nowrap}
+.course-buy--mentor b{font-size:15px}
+.course-buy--mentor>.course-buy-title{display:block;padding-bottom:7px;border-bottom:1px solid #e5f3e9;font-size:8px;line-height:1.2}

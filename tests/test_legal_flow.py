@@ -125,8 +125,8 @@ class LegalFlowTests(unittest.TestCase):
 
     def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
-            ("index.html", 3, "./legal/offer.html", "study.css?v=20260908-2", "./purchase-offer.js?v=20260909-1"),
-            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260908-2", "../purchase-offer.js?v=20260909-1"),
+            ("index.html", 3, "./legal/offer.html", "study.css?v=20260909-2", "./purchase-offer.js?v=20260909-1"),
+            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260909-2", "../purchase-offer.js?v=20260909-1"),
         )
         for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
             with self.subTest(page=relative):
@@ -159,19 +159,23 @@ class LegalFlowTests(unittest.TestCase):
 
     def test_tariff_prices_are_separate_from_buttons_that_sell_access(self):
         cases = {
-            "index.html": ("4 900 ₽", "6 900 ₽"),
-            "informatics/index.html": ("4 900 ₽", "6 900 ₽"),
+            "index.html": ("Первая часть", "Алгебра", "Геометрия"),
+            "informatics/index.html": ("Первая часть", "Вторая часть"),
         }
-        for relative, prices in cases.items():
+        for relative, option_labels in cases.items():
             with self.subTest(page=relative):
                 html = (STUDY / relative).read_text(encoding="utf-8")
                 purchase_labels = re.findall(r'<a[^>]*data-purchase-open[^>]*>(.*?)</a>', html, re.S)
                 self.assertTrue(purchase_labels)
                 self.assertTrue(all("Приобрести доступ" in label for label in purchase_labels))
                 self.assertTrue(all("₽" not in label for label in purchase_labels))
-                self.assertIn("Базовая стоимость доступа", html)
-                for price in prices:
-                    self.assertIn(price, html)
+                self.assertEqual(html.count('class="course-buy-title"'), 2)
+                self.assertEqual(html.count('class="course-buy-title">Стоимость доступа'), 2)
+                for option_label in option_labels:
+                    self.assertIn(f"<span>{option_label}</span>", html)
+
+        css = (STUDY / "study.css").read_text(encoding="utf-8")
+        self.assertRegex(css, r"\.course-buy b\{[^}]*font-size:15px;[^}]*white-space:nowrap")
 
     def test_footer_links_directly_to_policy_and_offer_without_catalog(self):
         footer = (LEGAL / "legal-footer.js").read_text(encoding="utf-8")
