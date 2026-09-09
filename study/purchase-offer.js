@@ -20,10 +20,9 @@
 
     const triggers = [...document.querySelectorAll('[data-purchase-open]')];
     const checkbox = dialog.querySelector('[data-purchase-accept]');
-    const selection = dialog.querySelector('[data-purchase-selection]');
     const closeButton = dialog.querySelector('[data-purchase-close]');
     const contactLinks = [...dialog.querySelectorAll('[data-purchase-contact]')];
-    if (!checkbox || !selection || !closeButton || !contactLinks.length) return null;
+    if (!checkbox || !closeButton || !contactLinks.length) return null;
 
     const reset = () => {
       checkbox.checked = false;
@@ -34,9 +33,8 @@
       else dialog.removeAttribute('open');
       reset();
     };
-    const open = (trigger) => {
+    const open = () => {
       reset();
-      selection.textContent = trigger.dataset.purchaseLabel || trigger.textContent.trim();
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.setAttribute('open', '');
       checkbox.focus();
@@ -45,7 +43,7 @@
     triggers.forEach((trigger) => {
       trigger.addEventListener('click', (event) => {
         event.preventDefault();
-        open(trigger);
+        open();
       });
     });
     checkbox.addEventListener('change', () => setContactEnabled(contactLinks, checkbox.checked));

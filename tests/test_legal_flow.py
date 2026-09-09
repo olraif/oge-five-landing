@@ -125,8 +125,8 @@ class LegalFlowTests(unittest.TestCase):
 
     def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
-            ("index.html", 3, "./legal/offer.html", "study.css?v=20260908-2", "./purchase-offer.js?v=20260908-2"),
-            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260908-2", "../purchase-offer.js?v=20260908-2"),
+            ("index.html", 3, "./legal/offer.html", "study.css?v=20260908-2", "./purchase-offer.js?v=20260909-1"),
+            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260908-2", "../purchase-offer.js?v=20260909-1"),
         )
         for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
             with self.subTest(page=relative):
@@ -146,6 +146,8 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertEqual({item.get("href") for item in contact_links}, {"https://vk.com/olraif", "https://t.me/olraif"})
                 self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
                 self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
+                html = (STUDY / relative).read_text(encoding="utf-8")
+                self.assertNotIn("data-purchase-selection", html)
                 self.assertTrue(any(item.get("href") == stylesheet_url for item in page.stylesheets))
                 self.assertTrue(any(item.get("src") == script_url for item in page.scripts))
 
@@ -154,6 +156,22 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(css, r"\.purchase-offer-dialog\{[^}]*border:1px solid #d7deea")
         self.assertRegex(css, r"\.purchase-offer-close\{[^}]*position:absolute;[^}]*right:18px")
         self.assertRegex(css, r"\.purchase-offer-actions a\{[^}]*display:flex;[^}]*background:var\(--blue\)")
+
+    def test_tariff_prices_are_separate_from_buttons_that_sell_access(self):
+        cases = {
+            "index.html": ("4 900 ₽", "6 900 ₽"),
+            "informatics/index.html": ("4 900 ₽", "6 900 ₽"),
+        }
+        for relative, prices in cases.items():
+            with self.subTest(page=relative):
+                html = (STUDY / relative).read_text(encoding="utf-8")
+                purchase_labels = re.findall(r'<a[^>]*data-purchase-open[^>]*>(.*?)</a>', html, re.S)
+                self.assertTrue(purchase_labels)
+                self.assertTrue(all("Приобрести доступ" in label for label in purchase_labels))
+                self.assertTrue(all("₽" not in label for label in purchase_labels))
+                self.assertIn("Базовая стоимость доступа", html)
+                for price in prices:
+                    self.assertIn(price, html)
 
     def test_footer_links_directly_to_policy_and_offer_without_catalog(self):
         footer = (LEGAL / "legal-footer.js").read_text(encoding="utf-8")
