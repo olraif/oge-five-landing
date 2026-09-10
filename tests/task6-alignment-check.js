@@ -76,7 +76,7 @@ async page => {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.waitForSelector('#fractionQuiz input');
-  await page.locator('#fractionQuiz input').nth(0).fill('9,4');
+  await page.locator('#fractionQuiz input').nth(0).fill('14,2');
   await page.locator('#fractionQuiz input').nth(1).fill('0');
   await page.locator('#fractionQuiz input').nth(1).press('Enter');
   const task6Colours = await page.evaluate(() => {
