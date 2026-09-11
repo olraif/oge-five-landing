@@ -2,13 +2,43 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const modelPath = path.join(__dirname, '..', 'study', 'progress-model.js');
-const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, buildTask6Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount } = require(modelPath);
+const { TASK6_ANSWER_KEYS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, getPrototypeStatus, createAccountProgressStorage, isAttemptOwnedByAccount, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets } = require(modelPath);
 
 assert.equal(
   typeof createAccountProgressStorage,
   'function',
   'progress cache must be scoped to the authenticated student account',
 );
+
+assert.equal(
+  buildProgressResetKey(['math', 'task7'], '7.14'),
+  'oge_reset_math_task7_7_14',
+  'each type must have an independent top-level reset marker',
+);
+assert.equal(
+  isAttemptVisibleAfterReset({ savedAt: '2099-09-12T12:00:00.000Z', resetToken: 'previous-generation' }, 'current-generation'),
+  false,
+  'an old attempt must stay hidden even when its client timestamp is far in the future',
+);
+assert.equal(
+  isAttemptVisibleAfterReset({ savedAt: '2000-09-10T12:00:00.000Z', resetToken: 'current-generation' }, 'current-generation'),
+  true,
+  'a new solution carrying the current reset token must stay visible even when its client timestamp is far in the past',
+);
+assert.equal(isAttemptVisibleAfterReset({ savedAt: '2026-09-10T12:00:00.000Z' }, null), true);
+
+const filteredTask7Progress = filterProgressAfterResets({
+  '7.14': { savedAt: '2099-09-12T12:00:00.000Z', resetToken: 'old-7.14', correctIds: ['1', '2', '3', '4', '5'], answeredIds: ['1', '2', '3', '4', '5'] },
+  '7.15': { savedAt: '2000-09-10T12:00:00.000Z', resetToken: 'current-7.15', correctIds: ['1', '2', '3', '4', '5'], answeredIds: ['1', '2', '3', '4', '5'] },
+}, {
+  oge_reset_math_task7_7_14: 'current-7.14',
+  oge_reset_math_task7_7_15: 'current-7.15',
+}, ['math', 'task7']);
+assert.equal(filteredTask7Progress['7.14'], undefined, 'student dashboard must hide progress saved before reset');
+assert.equal(filteredTask7Progress['7.15'].correctIds.length, 5, 'student dashboard must keep progress saved after reset');
+const filteredTask7Summary = buildTask7Summary(filteredTask7Progress);
+assert.equal(filteredTask7Summary.prototypes.find(({ key }) => key === '7.14').correct, 0, 'reset type must contribute zero correct answers to the dashboard');
+assert.equal(filteredTask7Summary.prototypes.find(({ key }) => key === '7.15').correct, 5, 'new work after reset must remain in the dashboard');
 
 const memory = new Map();
 const browserStorage = {

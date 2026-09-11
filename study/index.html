@@ -852,7 +852,10 @@
         const task6Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task6);
         renderTask6Progress(task6Progress);
         const task7Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task7);
-        renderTask7Progress(task7Progress);
+        const visibleTask7Progress = window.OgeProgressModel?.filterProgressAfterResets
+          ? window.OgeProgressModel.filterProgressAfterResets(task7Progress, user.user_metadata, ['math', 'task7'])
+          : task7Progress;
+        renderTask7Progress(visibleTask7Progress);
         const task8Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task8);
         renderTask8Progress(task8Progress);
         const task9Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task9);

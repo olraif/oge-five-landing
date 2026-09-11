@@ -412,6 +412,22 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
     }), { total: 0, correct: 0, wrong: 0, untouched: 0 });
     return { prototypes, ...totals, percent: totals.total ? Math.round((totals.correct / totals.total) * 100) : 0 };
   };
+  const buildProgressResetKey = (path = [], attemptId = '') => [
+    'oge_reset',
+    ...path,
+    attemptId,
+  ].map((value) => String(value).replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')).filter(Boolean).join('_');
+
+  const isAttemptVisibleAfterReset = (attempt, resetToken) => (
+    !resetToken || Boolean(attempt && attempt.resetToken === resetToken)
+  );
+
+  const filterProgressAfterResets = (progress = {}, metadata = {}, path = []) => Object.fromEntries(
+    Object.entries(progress || {}).filter(([attemptId, attempt]) => {
+      const resetKey = buildProgressResetKey(path, attemptId);
+      return isAttemptVisibleAfterReset(attempt, metadata?.[resetKey]);
+    }),
+  );
   const createAccountProgressStorage = (storage) => {
     const buildKey = (prefix, userId, itemId) => {
       if (!storage || !userId || !itemId) return null;
@@ -447,5 +463,5 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
     return savedAt >= accountCreatedAt;
   };
 
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, createAccountProgressStorage, isAttemptOwnedByAccount };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets, createAccountProgressStorage, isAttemptOwnedByAccount };
 });

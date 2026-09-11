@@ -4,6 +4,7 @@
   const prototypeNav = document.querySelector('[data-task7-prototypes]');
   const quiz = document.querySelector('[data-task7-quiz]');
   const submit = document.querySelector('[data-task7-submit]');
+  const reset = document.querySelector('[data-task7-reset]');
   const title = document.querySelector('[data-task7-title]');
   const score = document.querySelector('[data-task7-score]');
   const currentTotal = document.querySelector('[data-task7-current-total]');
@@ -11,21 +12,43 @@
   const percent = document.querySelector('[data-task7-percent]');
   const note = document.querySelector('[data-task7-note]');
   const result = document.querySelector('[data-task7-result]');
-  if (!prototypeNav || !quiz || !prototypes.length) return;
+  if (!prototypeNav || !quiz || !submit || !reset || !prototypes.length) return;
 
   const storagePrefix = 'ogeTrainer:v3:math:task7:';
+  const resetStoragePrefix = 'ogeTrainer:v3:math:task7Reset:';
   const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
-  const cloudPath = ['trainer_progress', 'math', 'task7'];
+  const progressPath = ['math', 'task7'];
   let activeId = new URLSearchParams(location.search).get('prototype') || prototypes[0].id;
   if (!prototypeById.has(activeId)) activeId = prototypes[0].id;
   let cloudUser = null;
+  let loadCloudRevision = 0;
 
   const normalize = (value) => String(value ?? '').trim().replace(/,/g, '.').replace(/\s+/g, '');
   const prepareTaskHtml = (value) => String(value ?? '').replace(/\$([^$]+)\$/g, (_, expression) => `\\(${expression}\\)`);
+  const createResetToken = () => window.crypto?.randomUUID?.()
+    || `reset-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const getResetToken = (id) => {
+    const resetKey = window.OgeProgressModel?.buildProgressResetKey(progressPath, id);
+    const cloudReset = resetKey ? cloudUser?.user_metadata?.[resetKey] : null;
+    const localReset = accountStorage?.read(resetStoragePrefix, cloudUser?.id, id);
+    const localToken = localReset?.token || localReset?.resetAt || null;
+    if (localReset?.pending && localToken) return localToken;
+    return cloudReset || localToken || null;
+  };
   const getSaved = (id) => {
     const cloudAttempt = cloudUser?.user_metadata?.trainer_progress?.math?.task7?.[id];
-    if (window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser)) return cloudAttempt;
-    return accountStorage?.read(storagePrefix, cloudUser?.id, id) || null;
+    const localAttempt = accountStorage?.read(storagePrefix, cloudUser?.id, id) || null;
+    const resetToken = getResetToken(id);
+    const candidates = [
+      window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser) ? cloudAttempt : null,
+      localAttempt,
+    ].filter((attempt) => attempt && window.OgeProgressModel?.isAttemptVisibleAfterReset(attempt, resetToken));
+    return candidates.reduce((latest, attempt) => {
+      if (!latest) return attempt;
+      const latestTime = Date.parse(latest.savedAt || '') || 0;
+      const attemptTime = Date.parse(attempt.savedAt || '') || 0;
+      return attemptTime >= latestTime ? attempt : latest;
+    }, null);
   };
   const validSaved = (saved, proto) => {
     if (!saved || saved.prototype !== proto.id || typeof saved.answers !== 'object') return null;
@@ -116,19 +139,25 @@
     }
   };
   const loadCloud = async () => {
-    if (!window.ogeSupabase) return;
+    const requestRevision = ++loadCloudRevision;
+    if (!window.ogeSupabase) {
+      reset.disabled = false;
+      return;
+    }
+    reset.disabled = true;
     try {
       const { data } = await window.ogeSupabase.auth.getSession();
+      if (requestRevision !== loadCloudRevision) return;
       cloudUser = data?.session?.user || null;
-      const cloudValue = cloudUser?.user_metadata?.trainer_progress?.math?.task7?.[activeId];
       const proto = prototypeById.get(activeId);
-      const cloudSaved = window.OgeProgressModel?.isAttemptOwnedByAccount(cloudValue, cloudUser)
-        ? validSaved(cloudValue, proto)
-        : null;
-      if (cloudSaved) accountStorage?.write(storagePrefix, cloudUser?.id, activeId, cloudSaved);
+      const selectedSaved = validSaved(getSaved(activeId), proto);
+      if (selectedSaved) accountStorage?.write(storagePrefix, cloudUser?.id, activeId, selectedSaved);
       else accountStorage?.remove(storagePrefix, cloudUser?.id, activeId);
       render();
     } catch { /* offline mode keeps local progress */ }
+    finally {
+      if (requestRevision === loadCloudRevision) reset.disabled = false;
+    }
   };
   const checkPrototype = async () => {
     const proto = prototypeById.get(activeId);
@@ -142,7 +171,7 @@
       if (raw.trim() !== '') answeredIds.push(item.id);
       if (normalize(raw) === normalize(item.answer)) correctIds.push(item.id);
     });
-    const payload = { prototype: proto.id, answers, answeredIds, correctIds, score: correctIds.length, total: proto.items.length, savedAt: new Date().toISOString() };
+    const payload = { prototype: proto.id, answers, answeredIds, correctIds, score: correctIds.length, total: proto.items.length, savedAt: new Date().toISOString(), resetToken: getResetToken(proto.id) };
     accountStorage?.write(storagePrefix, cloudUser?.id, proto.id, payload);
     applySaved(proto, payload);
     renderNav();
@@ -150,7 +179,47 @@
     saveCloud(payload);
     if (typeof window.ym === 'function' && window.METRIKA_COUNTER_ID) window.ym(window.METRIKA_COUNTER_ID, 'reachGoal', 'MATH_TASK7_TEST');
   };
+  const resetPrototype = async () => {
+    const proto = prototypeById.get(activeId);
+    if (!proto || !window.confirm(`Сбросить ответы типа ${proto.id}?`)) return;
+
+    loadCloudRevision += 1;
+    reset.disabled = true;
+    submit.disabled = true;
+    const resetToken = createResetToken();
+    const resetKey = window.OgeProgressModel?.buildProgressResetKey(progressPath, proto.id);
+    let syncFailed = false;
+
+    accountStorage?.remove(storagePrefix, cloudUser?.id, proto.id);
+    accountStorage?.write(resetStoragePrefix, cloudUser?.id, proto.id, { token: resetToken, pending: true });
+    if (cloudUser && resetKey) {
+      cloudUser = {
+        ...cloudUser,
+        user_metadata: { ...cloudUser.user_metadata, [resetKey]: resetToken },
+      };
+    }
+    render();
+
+    if (cloudUser && resetKey && window.ogeSupabase) {
+      try {
+        const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { [resetKey]: resetToken } });
+        if (error) throw error;
+        cloudUser = updated?.user || cloudUser;
+        accountStorage?.write(resetStoragePrefix, cloudUser?.id, proto.id, { token: resetToken, pending: false });
+      } catch (error) {
+        syncFailed = true;
+        console.warn('Не удалось синхронизировать сброс прогресса №7', error);
+      }
+    }
+
+    note.textContent = syncFailed
+      ? `Ответы типа ${proto.id} сброшены на этом устройстве. Синхронизация с аккаунтом не выполнена.`
+      : `Ответы типа ${proto.id} сброшены.`;
+    reset.disabled = false;
+    submit.disabled = false;
+  };
   submit.addEventListener('click', checkPrototype);
+  reset.addEventListener('click', resetPrototype);
   quiz.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
     event.preventDefault();
