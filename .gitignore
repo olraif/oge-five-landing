@@ -1,6 +1,14 @@
 __pycache__/
 *.py[cod]
 output/
+!study/vendor/mathjax-3.2.2/es5/output/
+study/vendor/mathjax-3.2.2/es5/output/*
+!study/vendor/mathjax-3.2.2/es5/output/chtml/
+study/vendor/mathjax-3.2.2/es5/output/chtml/*
+!study/vendor/mathjax-3.2.2/es5/output/chtml/fonts/
+study/vendor/mathjax-3.2.2/es5/output/chtml/fonts/*
+!study/vendor/mathjax-3.2.2/es5/output/chtml/fonts/woff-v2/
+!study/vendor/mathjax-3.2.2/es5/output/chtml/fonts/woff-v2/*.woff
 .DS_Store
 Thumbs.db
 .playwright-cli/

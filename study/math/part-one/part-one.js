@@ -2,9 +2,25 @@ const quiz = document.getElementById("fractionQuiz");
 const result = document.getElementById("quizResult");
 const getCell = () => document.querySelector(`[data-prototype-cell="${activePrototype}"]`);
 const storagePrefix = "ogeTrainer:v3:math:task6:";
+const resetStoragePrefix = "ogeTrainer:v3:math:task6Reset:";
 const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
 let cloudUser = null;
 const cloudPath = ["trainer_progress", "math", "task6"];
+const progressPath = ["math", "task6"];
+const resetButton = document.querySelector("[data-task6-reset]");
+
+const taskInstructions = {
+  "6.1": "Вычислите значение выражения.",
+  "6.2": "Вычислите значение выражения.",
+  "6.3": "Вычислите значение выражения.",
+  "6.4": "Вычислите значение выражения.",
+  "6.5": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+  "6.6": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+  "6.7": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+  "6.8": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
+  "6.9": "Приведите дробь к указанному знаменателю. В ответе укажите числитель.",
+  "6.10": "Вычислите значение выражения."
+};
 
 const syncCourseView = () => document.body.classList.toggle("task6-view", location.hash === "#trainer");
 window.addEventListener("hashchange", syncCourseView);
@@ -83,10 +99,19 @@ const showResult = (score, misses = []) => {
   `;
 };
 
+const createResetToken = () => window.crypto?.randomUUID?.() || `reset-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const getResetToken = (prototype = activePrototype) => {
+  const key = window.OgeProgressModel?.buildProgressResetKey(progressPath, prototype);
+  const local = accountStorage?.read(resetStoragePrefix, cloudUser?.id, prototype);
+  return local?.pending ? local.token : (key ? cloudUser?.user_metadata?.[key] : null) || local?.token || null;
+};
 const getSaved = () => {
   const cloudAttempt = cloudUser?.user_metadata?.trainer_progress?.math?.task6?.[activePrototype];
-  if (window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser)) return cloudAttempt;
-  return accountStorage?.read(storagePrefix, cloudUser?.id, activePrototype) || null;
+  const localAttempt = accountStorage?.read(storagePrefix, cloudUser?.id, activePrototype) || null;
+  const resetToken = getResetToken();
+  return [window.OgeProgressModel?.isAttemptOwnedByAccount(cloudAttempt, cloudUser) ? cloudAttempt : null, localAttempt]
+    .filter((attempt) => attempt && window.OgeProgressModel?.isAttemptVisibleAfterReset(attempt, resetToken))
+    .sort((a, b) => (Date.parse(b.savedAt || "") || 0) - (Date.parse(a.savedAt || "") || 0))[0] || null;
 };
 
 const validateSavedProgress = (saved, prototype = activePrototype) => {
@@ -159,7 +184,7 @@ const renderPrototype = (key, restore = true) => {
     "6.7": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
     "6.8": "Вычислите значение выражения. Ответ запишите десятичной дробью.",
     "6.9": "Приведите дробь к указанному знаменателю и запишите числитель.",
-    "6.10": "Вычислите значение выражения: единица делится на сумму двух дробей."
+    "6.10": "Вычислите значение выражения."
   };
   taskInstruction.textContent = ({"6.1":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.","6.2":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.","6.3":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.","6.4":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f.","6.5":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.","6.6":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.","6.7":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.","6.8":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f. \u041e\u0442\u0432\u0435\u0442 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0441\u044f\u0442\u0438\u0447\u043d\u043e\u0439 \u0434\u0440\u043e\u0431\u044c\u044e.","6.9":"\u041f\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0434\u0440\u043e\u0431\u044c \u043a \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u043e\u043c\u0443 \u0437\u043d\u0430\u043c\u0435\u043d\u0430\u0442\u0435\u043b\u044e \u0438 \u0437\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0447\u0438\u0441\u043b\u0438\u0442\u0435\u043b\u044c.","6.10":"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0432\u044b\u0440\u0430\u0436\u0435\u043d\u0438\u044f: \u0435\u0434\u0438\u043d\u0438\u0446\u0430 \u0434\u0435\u043b\u0438\u0442\u0441\u044f \u043d\u0430 \u0441\u0443\u043c\u043c\u0443 \u0434\u0432\u0443\u0445 \u0434\u0440\u043e\u0431\u0435\u0439."})[key] || "";
   const rows = Array.from(quiz.querySelectorAll("label[data-question]"));
@@ -168,7 +193,11 @@ const renderPrototype = (key, restore = true) => {
     if (!row) return;
     row.style.display = "grid";
     row.dataset.question = `q${index + 1}`;
-    row.innerHTML = `${id} <span>${key === "6.10" ? formatComplexFraction(expression) : formatExpression(expression)}</span><input name="q${index + 1}" autocomplete="off">`;
+    const denominator = expression.match(/знаменатель\s+(\d+)/)?.[1];
+    const prompt = key === "6.9"
+      ? `Приведите дробь к знаменателю ${denominator}. В ответе укажите числитель.`
+      : taskInstructions[key];
+    row.innerHTML = `${id} <span class="question-copy"><small>${prompt}</small><span class="question-expression">${key === "6.10" ? formatComplexFraction(expression) : formatExpression(expression)}</span></span><input name="q${index + 1}" autocomplete="off" aria-label="Ответ ${id}">`;
   });
   rows.slice(data.items.length).forEach((row) => { row.style.display = "none"; });
   document.querySelectorAll("[data-prototype-cell]").forEach((button) => {
@@ -245,7 +274,7 @@ if (quiz && result) {
     applyQuestionStatuses(submittedAnswers);
     showResult(score, misses);
     try {
-      const payload = { prototype: activePrototype, score, total: Object.keys(activeAnswers).length, misses, answers: submittedAnswers, savedAt: new Date().toISOString() };
+      const payload = { prototype: activePrototype, score, total: Object.keys(activeAnswers).length, misses, answers: submittedAnswers, savedAt: new Date().toISOString(), resetToken: getResetToken() };
       accountStorage?.write(storagePrefix, cloudUser?.id, activePrototype, payload);
       saveCloudProgress(payload);
     } catch (error) {
@@ -331,3 +360,25 @@ renderPrototype(activePrototype);
   if (!match) return formatExpression(value);
   return `<span class="complex-fraction"><sup>1</sup><i></i><sub>${formatExpression(match[1])} ${match[2]} ${formatExpression(match[3])}</sub></span>`;
 }
+
+const resetCurrentPrototype = async () => {
+  if (!window.confirm(`Сбросить ответы типа ${activePrototype}?`)) return;
+  const prototype = activePrototype;
+  const token = createResetToken();
+  const resetKey = window.OgeProgressModel?.buildProgressResetKey(progressPath, prototype);
+  accountStorage?.remove(storagePrefix, cloudUser?.id, prototype);
+  accountStorage?.write(resetStoragePrefix, cloudUser?.id, prototype, { token, pending: true });
+  if (cloudUser && resetKey) cloudUser = { ...cloudUser, user_metadata: { ...cloudUser.user_metadata, [resetKey]: token } };
+  clearCurrentAttempt();
+  if (cloudUser && resetKey && window.ogeSupabase) {
+    try {
+      const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { [resetKey]: token } });
+      if (error) throw error;
+      cloudUser = updated?.user || cloudUser;
+      accountStorage?.write(resetStoragePrefix, cloudUser?.id, prototype, { token, pending: false });
+    } catch (error) {
+      console.warn("Не удалось синхронизировать сброс прогресса №6", error);
+    }
+  }
+};
+resetButton?.addEventListener("click", resetCurrentPrototype);

@@ -26,18 +26,30 @@ class Task8DataContractTests(unittest.TestCase):
 
         items = [item for prototype in prototypes for item in prototype["items"]]
         self.assertEqual(143, len(items))
-        self.assertEqual(143, len({item["internalId"] for item in items}))
+        self.assertEqual(143, len({item["id"] for item in items}))
 
-    def test_every_item_contains_source_task_and_answer(self):
+    def test_every_item_is_self_contained_without_import_provenance(self):
         _, prototypes = self.load_prototypes()
         for prototype in prototypes:
-            self.assertIn("MathStart", prototype["source"])
+            self.assertNotIn("source", prototype)
             self.assertTrue(prototype["title"].strip())
             self.assertGreaterEqual(len(prototype["items"]), 2)
             for item in prototype["items"]:
+                self.assertNotIn("internalId", item, item["id"])
+                self.assertNotIn("analogNumber", item, item["id"])
+                self.assertNotIn("answerHtml", item, item["id"])
                 self.assertTrue(item["taskHtml"].strip(), item["id"])
                 self.assertIn("answer", item, item["id"])
                 self.assertNotEqual("", str(item["answer"]).strip(), item["id"])
+
+    def test_all_authored_task_texts_are_unique_and_clean(self):
+        _, prototypes = self.load_prototypes()
+        tasks = [item["taskHtml"] for prototype in prototypes for item in prototype["items"]]
+        self.assertEqual(len(tasks), len(set(tasks)))
+        joined = "\n".join(tasks)
+        self.assertNotIn("FIPI", joined)
+        self.assertNotIn("MathStart", joined)
+        self.assertNotRegex(joined, r"Р[\u0080-\u00ff]")
 
 
 if __name__ == "__main__":

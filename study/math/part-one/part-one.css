@@ -55,3 +55,11 @@
   body.practical-page .route-source-condition img,body.practical-page .route-map{max-width:100%;height:auto}
   body.practical-page .route-question input{box-sizing:border-box;min-height:46px;max-width:100%}
 }
+/* Task 6: complete prompt in every card and paired actions. */
+.task6-view .quiz-card label{align-items:center}
+.task6-view .question-copy{display:flex;flex-direction:column;gap:4px;overflow:visible!important}
+.task6-view .question-copy small{color:#415477;font-size:12px;font-weight:700;line-height:1.35}
+.task6-view .question-expression{font-size:15px!important;color:#172443}
+.task6-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.task6-actions .button{width:100%;min-height:42px;margin:0;border-radius:12px}
+.task6-reset{border:1px solid #cfd9ed;background:#fff;color:#64708a;font-weight:800;cursor:pointer}

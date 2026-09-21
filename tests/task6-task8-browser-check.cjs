@@ -1,0 +1,50 @@
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch({ headless: true, executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  for (const url of ['**/supabase.js', '**/supabase-config.js']) {
+    await page.route(url, (route) => route.fulfill({ contentType: 'application/javascript', body: '' }));
+  }
+  await page.route('**/auth-session.js', (route) => route.fulfill({
+    contentType: 'application/javascript',
+    body: 'window.ogeHasCourseAccess=async()=>({data:true,user:null});',
+  }));
+
+  await page.goto('http://127.0.0.1:8765/study/math/part-one/index.html#trainer');
+  await page.waitForSelector('[data-question] .question-copy');
+  for (let index = 1; index <= 10; index += 1) {
+    await page.locator(`[data-prototype-cell="6.${index}"]`).click();
+    const rows = page.locator('#fractionQuiz label[data-question]:visible');
+    const count = await rows.count();
+    const prompts = await rows.locator('.question-copy small').allTextContents();
+    if (!count || prompts.length !== count || prompts.some((text) => !text.trim())) throw new Error(`6.${index}: missing card prompt`);
+    if (index === 9 && prompts.some((text) => !text.includes('В ответе укажите числитель'))) throw new Error('6.9: unclear numerator prompt');
+    if (index === 10 && prompts.some((text) => text !== 'Вычислите значение выражения.')) throw new Error('6.10: operation-specific prompt leaked');
+  }
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-task6-reset]').click();
+
+  await page.goto('http://127.0.0.1:8765/study/math/part-one/task8.html?prototype=8.1#trainer');
+  await page.waitForSelector('[data-task8-quiz] input');
+  for (let index = 1; index <= 35; index += 1) {
+    await page.locator(`[data-task8-prototype="8.${index}"]`).click();
+    if (await page.locator('[data-task8-quiz] label').count() < 4) throw new Error(`8.${index}: missing rows`);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+    if (overflow) throw new Error(`8.${index}: horizontal page overflow`);
+  }
+  await page.evaluate(() => {
+    const prototype = window.OgeTask8DataPrototypes.find((item) => item.id === '8.35');
+    prototype.items.forEach((item) => { document.querySelector(`[name="${item.id}"]`).value = item.answer; });
+  });
+  await page.locator('[data-task8-submit]').click();
+  if (await page.locator('[data-task8-score]').textContent() !== '4') throw new Error('task 8 answers do not validate');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-task8-reset]').click();
+  if (await page.locator('[data-task8-score]').textContent() !== '0') throw new Error('task 8 reset failed');
+  if (errors.length) throw new Error(`browser errors: ${errors.join('; ')}`);
+  await browser.close();
+  console.log('browser: task 6 prompts/reset and all 35 task 8 prototypes render and reset');
+})().catch((error) => { console.error(error); process.exit(1); });
