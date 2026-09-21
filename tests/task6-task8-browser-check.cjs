@@ -66,7 +66,28 @@ const { chromium } = require('playwright');
   page.once('dialog', (dialog) => dialog.accept());
   await page.locator('[data-task9-reset]').click();
   if (await page.locator('[data-task9-score]').textContent() !== '0') throw new Error('task 9 reset failed');
+
+  await page.goto('http://127.0.0.1:8765/study/math/part-one/task10.html?prototype=10.1#trainer');
+  await page.waitForSelector('[data-task10-quiz] input');
+  for (let index = 1; index <= 18; index += 1) {
+    await page.locator(`[data-task10-prototype="10.${index}"]`).click();
+    if (await page.locator('[data-task10-quiz] label').count() < 6) throw new Error(`10.${index}: missing rows`);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-task10-quiz] img')].every((image) => image.complete));
+    const brokenImages = await page.locator('[data-task10-quiz] img').evaluateAll((images) => images.filter((image) => !image.complete || image.naturalWidth === 0).length);
+    if (brokenImages) throw new Error(`10.${index}: drawing failed to load`);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+    if (overflow) throw new Error(`10.${index}: horizontal page overflow`);
+  }
+  await page.evaluate(() => {
+    const prototype = window.OgeTask10DataPrototypes.find((item) => item.id === '10.18');
+    prototype.items.forEach((item) => { document.querySelector(`[name="${item.id}"]`).value = item.answer; });
+  });
+  await page.locator('[data-task10-submit]').click();
+  if (await page.locator('[data-task10-score]').textContent() !== '10') throw new Error('task 10 answers do not validate');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-task10-reset]').click();
+  if (await page.locator('[data-task10-score]').textContent() !== '0') throw new Error('task 10 reset failed');
   if (errors.length) throw new Error(`browser errors: ${errors.join('; ')}`);
   await browser.close();
-  console.log('browser: task 6 prompts and tasks 8-9 render, validate, and reset');
+  console.log('browser: task 6 prompts and tasks 8-10 render, validate, and reset');
 })().catch((error) => { console.error(error); process.exit(1); });

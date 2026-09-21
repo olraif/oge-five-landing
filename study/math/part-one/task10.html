@@ -53,7 +53,7 @@
           <div>
             <p class="eyebrow"><span></span> Математика ОГЭ · первая часть</p>
             <h1>Задание 10</h1>
-            <p class="task10-lead">Теория вероятностей. Раздел готовится к запуску; авторские задания находятся в подготовке.</p>
+            <p class="task10-lead">Авторский тренажёр по теории вероятностей: от классических моделей до диаграмм и дерева случайного опыта.</p>
           </div>
 </div>
         <div class="prototype-progress-grid" data-task10-prototypes></div>
@@ -62,7 +62,10 @@
             <p class="quiz-caption" data-task10-title></p>
             <p class="task-instruction">Выберите ответ и заполните поле. После проверки цвет задания покажет результат: зелёный — верно, жёлтый — есть ошибка, розовый — ещё не решено.</p>
             <form class="quiz-card" data-task10-quiz></form>
-            <button class="button task10-submit" type="button" data-task10-submit>Проверить тип</button>
+            <div class="task10-actions">
+              <button class="button task10-submit" type="button" data-task10-submit>Проверить тип</button>
+              <button class="button task10-reset" type="button" data-task10-reset disabled>Сбросить ответы</button>
+            </div>
           </div>
           <aside class="result-card task10-result" data-task10-result>
             <strong><span data-task10-score>0</span>/<span data-task10-current-total>0</span></strong>
