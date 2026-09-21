@@ -197,7 +197,8 @@ const renderPrototype = (key, restore = true) => {
     const prompt = key === "6.9"
       ? `Приведите дробь к знаменателю ${denominator}. В ответе укажите числитель.`
       : taskInstructions[key];
-    row.innerHTML = `${id} <span class="question-copy"><small>${prompt}</small><span class="question-expression">${key === "6.10" ? formatComplexFraction(expression) : formatExpression(expression)}</span></span><input name="q${index + 1}" autocomplete="off" aria-label="Ответ ${id}">`;
+    const visibleExpression = key === "6.9" ? expression.replace(/\s*\(знаменатель\s+\d+\)$/, "") : expression;
+    row.innerHTML = `${id} <span class="question-copy"><small>${prompt}</small><span class="question-expression">${key === "6.10" ? formatComplexFraction(visibleExpression) : formatExpression(visibleExpression)}</span></span><input name="q${index + 1}" autocomplete="off" aria-label="Ответ ${id}">`;
   });
   rows.slice(data.items.length).forEach((row) => { row.style.display = "none"; });
   document.querySelectorAll("[data-prototype-cell]").forEach((button) => {
