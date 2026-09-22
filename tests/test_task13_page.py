@@ -9,7 +9,7 @@ class Task13PageContractTests(unittest.TestCase):
     def test_task13_page_loads_full_dataset_and_trainer_hooks(self):
         html = (PART_ONE / "task13.html").read_text(encoding="utf-8")
         self.assertEqual(10, html.count('src="task13-data-'))
-        for marker in ("data-task13-prototypes", "data-task13-quiz", "data-task13-score", "data-task13-current-total", 'href="../../index.html#progress"', 'src="task13.js"', 'href="task13.css"', "/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js"):
+        for marker in ("data-task13-prototypes", "data-task13-quiz", "data-task13-score", "data-task13-current-total", "data-task13-reset", 'href="../../index.html#progress"', 'src="task13.js"', 'href="task13.css"', "/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js"):
             self.assertIn(marker, html)
 
     def test_task13_is_linked_from_existing_trainer_navigation(self):
@@ -33,7 +33,7 @@ class Task13PageContractTests(unittest.TestCase):
 
     def test_task13_script_has_enter_local_and_cloud_progress(self):
         script = (PART_ONE / "task13.js").read_text(encoding="utf-8")
-        for marker in ("event.key !== 'Enter'", "ogeTrainer:v3:math:task13:", "task13:", "correctIds", "answeredIds", "MATH_TASK13_TEST"):
+        for marker in ("event.key !== 'Enter'", "ogeTrainer:v3:math:task13:", "ogeTrainer:v3:math:task13Reset:", "task13:", "correctIds", "answeredIds", "resetToken", "MATH_TASK13_TEST"):
             self.assertIn(marker, script)
 
 
