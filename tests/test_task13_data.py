@@ -72,6 +72,17 @@ class Task13DataContractTests(unittest.TestCase):
         conditions = [item["taskHtml"] for prototype in prototypes for item in prototype["items"]]
         self.assertEqual(len(conditions), len(set(conditions)))
 
+    def test_types_2_to_10_use_clean_school_notation(self):
+        _, prototypes = self.load_prototypes()
+        for prototype in prototypes[1:]:
+            for item in prototype["items"]:
+                self.assertNotIn(r"\bigl", item["taskHtml"], item["id"])
+                self.assertNotIn(r"\bigr", item["taskHtml"], item["id"])
+
+        first_system = prototypes[1]["items"][0]["taskHtml"]
+        self.assertIn(r"3x + 12 \geq -3", first_system)
+        self.assertIn(r"3x + 6,3 \geq 3", first_system)
+
 
 if __name__ == "__main__":
     unittest.main()
