@@ -37,7 +37,10 @@ const interceptPixel = process.env.INTERCEPT_PIXEL !== '0';
       return {
         scriptCount: document.querySelectorAll('#tmr-code').length,
         scriptSource: document.querySelector('#tmr-code')?.src,
-        pixelEvents: (window._tmr || []).filter((event) => event?.id === '3796192' && event?.type === 'pageView').length,
+        pixelEvents: Array.isArray(window._tmr)
+          ? window._tmr.filter((event) => event?.id === '3796192' && event?.type === 'pageView').length
+          : null,
+        tmrInitialized: Boolean(window._tmr && (Array.isArray(window._tmr) || typeof window._tmr === 'object')),
         pixelStartMarkers: comments.filter((comment) => comment === 'Top.Mail.Ru counter').length,
         pixelEndMarkers: comments.filter((comment) => comment === '/Top.Mail.Ru counter').length,
         scriptRuns: window.__vkPixelScriptRuns || 0,
@@ -46,7 +49,8 @@ const interceptPixel = process.env.INTERCEPT_PIXEL !== '0';
 
     if (state.scriptCount !== 1) throw new Error(`${pathname}: expected one pixel script, got ${state.scriptCount}`);
     if (state.scriptSource !== 'https://top-fwz1.mail.ru/js/code.js') throw new Error(`${pathname}: wrong pixel source`);
-    if (state.pixelEvents !== 1) throw new Error(`${pathname}: expected one pageView, got ${state.pixelEvents}`);
+    if (interceptPixel && state.pixelEvents !== 1) throw new Error(`${pathname}: expected one pageView, got ${state.pixelEvents}`);
+    if (!interceptPixel && !state.tmrInitialized) throw new Error(`${pathname}: pixel runtime was not initialized`);
     if (state.pixelStartMarkers !== 1 || state.pixelEndMarkers !== 1) throw new Error(`${pathname}: pixel block duplicated`);
     if (pixelRequests !== 1) throw new Error(`${pathname}: expected one pixel request, got ${pixelRequests}`);
     if (interceptPixel && state.scriptRuns !== 1) throw new Error(`${pathname}: pixel script did not execute once`);
