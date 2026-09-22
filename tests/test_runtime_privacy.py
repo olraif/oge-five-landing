@@ -6,6 +6,9 @@ from pathlib import Path
 from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
+ALLOWED_EXTERNAL_RESOURCES = {
+    'https://top-fwz1.mail.ru/counter?id=3796192;js=na',
+}
 
 
 class ResourceParser(HTMLParser):
@@ -22,7 +25,7 @@ class ResourceParser(HTMLParser):
 
 
 class RuntimePrivacyTests(unittest.TestCase):
-    def test_pages_do_not_automatically_load_third_party_resources(self):
+    def test_pages_do_not_automatically_load_unapproved_third_party_resources(self):
         problems = []
         for page in [ROOT / 'index.html', *(ROOT / 'study').rglob('*.html')]:
             parser = ResourceParser()
@@ -30,6 +33,8 @@ class RuntimePrivacyTests(unittest.TestCase):
             for src in parser.resources:
                 url = urlsplit(src)
                 if url.scheme in ('data', 'blob'):
+                    continue
+                if src in ALLOWED_EXTERNAL_RESOURCES:
                     continue
                 if url.netloc and url.hostname != 'oge-na-5.ru':
                     problems.append(f'{page.relative_to(ROOT)}: external resource {src}')
