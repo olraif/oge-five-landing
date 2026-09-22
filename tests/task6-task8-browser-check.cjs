@@ -112,7 +112,27 @@ const { chromium } = require('playwright');
   page.once('dialog', (dialog) => dialog.accept());
   await page.locator('[data-task11-reset]').click();
   if (await page.locator('[data-task11-score]').textContent() !== '0') throw new Error('task 11 reset failed');
+
+  await page.goto('http://127.0.0.1:8765/study/math/part-one/task12.html?prototype=12.1#trainer');
+  await page.waitForSelector('[data-task12-quiz] input');
+  for (let index = 1; index <= 11; index += 1) {
+    await page.locator(`[data-task12-prototype="12.${index}"]`).click();
+    const rows = page.locator('[data-task12-quiz] label');
+    if (await rows.count() < 4) throw new Error(`12.${index}: missing rows`);
+    await page.waitForFunction(() => !document.querySelector('[data-task12-quiz]')?.textContent?.includes('$'));
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+    if (overflow) throw new Error(`12.${index}: horizontal page overflow`);
+  }
+  await page.evaluate(() => {
+    const prototype = window.OgeTask12DataPrototypes.find((item) => item.id === '12.11');
+    prototype.items.forEach((item) => { document.querySelector(`[name="${item.id}"]`).value = item.answer; });
+  });
+  await page.locator('[data-task12-submit]').click();
+  if (await page.locator('[data-task12-score]').textContent() !== '7') throw new Error('task 12 answers do not validate');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-task12-reset]').click();
+  if (await page.locator('[data-task12-score]').textContent() !== '0') throw new Error('task 12 reset failed');
   if (errors.length) throw new Error(`browser errors: ${errors.join('; ')}`);
   await browser.close();
-  console.log('browser: task 6 prompts and tasks 8-11 render, validate, and reset');
+  console.log('browser: task 6 prompts and tasks 8-12 render, validate, and reset');
 })().catch((error) => { console.error(error); process.exit(1); });

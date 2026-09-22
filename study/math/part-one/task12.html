@@ -46,7 +46,7 @@
           <div>
             <p class="eyebrow"><span></span> Математика ОГЭ · первая часть</p>
             <h1>Задание 12</h1>
-            <p class="task12-lead">Расчёты по формулам. Раздел готовится к запуску; авторские задания находятся в подготовке.</p>
+            <p class="task12-lead">Авторские задачи на вычисление величин по заданным формулам.</p>
           </div>
 </div>
         <div class="prototype-progress-grid" data-task12-prototypes></div>
@@ -55,7 +55,10 @@
             <p class="quiz-caption" data-task12-title></p>
             <p class="task-instruction">Выберите ответ и заполните поле. После проверки цвет задания покажет результат: зелёный — верно, жёлтый — есть ошибка, розовый — ещё не решено.</p>
             <form class="quiz-card" data-task12-quiz></form>
-            <button class="button task12-submit" type="button" data-task12-submit>Проверить тип</button>
+            <div class="task12-actions">
+              <button class="button task12-submit" type="button" data-task12-submit>Проверить тип</button>
+              <button class="button task12-reset" type="button" data-task12-reset disabled>Сбросить ответы</button>
+            </div>
           </div>
           <aside class="result-card task12-result" data-task12-result>
             <strong><span data-task12-score>0</span>/<span data-task12-current-total>0</span></strong>
