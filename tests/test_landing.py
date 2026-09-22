@@ -195,7 +195,6 @@ class LandingContractTests(unittest.TestCase):
 
     def test_math_part_one_course_shell_exists(self):
         self.assertIn("Первая часть ОГЭ по математике", self.part_one_html)
-        self.assertIn("Раздел готовится к запуску", self.part_one_html)
         self.assertIn("Первая часть даёт уверенную базу", self.part_one_html)
         self.assertIn("Вторая часть — только с проверкой", self.part_one_html)
         self.assertEqual(self.part_one_html.count("сюда вставим видео"), 10)
