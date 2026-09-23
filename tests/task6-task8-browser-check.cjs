@@ -146,6 +146,23 @@ const { chromium } = require('playwright');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     if (overflow) throw new Error(`13.${index}: horizontal page overflow`);
   }
+  await page.setViewportSize({ width: 730, height: 900 });
+  for (const id of ['13.3', '13.9', '13.10']) {
+    await page.locator(`[data-task13-prototype="${id}"]`).click();
+    await page.waitForFunction(() => !document.querySelector('[data-task13-quiz]')?.textContent?.includes('$'));
+    const metrics = await page.locator('[data-task13-quiz] label').first().evaluate((row) => {
+      const content = row.querySelector(':scope > span').getBoundingClientRect();
+      const input = row.querySelector(':scope > input').getBoundingClientRect();
+      const cellHeights = [...row.querySelectorAll('.latex-table th, .latex-table td')]
+        .map((cell) => cell.getBoundingClientRect().height);
+      const optionWhiteSpaces = [...row.querySelectorAll('.latex-table th > span, .latex-table td > span')]
+        .map((option) => getComputedStyle(option).whiteSpace);
+      return { contentBottom: content.bottom, inputTop: input.top, cellHeights, optionWhiteSpaces };
+    });
+    if (metrics.inputTop < metrics.contentBottom - 2) throw new Error(`${id}: answer field squeezes the task body at tablet width`);
+    if (metrics.cellHeights.some((height) => height > 30)) throw new Error(`${id}: answer choices wrap into broken lines at tablet width`);
+    if (metrics.optionWhiteSpaces.some((value) => value !== 'nowrap')) throw new Error(`${id}: formula punctuation can detach from its option`);
+  }
   await page.evaluate(() => {
     const prototype = window.OgeTask13DataPrototypes.find((item) => item.id === '13.10');
     prototype.items.forEach((item) => { document.querySelector(`[name="${item.id}"]`).value = item.answer; });
