@@ -32,6 +32,25 @@ class Task15PageContractTests(unittest.TestCase):
         for marker in ("event.key !== 'Enter'", "ogeTrainer:v3:math:task15:", "task15:", "correctIds", "answeredIds", "MATH_TASK15_TEST"):
             self.assertIn(marker, script)
 
+    def test_task15_uses_the_shared_per_type_reset_contract(self):
+        html = (PART_ONE / "task15.html").read_text(encoding="utf-8")
+        css = (PART_ONE / "task15.css").read_text(encoding="utf-8")
+        script = (PART_ONE / "task15.js").read_text(encoding="utf-8")
+        self.assertIn("data-task15-reset", html)
+        self.assertIn("Сбросить ответы", html)
+        for marker in (".task15-actions", ".task15-reset", ".task15-submit:disabled"):
+            self.assertIn(marker, css)
+        for marker in (
+            "ogeTrainer:v3:math:task15Reset:",
+            "buildProgressResetKey(progressPath, id)",
+            "isAttemptVisibleAfterReset",
+            "Сбросить ответы типа",
+            "accountStorage?.remove(storagePrefix",
+            "updateUser({ data: { [resetKey]: token } })",
+            "reset.addEventListener('click', resetPrototype)",
+        ):
+            self.assertIn(marker, script)
+
 
 if __name__ == "__main__":
     unittest.main()
