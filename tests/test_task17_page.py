@@ -26,7 +26,28 @@ class Task17PageContractTests(unittest.TestCase):
 
     def test_task17_script_supports_enter_and_account_progress(self):
         script = (PART_ONE / "task17.js").read_text(encoding="utf-8")
+        self.assertIn("window.OgeTask17DataPrototypes", script)
+        self.assertNotIn("window.OgeTask16DataPrototypes", script)
         for marker in ("event.key !== 'Enter'", "ogeTrainer:v3:math:task17:", "task17:", "correctIds", "answeredIds", "MATH_TASK17_TEST"):
+            self.assertIn(marker, script)
+
+    def test_task17_uses_the_shared_per_type_reset_contract(self):
+        html = (PART_ONE / "task17.html").read_text(encoding="utf-8")
+        css = (PART_ONE / "task17.css").read_text(encoding="utf-8")
+        script = (PART_ONE / "task17.js").read_text(encoding="utf-8")
+        self.assertIn("data-task17-reset", html)
+        self.assertIn("Сбросить ответы", html)
+        for marker in (".task17-actions", ".task17-reset", ".task17-submit:disabled"):
+            self.assertIn(marker, css)
+        for marker in (
+            "ogeTrainer:v3:math:task17Reset:",
+            "buildProgressResetKey(progressPath, id)",
+            "isAttemptVisibleAfterReset",
+            "Сбросить ответы типа",
+            "accountStorage?.remove(storagePrefix",
+            "updateUser({ data: { [resetKey]: token } })",
+            "reset.addEventListener('click', resetPrototype)",
+        ):
             self.assertIn(marker, script)
 
 if __name__ == "__main__":
