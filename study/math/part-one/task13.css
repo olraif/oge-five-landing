@@ -6,3 +6,7 @@
 @media (max-width:720px){.task13-actions{grid-template-columns:1fr}}
 .task13-page .latex-table th>span,.task13-page .latex-table td>span{white-space:nowrap!important;overflow-wrap:normal!important}
 @media (max-width:900px) and (min-width:721px){.task13-page .quiz-card label{grid-template-columns:58px minmax(0,1fr);align-items:start}.task13-page .quiz-card label>b{grid-row:1/span 2;align-self:center}.task13-page .quiz-card label>input{grid-column:2;box-sizing:border-box;width:150px;justify-self:end}}
+.task13-page .task13-authored:is([data-kind="9"],[data-kind="10"])~.center .latex-table{width:100%}
+.task13-page .task13-authored:is([data-kind="9"],[data-kind="10"])~.center .latex-table tbody{display:block;width:100%}
+.task13-page .task13-authored:is([data-kind="9"],[data-kind="10"])~.center .latex-table tr{display:grid;grid-template-columns:1fr;gap:5px;width:100%}
+.task13-page .task13-authored:is([data-kind="9"],[data-kind="10"])~.center .latex-table th{display:block;width:auto;padding:0;text-align:left;white-space:nowrap}
