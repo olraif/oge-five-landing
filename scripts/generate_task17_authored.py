@@ -66,9 +66,10 @@ def answer(value: Fraction | int) -> str:
     return text.rstrip("0").rstrip(".")
 
 
-def card(condition: str, image: str) -> str:
+def card(condition: str, image: str, *, large_diagram: bool = False) -> str:
+    wrapper_class = "table-wrapper task17-diagram-large" if large_diagram else "table-wrapper"
     return (
-        '<div class="table-wrapper">\n<table class="latex-table table-with-image">\n<tr>\n'
+        f'<div class="{wrapper_class}">\n<table class="latex-table table-with-image">\n<tr>\n'
         f"<th>{condition}</th>\n"
         f'<th><div class="center">{image}</div></th>\n'
         "</tr>\n</table>\n</div>"
@@ -204,7 +205,7 @@ def authored_item(kind: int, index: int, image: str) -> dict:
 
     return {
         "id": f"17.{kind}.{index}",
-        "taskHtml": card(text, image),
+        "taskHtml": card(text, image, large_diagram=kind == 38),
         "answer": answer(result),
         "format": "number",
         "authored": {"kind": model, "params": p},

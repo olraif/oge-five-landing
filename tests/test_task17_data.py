@@ -3,6 +3,7 @@ import re
 import unittest
 from fractions import Fraction
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -122,6 +123,12 @@ class Task17DataContractTests(unittest.TestCase):
         _, prototypes = self.load_prototypes()
         task_html = [item["taskHtml"] for prototype in prototypes for item in prototype["items"]]
         self.assertEqual(320, len(set(task_html)))
+
+    def test_type_38_cards_request_the_large_diagram_layout(self):
+        _, prototypes = self.load_prototypes()
+        for item in prototypes[37]["items"]:
+            soup = BeautifulSoup(item["taskHtml"], "html.parser")
+            self.assertIsNotNone(soup.select_one(".task17-diagram-large"), item["id"])
 
 
 if __name__ == "__main__":

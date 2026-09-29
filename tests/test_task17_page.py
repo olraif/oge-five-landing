@@ -50,5 +50,12 @@ class Task17PageContractTests(unittest.TestCase):
         ):
             self.assertIn(marker, script)
 
+    def test_task17_stylesheet_uses_a_cache_busting_version(self):
+        html = (PART_ONE / "task17.html").read_text(encoding="utf-8")
+        soup = BeautifulSoup(html, "html.parser")
+        stylesheet = soup.find("link", rel="stylesheet", href=lambda value: value and value.startswith("task17.css?v="))
+        self.assertIsNotNone(stylesheet)
+
+
 if __name__ == "__main__":
     unittest.main()
