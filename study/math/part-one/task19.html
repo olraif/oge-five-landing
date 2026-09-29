@@ -6,17 +6,17 @@
   <title>Тренажёр задания 19 · ОГЭ-тренажёр</title>
   <link rel="stylesheet" href="../../study.css">
   <link rel="stylesheet" href="part-one.css">
-  <link rel="stylesheet" href="task19.css">
+  <link rel="stylesheet" href="task19.css?v=20260929-authored">
   <script src="../../../site.js" defer></script>
   <script src="trainer-navigation.js" defer></script>
   <script src="../../supabase-config.js" defer></script>
   <script src="/study/vendor/supabase-js-2.115.0/supabase.js" defer></script>
   <script src="../../auth-session.js" defer></script>
   <script src="/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js" defer></script>
-  <script src="task19-data-01.js" defer></script>
-  <script src="task19-data-02.js" defer></script>
+  <script src="task19-data-01.js?v=20260929-authored" defer></script>
+  <script src="task19-data-02.js?v=20260929-authored" defer></script>
   <script src="../../progress-model.js" defer></script>
-  <script src="task19.js" defer></script>
+  <script src="task19.js?v=20260929-authored" defer></script>
 </head>
 <body class="studio-page math-course-page task19-page">
   <main class="course-shell">
@@ -46,7 +46,10 @@
             <p class="quiz-caption" data-task19-title></p>
             <p class="task-instruction">&#1042;&#1074;&#1077;&#1076;&#1080;&#1090;&#1077; &#1086;&#1090;&#1074;&#1077;&#1090; &#1080; &#1085;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; Enter.</p>
             <form class="quiz-card" data-task19-quiz></form>
-            <button class="button task19-submit" type="button" data-task19-submit>&#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1080;&#1090;&#1100; тип</button>
+            <div class="task19-actions">
+              <button class="button task19-submit" type="button" data-task19-submit>&#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1080;&#1090;&#1100; тип</button>
+              <button class="button task19-reset" type="button" data-task19-reset disabled>Сбросить ответы</button>
+            </div>
           </div>
           <aside class="result-card task19-result" data-task19-result>
             <strong><span data-task19-score>0</span>/<span data-task19-current-total>0</span></strong>
