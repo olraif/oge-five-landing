@@ -60,11 +60,11 @@ assert.deepEqual(stoveChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 const firstApartmentAnalog = model.APARTMENT_PROTOTYPES[0].analogs[0];
 assert.equal(firstApartmentAnalog.id, 'apartments-6.1.1');
 assert.deepEqual(firstApartmentAnalog.answers, {
-  1: '2346', 2: '3.2', 3: '12', 4: '680', 5: '29700',
+  1: '6723', 2: '14.4', 3: '12', 4: '525', 5: '28700',
 });
 assert.equal(model.PRACTICAL_TYPES.apartments.prototypes, model.APARTMENT_PROTOTYPES);
 const apartmentChecked = model.checkAnswers(firstApartmentAnalog, {
-  1: '2346', 2: '3,2', 3: '12', 4: '680', 5: '29700',
+  1: '6723', 2: '14,4', 3: '12', 4: '525', 5: '28700',
 });
 assert.deepEqual(apartmentChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
