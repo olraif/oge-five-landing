@@ -27,7 +27,7 @@ assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 7
 
 const firstTireAnalog = model.TIRE_PROTOTYPES[0].analogs[0];
 assert.equal(firstTireAnalog.id, 'tires-2.1.1');
-assert.deepEqual(firstTireAnalog.answers, { 1: '185', 2: '112,75', 3: '603', 4: '13,3', 5: '2,2' });
+assert.deepEqual(firstTireAnalog.answers, { 1: '185', 2: '123', 3: '621,5', 4: '18,9', 5: '1,7' });
 assert.equal(model.PRACTICAL_TYPES.tires.prototypes, model.TIRE_PROTOTYPES);
 
 const firstPlotAnalog = model.PLOT_PROTOTYPES[0].analogs[0];
@@ -81,13 +81,13 @@ assert.deepEqual(tariffChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const firstAnalog = model.ROUTE_PROTOTYPES[0].analogs[0];
 assert.equal(firstAnalog.id, 'routes-1.1.1');
-assert.deepEqual(firstAnalog.answers, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '930' });
+assert.deepEqual(firstAnalog.answers, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '954' });
 
-const checked = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '930' });
+const checked = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '41', 3: '29', 4: '116', 5: '954' });
 assert.deepEqual(checked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 assert.deepEqual(checked.answeredQuestionNumbers, [1, 2, 3, 4, 5]);
 
-const partial = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '8', 3: '', 4: '116', 5: '930' });
+const partial = model.checkRouteAnswers(firstAnalog, { 1: '142', 2: '8', 3: '', 4: '116', 5: '954' });
 assert.deepEqual(partial.correctQuestionNumbers, [1, 4, 5]);
 assert.deepEqual(partial.answeredQuestionNumbers, [1, 2, 4, 5]);
 assert.deepEqual(model.buildTaskProgress(partial), {
@@ -98,7 +98,7 @@ assert.deepEqual(model.buildTaskProgress(partial), {
   5: { correct: 1, answered: 1, total: 1 },
 });
 
-const tireChecked = model.checkAnswers(firstTireAnalog, { 1: '185', 2: '112.75', 3: '603', 4: '13,3', 5: '2,2' });
+const tireChecked = model.checkAnswers(firstTireAnalog, { 1: '185', 2: '123', 3: '621.5', 4: '18,9', 5: '1,7' });
 assert.deepEqual(tireChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
 const aggregate = model.aggregateTaskProgress({

@@ -84,7 +84,7 @@ class TaskOneToFivePageTests(unittest.TestCase):
 
     def test_tires_are_enabled_and_loaded_as_a_complete_trainer_type(self):
         html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
-        self.assertIn('src="task1-5-tires-data.js"', html)
+        self.assertIn('src="task1-5-tires-data.js?v=20260930-authored"', html)
         self.assertIn('data-practical-type="tires"', html)
         self.assertNotIn('data-practical-type="tires" disabled', html)
         script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
