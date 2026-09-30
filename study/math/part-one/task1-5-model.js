@@ -26,8 +26,8 @@
     apartments: { id: 'apartments', label: 'Квартиры', prototypes: APARTMENT_PROTOTYPES },
     tariffs: { id: 'tariffs', label: 'Тарифы', prototypes: TARIFF_PROTOTYPES },
   };
-  // В банке 380 практических подзаданий: 76 комплектов по пять вопросов.
-  const PRACTICAL_TASK_SET_COUNT = 76;
+  // В опубликованном банке 360 практических подзаданий: 72 комплекта по пять вопросов.
+  const PRACTICAL_TASK_SET_COUNT = 72;
   const PRACTICAL_TASK_TOTALS = Object.fromEntries(
     [1, 2, 3, 4, 5].map((number) => [number, PRACTICAL_TASK_SET_COUNT]),
   );

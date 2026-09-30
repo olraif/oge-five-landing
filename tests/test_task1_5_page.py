@@ -209,9 +209,18 @@ class TaskOneToFivePageTests(unittest.TestCase):
         self.assertGreaterEqual(studio.count("resetTask1to5Progress();"), 2)
     def test_progress_uses_full_fipi_denominator_for_each_subtask(self):
         studio = (PART_ONE.parents[1] / "index.html").read_text(encoding="utf-8")
-        self.assertIn("const practicalTaskTotal = 76", studio)
+        self.assertIn("const practicalTaskTotal = 72", studio)
         self.assertIn("total: practicalTaskTotal", studio)
         self.assertNotIn("totals[number].total += Number(value.total)", studio)
+
+    def test_each_practical_set_can_be_reset_without_changing_other_sets(self):
+        html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
+        script = (PART_ONE / "task1-5.js").read_text(encoding="utf-8")
+        self.assertIn("data-task1-5-reset", html)
+        self.assertIn("resetStoragePrefix", script)
+        self.assertIn("buildProgressResetKey(progressPath, selectedAnalog.id)", script)
+        self.assertIn("isAttemptVisibleAfterReset", script)
+        self.assertIn("accountStorage?.remove(storagePrefix", script)
 
     def test_every_route_drawing_has_a_local_asset(self):
         data = (PART_ONE / "task1-5-routes-data.js").read_text(encoding="utf-8")

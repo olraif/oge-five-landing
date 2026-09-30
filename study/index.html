@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071633">
@@ -288,7 +289,7 @@
 
         <div class="fipi-bank-table-wrap">
           <div class="fipi-bank-scroll"><table class="fipi-bank-table"><thead><tr><th>№ задания</th><th>Тема</th><th>Карточек в разделе</th></tr></thead><tbody>
-            <tr><td>1–5</td><td>Практический блок</td><td>≈ 380</td></tr><tr><td>6</td><td>Вычисления и действия с дробями</td><td>110</td></tr><tr><td>7</td><td>Координатная прямая и числа</td><td>81</td></tr><tr><td>8</td><td>Числа, степени и корни</td><td>143</td></tr><tr><td>9</td><td>Уравнения и системы уравнений</td><td>126</td></tr><tr><td>10</td><td>Теория вероятностей</td><td>162</td></tr><tr><td>11</td><td>Графики функций</td><td>132</td></tr><tr><td>12</td><td>Расчёты по формулам</td><td>82</td></tr><tr><td>13</td><td>Линейные и квадратные неравенства</td><td>124</td></tr><tr><td>14</td><td>Прогрессии</td><td>118</td></tr><tr><td>15</td><td>Геометрия: треугольники</td><td>284</td></tr><tr><td>16</td><td>Геометрия: окружность</td><td>272</td></tr><tr><td>17</td><td>Геометрия: площади фигур</td><td>268</td></tr><tr><td>18</td><td>Фигуры на квадратной решётке</td><td>141</td></tr><tr><td>19</td><td>Анализ геометрических утверждений</td><td>150</td></tr><tr><td>20</td><td>Алгебраические уравнения и неравенства</td><td>188</td></tr><tr><td>21</td><td>Текстовые задачи</td><td>172</td></tr><tr><td>22</td><td>Функции и графики с параметром</td><td>140</td></tr><tr><td>23</td><td>Геометрические задачи на вычисление</td><td>240</td></tr><tr><td>24</td><td>Геометрические задачи на доказательство</td><td>160</td></tr><tr><td>25</td><td>Геометрические задачи повышенной сложности</td><td>145</td></tr>
+            <tr><td>1–5</td><td>Практический блок</td><td>360</td></tr><tr><td>6</td><td>Вычисления и действия с дробями</td><td>85</td></tr><tr><td>7</td><td>Координатная прямая и числа</td><td>81</td></tr><tr><td>8</td><td>Числа, степени и корни</td><td>143</td></tr><tr><td>9</td><td>Уравнения и системы уравнений</td><td>124</td></tr><tr><td>10</td><td>Теория вероятностей</td><td>217</td></tr><tr><td>11</td><td>Графики функций</td><td>103</td></tr><tr><td>12</td><td>Расчёты по формулам</td><td>182</td></tr><tr><td>13</td><td>Линейные и квадратные неравенства</td><td>131</td></tr><tr><td>14</td><td>Прогрессии</td><td>117</td></tr><tr><td>15</td><td>Геометрия: треугольники</td><td>258</td></tr><tr><td>16</td><td>Геометрия: окружность</td><td>330</td></tr><tr><td>17</td><td>Геометрия: площади фигур</td><td>320</td></tr><tr><td>18</td><td>Фигуры на квадратной решётке</td><td>158</td></tr><tr><td>19</td><td>Анализ геометрических утверждений</td><td>151</td></tr><tr><td>20</td><td>Алгебраические уравнения и неравенства</td><td>188</td></tr><tr><td>21</td><td>Текстовые задачи</td><td>172</td></tr><tr><td>22</td><td>Функции и графики с параметром</td><td>140</td></tr><tr><td>23</td><td>Геометрические задачи на вычисление</td><td>240</td></tr><tr><td>24</td><td>Геометрические задачи на доказательство</td><td>160</td></tr><tr><td>25</td><td>Геометрические задачи повышенной сложности</td><td>145</td></tr>
           </tbody></table></div>
         </div>
       </section>
@@ -412,7 +413,7 @@
       window.addEventListener('hashchange', showView);
       showView();
 
-      const practicalTaskTotal = 76; // 380 подзаданий: 76 комплектов по пять вопросов.
+      const practicalTaskTotal = 72; // 360 подзаданий: 72 комплекта по пять вопросов.
       const renderTask1to5Progress = (attempts = {}) => {
         const totals = Object.fromEntries([1, 2, 3, 4, 5].map((number) => [number, { correct: 0, answered: 0, total: practicalTaskTotal }]));
         Object.values(attempts || {}).forEach((attempt) => {
@@ -616,7 +617,7 @@
           const group = document.createElement('div');
           group.className = 'task12-progress-prototype';
           group.style.flexGrow = String(prototype.total);
-          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total + ' РїСЂР°РІРёР»СЊРЅРѕ, ' + prototype.wrong + ' СЃ РѕС€РёР±РєРѕР№, ' + prototype.untouched + ' РЅРµ СЂРµС€РµРЅРѕ';
+          group.title = prototype.key + ': ' + prototype.correct + '/' + prototype.total + ' правильно, ' + prototype.wrong + ' с ошибкой, ' + prototype.untouched + ' не решено';
           prototype.cells.forEach((color) => {
             const cell = document.createElement('i');
             cell.className = 'task12-progress-cell task12-progress-cell--' + color;
@@ -627,7 +628,7 @@
         stack?.replaceChildren(fragment);
         if (percent) percent.textContent = summary.percent + '%';
         bar.classList.toggle('is-started', summary.correct + summary.wrong > 0);
-        bar.title = 'Р—Р°РґР°РЅРёРµ 12: ' + summary.percent + '%';
+        bar.title = 'Задание 12: ' + summary.percent + '%';
       };
       const progressBar13 = () => document.querySelector('.progress-bars .bar--task13');
       const renderTask13Progress = (task13Progress = {}) => {
@@ -848,7 +849,10 @@
           Object.entries(progress).filter(([, attempt]) => window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, user)),
         );
         const task1to5Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task1to5);
-        renderTask1to5Progress(task1to5Progress);
+        const visibleTask1to5Progress = window.OgeProgressModel?.filterProgressAfterResets
+          ? window.OgeProgressModel.filterProgressAfterResets(task1to5Progress, user.user_metadata, ['math', 'task1to5'])
+          : task1to5Progress;
+        renderTask1to5Progress(visibleTask1to5Progress);
         const task6Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task6);
         renderTask6Progress(task6Progress);
         const task7Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task7);

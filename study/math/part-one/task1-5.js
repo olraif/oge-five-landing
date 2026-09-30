@@ -2,6 +2,7 @@
   const form = document.querySelector('.route-questions');
   const rows = [...document.querySelectorAll('.route-question[data-question-number]')];
   const submit = document.querySelector('.route-check-button');
+  const reset = document.querySelector('[data-task1-5-reset]');
   const prototypeTabs = document.querySelector('.route-prototype-tabs');
   const analogTabs = document.querySelector('.route-analog-tabs');
   const condition = document.querySelector('.route-source-condition');
@@ -10,16 +11,34 @@
   const title = document.querySelector('#route-set-title');
   const result = document.querySelector('.route-set-result');
   const model = window.OgeTaskOneToFiveModel;
-  if (!form || !rows.length || !submit || !prototypeTabs || !analogTabs || !condition || !model) return;
+  if (!form || !rows.length || !submit || !reset || !prototypeTabs || !analogTabs || !condition || !model) return;
 
   const storagePrefix = 'ogeTrainer:v3:math:task1to5:';
+  const resetStoragePrefix = 'ogeTrainer:v3:math:task1to5Reset:';
   const accountStorage = window.OgeProgressModel?.createAccountProgressStorage(localStorage);
+  const progressPath = ['math', 'task1to5'];
   let selectedType = model.PRACTICAL_TYPES?.routes || { id: 'routes', label: 'Маршруты', prototypes: model.ROUTE_PROTOTYPES || [] };
   let prototypes = selectedType.prototypes || [];
   let selectedPrototype = prototypes[0] || null;
   let selectedAnalog = selectedPrototype?.analogs?.[0] || null;
   let cloudUser = null;
   let allAttempts = {};
+  let loadCloudRevision = 0;
+
+  const createResetToken = () => window.crypto?.randomUUID?.()
+    || `reset-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const getResetToken = (id) => {
+    const resetKey = window.OgeProgressModel?.buildProgressResetKey(progressPath, id);
+    const cloudReset = resetKey ? cloudUser?.user_metadata?.[resetKey] : null;
+    const localReset = accountStorage?.read(resetStoragePrefix, cloudUser?.id, id);
+    const localToken = localReset?.token || localReset?.resetAt || null;
+    if (localReset?.pending && localToken) return localToken;
+    return cloudReset || localToken || null;
+  };
+  const isVisibleAttempt = (attempt, id) => attempt && window.OgeProgressModel?.isAttemptVisibleAfterReset(
+    attempt,
+    getResetToken(id),
+  );
 
   const cleanMarkup = (markup = '') => {
     const parser = new DOMParser();
@@ -204,6 +223,7 @@
       taskProgress: model.buildTaskProgress(checked),
       savedAt: new Date().toISOString(),
       ownerId: cloudUser?.id || null,
+      resetToken: getResetToken(selectedAnalog.id),
     };
     allAttempts[selectedAnalog.id] = payload;
     applyAttempt(payload);
@@ -216,9 +236,15 @@
   };
 
   const load = async () => {
-    if (!window.ogeSupabase) return;
+    const requestRevision = ++loadCloudRevision;
+    if (!window.ogeSupabase) {
+      reset.disabled = false;
+      return;
+    }
+    reset.disabled = true;
     try {
       const { data } = await window.ogeSupabase.auth.getSession();
+      if (requestRevision !== loadCloudRevision) return;
       cloudUser = data?.session?.user || null;
       if (!cloudUser) {
         allAttempts = {};
@@ -226,19 +252,62 @@
         return;
       }
       const cloudAttempts = cloudUser.user_metadata?.trainer_progress?.math?.task1to5 || {};
-      allAttempts = Object.fromEntries(Object.entries(cloudAttempts).filter(([, attempt]) => (
-        window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, cloudUser)
+      allAttempts = Object.fromEntries(Object.entries(cloudAttempts).filter(([id, attempt]) => (
+        window.OgeProgressModel?.isAttemptOwnedByAccount(attempt, cloudUser) && isVisibleAttempt(attempt, id)
       )));
       Object.values(model.PRACTICAL_TYPES || {}).flatMap((type) => type.prototypes || []).flatMap((prototype) => prototype.analogs || []).forEach((analog) => {
         if (allAttempts[analog.id]) return;
         const localAttempt = accountStorage?.read(storagePrefix, cloudUser.id, analog.id);
-        if (localAttempt) allAttempts[analog.id] = localAttempt;
+        if (isVisibleAttempt(localAttempt, analog.id)) allAttempts[analog.id] = localAttempt;
       });
       renderAll();
     } catch {
       allAttempts = {};
       renderAll();
+    } finally {
+      if (requestRevision === loadCloudRevision) reset.disabled = false;
     }
+  };
+
+  const resetCurrentAttempt = async () => {
+    if (!selectedAnalog || !window.confirm(`Сбросить ответы комплекта ${selectedAnalog.label || selectedAnalog.id}?`)) return;
+
+    loadCloudRevision += 1;
+    reset.disabled = true;
+    submit.disabled = true;
+    const attemptId = selectedAnalog.id;
+    const resetToken = createResetToken();
+    const resetKey = window.OgeProgressModel?.buildProgressResetKey(progressPath, selectedAnalog.id);
+    let syncFailed = false;
+
+    delete allAttempts[attemptId];
+    accountStorage?.remove(storagePrefix, cloudUser?.id, attemptId);
+    accountStorage?.write(resetStoragePrefix, cloudUser?.id, attemptId, { token: resetToken, pending: true });
+    if (cloudUser && resetKey) {
+      cloudUser = {
+        ...cloudUser,
+        user_metadata: { ...cloudUser.user_metadata, [resetKey]: resetToken },
+      };
+    }
+    renderAll();
+
+    if (cloudUser && resetKey && window.ogeSupabase) {
+      try {
+        const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { [resetKey]: resetToken } });
+        if (error) throw error;
+        cloudUser = updated?.user || cloudUser;
+        accountStorage?.write(resetStoragePrefix, cloudUser?.id, attemptId, { token: resetToken, pending: false });
+      } catch (error) {
+        syncFailed = true;
+        console.warn('Не удалось синхронизировать сброс заданий 1–5', error);
+      }
+    }
+
+    result.innerHTML = syncFailed
+      ? '<strong>0/5</strong><span>ответы сброшены на этом устройстве</span>'
+      : '<strong>0/5</strong><span>ответы сброшены</span>';
+    reset.disabled = false;
+    submit.disabled = false;
   };
 
   typeButtons.forEach((button) => {
@@ -253,6 +322,7 @@
     });
   });
   submit.addEventListener('click', check);
+  reset.addEventListener('click', resetCurrentAttempt);
   form.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
     event.preventDefault();

@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="ru">
 <head>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Тренажёр заданий 1–5 · ОГЭ по математике</title>
   <meta name="description" content="Практические задания 1–5 ОГЭ по математике, объединённые по видам, типам и номерам.">
   <link rel="stylesheet" href="../../study.css">
   <link rel="stylesheet" href="part-one.css">
-  <link rel="stylesheet" href="task1-5.css?v=20260822-2">
+  <link rel="stylesheet" href="task1-5.css?v=20260930-3">
   <script src="../../../site.js" defer></script>
   <script src="trainer-navigation.js" defer></script>
   <script src="../../supabase-config.js" defer></script>
@@ -21,8 +22,8 @@
   <script src="task1-5-stoves-data.js?v=20260930-authored" defer></script>
   <script src="task1-5-apartments-data.js?v=20260930-authored" defer></script>
   <script src="task1-5-tariffs-data.js?v=20260930-authored" defer></script>
-  <script src="task1-5-model.js?v=20260829-5" defer></script>
-  <script src="task1-5.js?v=20260829-6" defer></script>
+  <script src="task1-5-model.js?v=20260930-6" defer></script>
+  <script src="task1-5.js?v=20260930-7" defer></script>
 </head>
 <body class="studio-page math-course-page practical-page">
   <main class="course-shell">
@@ -93,7 +94,10 @@
               <span class="route-question-text">Задание загружается…</span>
               <input inputmode="decimal" autocomplete="off" aria-label="Ответ на задание 5">
             </label>
-            <button class="route-check-button" type="button">Проверить ответы</button>
+            <div class="route-actions">
+              <button class="route-check-button" type="button">Проверить ответы</button>
+              <button class="route-reset-button" type="button" data-task1-5-reset disabled>Сбросить ответы</button>
+            </div>
           </form>
         </section>
       </section>

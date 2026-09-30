@@ -22,8 +22,8 @@ assert.equal(model.APARTMENT_PROTOTYPES[0].analogs.length, 8);
 assert.equal(model.TARIFF_PROTOTYPES.length, 1);
 assert.equal(model.TARIFF_PROTOTYPES[0].number, '7.1');
 assert.equal(model.TARIFF_PROTOTYPES[0].analogs.length, 5);
-assert.equal(model.PRACTICAL_TASK_SET_COUNT, 76);
-assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 76, 2: 76, 3: 76, 4: 76, 5: 76 });
+assert.equal(model.PRACTICAL_TASK_SET_COUNT, 72);
+assert.deepEqual(model.PRACTICAL_TASK_TOTALS, { 1: 72, 2: 72, 3: 72, 4: 72, 5: 72 });
 
 const firstTireAnalog = model.TIRE_PROTOTYPES[0].analogs[0];
 assert.equal(firstTireAnalog.id, 'tires-2.1.1');
@@ -106,10 +106,10 @@ const aggregate = model.aggregateTaskProgress({
   'routes-1.1.2': { taskProgress: model.buildTaskProgress(partial) },
 });
 assert.deepEqual(aggregate, {
-  1: { correct: 2, answered: 2, total: 76 },
-  2: { correct: 1, answered: 2, total: 76 },
-  3: { correct: 1, answered: 1, total: 76 },
-  4: { correct: 2, answered: 2, total: 76 },
-  5: { correct: 2, answered: 2, total: 76 },
+  1: { correct: 2, answered: 2, total: 72 },
+  2: { correct: 1, answered: 2, total: 72 },
+  3: { correct: 1, answered: 1, total: 72 },
+  4: { correct: 2, answered: 2, total: 72 },
+  5: { correct: 2, answered: 2, total: 72 },
 });
 console.log('task1-5 progress tests passed');
