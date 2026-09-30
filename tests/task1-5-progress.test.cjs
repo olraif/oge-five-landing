@@ -49,11 +49,11 @@ assert.deepEqual(sheetChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 const firstStoveAnalog = model.STOVE_PROTOTYPES[0].analogs[0];
 assert.equal(firstStoveAnalog.id, 'stoves-5.1.1');
 assert.deepEqual(firstStoveAnalog.answers, {
-  1: '312', 2: '15.4', 3: '2000', 4: '16200', 5: '65',
+  1: '321', 2: '16.8', 3: '4100', 4: '21930', 5: '130',
 });
 assert.equal(model.PRACTICAL_TYPES.stoves.prototypes, model.STOVE_PROTOTYPES);
 const stoveChecked = model.checkAnswers(firstStoveAnalog, {
-  1: '312', 2: '15,4', 3: '2000', 4: '16200', 5: '65',
+  1: '321', 2: '16,8', 3: '4100', 4: '21930', 5: '130',
 });
 assert.deepEqual(stoveChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
