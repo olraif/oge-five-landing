@@ -169,7 +169,7 @@ class TaskOneToFivePageTests(unittest.TestCase):
 
     def test_tariffs_are_enabled_and_loaded_without_empty_source_card(self):
         html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
-        self.assertIn('src="task1-5-tariffs-data.js"', html)
+        self.assertIn('src="task1-5-tariffs-data.js?v=20260930-authored"', html)
         self.assertIn('data-practical-type="tariffs"', html)
         self.assertNotIn('data-practical-type="tariffs" disabled', html)
         model = (PART_ONE / "task1-5-model.js").read_text(encoding="utf-8")

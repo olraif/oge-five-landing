@@ -71,11 +71,11 @@ assert.deepEqual(apartmentChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 const firstTariffAnalog = model.TARIFF_PROTOTYPES[0].analogs[0];
 assert.equal(firstTariffAnalog.id, 'tariffs-7.1.1');
 assert.deepEqual(firstTariffAnalog.answers, {
-  1: '83117', 2: '425', 3: '4', 4: '50', 5: '350',
+  1: '10724', 2: '680', 3: '4', 4: '50', 5: '480',
 });
 assert.equal(model.PRACTICAL_TYPES.tariffs.prototypes, model.TARIFF_PROTOTYPES);
 const tariffChecked = model.checkAnswers(firstTariffAnalog, {
-  1: '83117', 2: '425', 3: '4', 4: '50', 5: '350',
+  1: '10724', 2: '680', 3: '4', 4: '50', 5: '480',
 });
 assert.deepEqual(tariffChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 
