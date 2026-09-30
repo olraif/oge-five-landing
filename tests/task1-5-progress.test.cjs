@@ -38,11 +38,11 @@ assert.equal(model.PRACTICAL_TYPES.plots.prototypes, model.PLOT_PROTOTYPES);
 const firstSheetAnalog = model.SHEET_PROTOTYPES[0].analogs[0];
 assert.equal(firstSheetAnalog.id, 'sheets-4.1.1');
 assert.deepEqual(firstSheetAnalog.answers, {
-  1: '2413', 2: '2', 3: ['1250', '1247.4'], 4: '840', 5: '1250',
+  1: '2413', 2: '8', 3: '625', 4: '590', 5: '2250',
 });
 assert.equal(model.PRACTICAL_TYPES.sheets.prototypes, model.SHEET_PROTOTYPES);
 const sheetChecked = model.checkAnswers(firstSheetAnalog, {
-  1: '2413', 2: '2', 3: '1247,4', 4: '840', 5: '1250',
+  1: '2413', 2: '8', 3: '625', 4: '590', 5: '2250',
 });
 assert.deepEqual(sheetChecked.correctQuestionNumbers, [1, 2, 3, 4, 5]);
 

@@ -112,7 +112,7 @@ class TaskOneToFivePageTests(unittest.TestCase):
 
     def test_sheets_are_enabled_and_loaded_as_a_complete_trainer_type(self):
         html = (PART_ONE / "task1-5.html").read_text(encoding="utf-8")
-        self.assertIn('src="task1-5-sheets-data.js"', html)
+        self.assertIn('src="task1-5-sheets-data.js?v=20260930-authored"', html)
         self.assertIn('data-practical-type="sheets"', html)
         self.assertNotIn('data-practical-type="sheets" disabled', html)
         model = (PART_ONE / "task1-5-model.js").read_text(encoding="utf-8")
