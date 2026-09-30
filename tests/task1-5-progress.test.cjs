@@ -32,7 +32,7 @@ assert.equal(model.PRACTICAL_TYPES.tires.prototypes, model.TIRE_PROTOTYPES);
 
 const firstPlotAnalog = model.PLOT_PROTOTYPES[0].analogs[0];
 assert.equal(firstPlotAnalog.id, 'plots-3.1.1');
-assert.deepEqual(firstPlotAnalog.answers, { 1: '7425', 2: '7', 3: '36', 4: '29', 5: '500' });
+assert.deepEqual(firstPlotAnalog.answers, { 1: '7425', 2: '8', 3: '36', 4: '29', 5: '400' });
 assert.equal(model.PRACTICAL_TYPES.plots.prototypes, model.PLOT_PROTOTYPES);
 
 const firstSheetAnalog = model.SHEET_PROTOTYPES[0].analogs[0];
