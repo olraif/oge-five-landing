@@ -36,7 +36,7 @@ class SupportContractTests(unittest.TestCase):
         self.assertIn(".support-faq", css)
         self.assertIn(".support-question", css)
 
-    def test_individual_lesson_has_one_cta_to_main_site(self):
+    def test_individual_lesson_has_one_cta_to_teacher_site(self):
         pages = [
             (ROOT / "study" / "index.html").read_text(encoding="utf-8"),
             (ROOT / "study" / "informatics" / "index.html").read_text(encoding="utf-8"),
@@ -45,7 +45,7 @@ class SupportContractTests(unittest.TestCase):
         for html in pages:
             mentor_card = html.split('<article class="course-card is-mentor">', 1)[1].split("</article>", 1)[0]
             self.assertEqual(mentor_card.count('class="course-link"'), 1)
-            self.assertIn('href="https://oge-na-5.ru/"', mentor_card)
+            self.assertIn('href="https://repiq.ru/oge/"', mentor_card)
             self.assertIn(">Заказать индивидуальный урок</a>", mentor_card)
 
     def test_student_cabinet_has_no_extra_site_or_footer_labels(self):
