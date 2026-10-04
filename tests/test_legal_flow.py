@@ -180,6 +180,9 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertEqual(html.count('class="course-buy-title">Стоимость доступа'), 2)
                 for option_label in option_labels:
                     self.assertIn(f"<span>{option_label}</span>", html)
+                    self.assertIn(f"<span>{option_label}</span><b>1 490 ₽</b>", html)
+                self.assertNotIn("4 900 ₽", html)
+                self.assertNotIn("6 900 ₽", html)
 
     def test_public_legal_copy_omits_inactive_services_and_internal_history(self):
         forbidden = (
