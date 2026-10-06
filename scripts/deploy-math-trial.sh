@@ -33,7 +33,7 @@ for i in "${!files[@]}"; do
     fail "файл ${files[$i]} изменился на сервере ($actual); ничего не заменено"
 done
 
-mapfile -t candidates < <(docker ps --format '{{.Names}}|{{.Image}}' | awk -F '|' 'tolower($2) ~ /supabase\/postgres/ {print $1}')
+mapfile -t candidates < <(docker ps --format '{{.Names}}|{{.Image}}' | awk -F '|' 'tolower($2) ~ /^supabase\/postgres(:|@|$)/ {print $1}')
 [[ ${#candidates[@]} == 1 ]] || {
   docker ps --format '{{.Names}} {{.Image}}' | grep -Ei 'postgres|supabase' || true
   fail "не удалось однозначно найти контейнер базы (${#candidates[@]} найдено); пришлите этот результат"
