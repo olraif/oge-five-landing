@@ -135,6 +135,8 @@
             </div>
             <div class="course-actions">
               <a id="buy-part-one" class="course-link" href="#purchase-offer" data-purchase-open>Приобрести доступ</a>
+              <button class="course-link course-link--ghost" type="button" data-demo-start>Запроси демо-доступ бесплатно на два часа</button>
+              <small class="demo-message" data-demo-message role="status" aria-live="polite">Время начнётся после входа и нажатия кнопки.</small>
             </div>
           </article>
 
@@ -887,6 +889,9 @@
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
+      const demoButton = document.querySelector('[data-demo-start]');
+      const demoMessage = document.querySelector('[data-demo-message]');
+      const defaultDemoMessage = 'Время начнётся после входа и нажатия кнопки.';
       const lockCourse = (card) => {
         card.classList.remove('is-active', 'is-code-open');
         card.classList.add('is-locked');
@@ -903,17 +908,59 @@
       };
       const syncCourseAccess = async (user) => {
         courseCards.forEach(lockCourse);
+        if (demoButton) demoButton.disabled = false;
+        if (demoMessage) demoMessage.textContent = defaultDemoMessage;
         if (!user || !window.ogeGetEnrollmentIds) return;
         const result = await window.ogeGetEnrollmentIds();
+        if (window.ogeCurrentUser?.id !== user.id) return;
         if (result.error) {
           console.error('Supabase enrollment error:', result.error);
+          if (demoMessage) demoMessage.textContent = 'Сервис демодоступа временно недоступен.';
           return;
         }
         const enrolled = new Set(result.data);
         courseCards.forEach((card) => {
           if (enrolled.has(card.dataset.courseId)) activateCourse(card);
         });
+        if (enrolled.has('math-first') && !result.trial) {
+          if (demoButton) demoButton.disabled = true;
+          if (demoMessage) demoMessage.textContent = 'Полный доступ уже открыт.';
+        } else if (result.trial?.status === 'active') {
+          const card = document.querySelector('[data-course-id="math-first"]');
+          card?.classList.add('is-trial');
+          if (card) card.querySelector('.access-status').textContent = 'демодоступ открыт';
+          if (demoButton) demoButton.disabled = true;
+          if (demoMessage) demoMessage.textContent = `Бесплатный доступ до ${new Date(result.trial.expires_at).toLocaleString('ru-RU')}.`;
+        } else if (result.trial?.status === 'expired') {
+          if (demoButton) demoButton.disabled = true;
+          if (demoMessage) demoMessage.textContent = 'Демодоступ завершился. Прогресс сохранён.';
+        }
       };
+
+      demoButton?.addEventListener('click', async () => {
+        if (!window.ogeCurrentUser) {
+          window.location.href = './login.html';
+          return;
+        }
+        demoButton.disabled = true;
+        demoMessage.textContent = 'Открываем демодоступ…';
+        const result = await window.ogeStartMathTrial?.();
+        if (result?.data?.status === 'active') {
+          window.location.href = './math/part-one/index.html#trainer';
+          return;
+        }
+        await syncCourseAccess(window.ogeCurrentUser);
+        if (result?.data?.status === 'expired') {
+          demoMessage.textContent = 'Двухчасовой демодоступ уже использован.';
+        } else if (result?.data?.status === 'purchased') {
+          demoMessage.textContent = 'Доступ уже открыт в «Моих тренажёрах».';
+        } else {
+          demoButton.disabled = false;
+          demoMessage.textContent = result?.error?.message === 'EMAIL_NOT_CONFIRMED'
+            ? 'Подтвердите почту в письме после регистрации.'
+            : 'Не удалось открыть демодоступ. Попробуйте позже.';
+        }
+      });
 
       courseCards.forEach((card) => {
         lockCourse(card);
