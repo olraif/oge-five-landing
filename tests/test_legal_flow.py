@@ -131,7 +131,7 @@ class LegalFlowTests(unittest.TestCase):
 
     def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
-            ("index.html", 3, "./legal/offer.html", "study.css?v=20260909-2", "./purchase-offer.js?v=20260909-1"),
+            ("index.html", 3, "./legal/offer.html", "study.css?v=20261007-1", "./purchase-offer.js?v=20260909-1"),
             ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260909-2", "../purchase-offer.js?v=20260909-1"),
         )
         for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
