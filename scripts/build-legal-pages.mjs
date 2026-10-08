@@ -18,7 +18,7 @@ const inline = (value) => {
   let result = escapeHtml(value);
   result = result.replace(/`([^`]+)`/g, '<code>$1</code>');
   result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  result = result.replace(/(^|\s)(olesy\.raif@mail\.ru)(?=$|[\s.,])/g, '$1<a href="mailto:$2">$2</a>');
+  result = result.replace(/(^|\s)(oge-na-5@mail\.ru)(?=$|[\s.,])/g, '$1<a href="mailto:$2">$2</a>');
   result = result.replace(/(^|\s)(https:\/\/oge-na-5\.ru\/?)(?=$|[\s.,])/g, '$1<a href="$2">$2</a>');
   return result;
 };
@@ -84,6 +84,7 @@ function pageTemplate(document) {
   return `<!doctype html>
 <html lang="ru">
 <head>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index,follow">
@@ -115,7 +116,7 @@ for (const [source, filename] of documents) {
 
 const index = `<!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=./privacy.html"><title>Политика конфиденциальности — ОГЭ-тренажёр</title></head>
+<head><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=./privacy.html"><title>Политика конфиденциальности — ОГЭ-тренажёр</title></head>
 <body><a href="./privacy.html">Политика конфиденциальности</a></body>
 </html>
 `;

@@ -6,11 +6,6 @@ from pathlib import Path
 from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED_EXTERNAL_RESOURCES = {
-    'https://top-fwz1.mail.ru/counter?id=3796192;js=na',
-}
-
-
 class ResourceParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -33,8 +28,6 @@ class RuntimePrivacyTests(unittest.TestCase):
             for src in parser.resources:
                 url = urlsplit(src)
                 if url.scheme in ('data', 'blob'):
-                    continue
-                if src in ALLOWED_EXTERNAL_RESOURCES:
                     continue
                 if url.netloc and url.hostname != 'oge-na-5.ru':
                     problems.append(f'{page.relative_to(ROOT)}: external resource {src}')

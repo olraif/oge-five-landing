@@ -65,13 +65,13 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertFalse(any("supabase" in item.get("src", "") for item in page.scripts))
                 hrefs = {item.get("href") for item in page.links}
                 self.assertIn("../login.html", hrefs)
-                self.assertIn("mailto:olesy.raif@mail.ru", hrefs)
+                self.assertIn("mailto:oge-na-5@mail.ru", hrefs)
                 self.assertEqual(
-                    sum(item.get("href") == "mailto:olesy.raif@mail.ru" for item in page.links),
+                    sum(item.get("href") == "mailto:oge-na-5@mail.ru" for item in page.links),
                     1,
                 )
                 visible_text = re.sub(r"<[^>]+>", "", path.read_text(encoding="utf-8"))
-                self.assertEqual(visible_text.count("olesy.raif@mail.ru"), 1)
+                self.assertEqual(visible_text.count("oge-na-5@mail.ru"), 1)
 
     def test_registration_requires_two_separate_unchecked_acceptances(self):
         page = parse(STUDY / "login.html")
@@ -89,8 +89,33 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/terms\.html"')
         self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
         self.assertNotRegex(html, r'href="\./legal/offer\.html"')
-        self.assertIn("consent_version: '1.2'", html)
-        self.assertIn("terms_version: '1.2'", html)
+        self.assertIn("consent_version: '1.3'", html)
+        self.assertIn("terms_version: '1.3'", html)
+
+    def test_legal_pages_name_current_operator_and_terms(self):
+        for filename in ("privacy.html", "consent.html", "offer.html", "terms.html"):
+            with self.subTest(filename=filename):
+                html = (LEGAL / filename).read_text(encoding="utf-8")
+                self.assertIn("Султанов", html)
+                self.assertIn("Амир", html)
+                self.assertIn("Ильдарович", html)
+                self.assertIn("022906630008", html)
+                self.assertNotIn("Сайфуллина", html)
+                self.assertNotIn("562700185169", html)
+
+    def test_legal_trial_terms_match_immediate_two_hour_activation(self):
+        for filename in ("offer.html", "terms.html"):
+            with self.subTest(filename=filename):
+                html = (LEGAL / filename).read_text(encoding="utf-8")
+                self.assertIn("Активировать бесплатный демодоступ на два часа", html)
+                self.assertIn("автоматически", html)
+                self.assertIn("прогресс", html)
+                self.assertNotIn("кнопки запроса демодоступа", html)
+
+        for filename in ("privacy.html", "consent.html"):
+            with self.subTest(filename=filename):
+                html = (LEGAL / filename).read_text(encoding="utf-8")
+                self.assertNotIn("Top.Mail.Ru", html)
 
     def test_registration_failure_does_not_blame_the_password_for_server_errors(self):
         html = (STUDY / "login.html").read_text(encoding="utf-8")
