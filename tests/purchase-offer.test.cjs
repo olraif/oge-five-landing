@@ -20,7 +20,7 @@ const fakeLink = () => {
   };
 };
 
-const links = [fakeLink(), fakeLink()];
+const links = [fakeLink()];
 purchaseOffer.setContactEnabled(links, false);
 for (const link of links) {
   assert.equal(link.getAttribute('aria-disabled'), 'true');

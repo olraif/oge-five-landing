@@ -38,25 +38,6 @@ if ("IntersectionObserver" in window) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
 
-const contactUrls = {
-  vk: "https://vk.com/olraif",
-  telegram: "https://t.me/olraif",
-};
-
-const configureContactLink = (link, url, label) => {
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener";
-  if (label) link.textContent = label;
-  return link;
-};
-
-document.querySelectorAll("a").forEach((link) => {
-  const label = link.textContent.trim().toLowerCase();
-  if (label === "\u0432\u043a" || label === "\u043d\u0430\u043f\u0438\u0441\u0430\u0442\u044c \u0432 \u0432\u043a") configureContactLink(link, contactUrls.vk);
-  if (label === "telegram") configureContactLink(link, contactUrls.telegram);
-});
-
 const heroAbout = document.querySelector(".hero");
 if (heroAbout) {
   heroAbout.classList.add("hero-about-mode");

@@ -30,8 +30,9 @@ class SupportContractTests(unittest.TestCase):
             self.assertIn("Где посмотреть свой прогресс?", html)
             self.assertIn("Можно ли приобрести доступ для группы или класса?", html)
             self.assertIn("возможная скидка рассматриваются индивидуально", html)
-            self.assertIn('href="https://vk.com/olraif"', html)
-            self.assertIn('href="https://t.me/olraif"', html)
+            self.assertEqual(html.count('class="support-button" href="mailto:oge-na-5@mail.ru"'), 1)
+            self.assertNotIn('https://vk.com/olraif', html)
+            self.assertNotIn('https://t.me/olraif', html)
 
         self.assertIn(".support-faq", css)
         self.assertIn(".support-question", css)
