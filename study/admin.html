@@ -14,7 +14,7 @@
     </header>
     <section class="admin-grid" aria-label="Статистика"><article class="admin-stat"><small>Ученики</small><strong id="students-count">—</strong></article><article class="admin-stat"><small>Курсы</small><strong id="courses-count">—</strong></article><article class="admin-stat"><small>Активные промокоды</small><strong id="coupons-count">—</strong></article></section>
     <section class="admin-panel"><h2>Промокоды</h2><form class="admin-form" id="coupon-form"><label>Код<input name="code" placeholder="MATH-4900"></label><label>Курс<select name="course_id" id="course-select"></select></label><label>Использований<input name="max_uses" type="number" min="1" value="1"></label><button class="admin-button" type="submit">Создать</button></form><p class="admin-message" id="coupon-message"></p><div id="coupons-list" class="admin-empty">Загрузка…</div></section>
-    <section class="admin-panel"><h2>Аккаунты учеников</h2><p class="admin-message" id="account-message"></p><div id="students-list" class="admin-empty">Загрузка…</div></section>
+    <section class="admin-panel"><div class="admin-panel-head"><h2>Аккаунты учеников</h2><button class="admin-button secondary" id="download-students" type="button" disabled>Скачать CSV</button></div><p class="admin-message" id="account-message"></p><div id="students-list" class="admin-empty">Загрузка…</div></section>
   </main>
   <script src="./supabase-config.js"></script><script src="/study/vendor/supabase-js-2.115.0/supabase.js"></script>
   <script>
@@ -23,17 +23,51 @@
       const $ = (id) => document.getElementById(id);
       const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
       const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${c.render ? c.render(row) : esc(row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      let exportedStudents = [];
+      const csvCell = (value) => {
+        let safe = String(value ?? '');
+        if (/^\s*[=+\-@]/.test(safe)) safe = `'${safe}`;
+        return '"' + safe.replace(/"/g, '""') + '"';
+      };
+      async function getAllAccounts() {
+        const accounts = [];
+        const pageSize = 500;
+        for (let start = 0; ; start += pageSize) {
+          const { data, error } = await client.rpc('admin_list_accounts').range(start, start + pageSize - 1);
+          if (error) throw error;
+          accounts.push(...(data || []));
+          if (!data || data.length < pageSize) return accounts;
+        }
+      }
+      function downloadStudents() {
+        const rows = [
+          ['Email', 'Имя', 'Email подтверждён', 'Создан'],
+          ...exportedStudents.map((account) => [account.email, account.display_name, account.email_confirmed ? 'Да' : 'Нет', account.created_at])
+        ];
+        const csv = '\uFEFF' + rows.map((row) => row.map(csvCell).join(';')).join('\r\n') + '\r\n';
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `oge-students-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
       async function load() {
         const { data: sessionData } = await client.auth.getSession();
         if (!sessionData.session) { location.href = './login.html?next=admin.html'; return; }
         const { data: profile, error: profileError } = await client.from('profiles').select('role,display_name').eq('id', sessionData.session.user.id).single();
         if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./choose.html">Вернуться в тренажёр</a></section></main>'; return; }
-        const [{ data: accounts, error: accountsError }, { data: courses }, { data: coupons }] = await Promise.all([
-          client.rpc('admin_list_accounts'),
+        const [accountsResult, { data: courses }, { data: coupons }] = await Promise.all([
+          getAllAccounts().then((data) => ({ data })).catch((error) => ({ error })),
           client.from('courses').select('id,title,subject').order('sort_order'),
           client.from('coupons').select('code,course_id,used_count,max_uses,is_active').order('created_at', { ascending:false })
         ]);
+        const { data: accounts, error: accountsError } = accountsResult;
         const students = (accounts || []).filter((account) => account.account_role !== 'admin');
+        exportedStudents = accountsError ? [] : students;
+        $('download-students').disabled = Boolean(accountsError);
         $('students-count').textContent = accountsError ? '—' : students.length; $('courses-count').textContent = courses?.length || 0; $('coupons-count').textContent = (coupons || []).filter((c) => c.is_active).length;
         if (accountsError) {
           $('students-list').innerHTML = '<p class="admin-empty">Не удалось загрузить аккаунты.</p>';
@@ -66,6 +100,7 @@
         $('course-select').value = courses?.[0]?.id || '';
       }
       $('coupon-form').addEventListener('submit', async (event) => { event.preventDefault(); const data = new FormData(event.currentTarget); const code=String(data.get('code') || '').trim().toUpperCase(); const courseId=String(data.get('course_id') || ''); const maxUses=Number(data.get('max_uses') || 0); const msg=$('coupon-message'); if(!code || !courseId || maxUses < 1) { msg.textContent='Заполните код, курс и количество использований'; msg.className='admin-message is-error'; return; } const { error } = await client.from('coupons').insert({ code, course_id:courseId, max_uses:maxUses }); msg.textContent=error ? `Не удалось создать: ${error.message}` : 'Промокод создан'; msg.className=`admin-message${error?' is-error':''}`; if(!error){event.currentTarget.reset();load();} });
+      $('download-students').addEventListener('click', downloadStudents);
       $('logout').addEventListener('click', async () => { await client.auth.signOut(); location.href='./login.html'; });
       load();
     })();
