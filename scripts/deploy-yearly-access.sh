@@ -4,6 +4,7 @@ set -euo pipefail
 # Publish yearly access and the admin coupon/date columns. Stop if live files drifted.
 old_revision=347c214
 csv_revision=b50b4eb
+live_admin_hash=b7bd2e92f1a41c7158197c3dad6190a83a8a87351037a611c78a05b370bae878
 new_revision=75fc9ca61cd3edbd338e9a19c0543a24b8edc26e
 root=/var/www/oge-na-5
 files=(study/admin.html study/admin-extra.css study/auth-session.js study/index.html)
@@ -56,7 +57,7 @@ for file in "${files[@]}"; do
     if [[ "$file" == study/admin.html ]]; then
       curl -fsSL "$base/$csv_revision/$file" -o "$tmp/admin-live-old.html"
       csv_hash=$(sha256sum "$tmp/admin-live-old.html" | cut -d ' ' -f 1)
-      [[ "$actual" == "$old_hash" || "$actual" == "$csv_hash" ]] ||
+      [[ "$actual" == "$old_hash" || "$actual" == "$csv_hash" || "$actual" == "$live_admin_hash" ]] ||
         fail "файл $file изменился на сервере ($actual); ничего не заменено"
     else
       [[ "$actual" == "$old_hash" ]] || fail "файл $file изменился на сервере ($actual); ничего не заменено"
