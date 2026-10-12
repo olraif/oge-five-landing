@@ -7,19 +7,22 @@
   window.ogeGetEnrollmentIds = async () => {
     const { data: sessionData } = await client.auth.getSession();
     const user = sessionData.session?.user || null;
-    if (!user) return { data: [], error: null, user: null, trial: null };
+    if (!user) return { data: [], error: null, user: null, trial: null, paidExpiry: null, paidExpiries: [] };
     const { data, error } = await client
       .from('enrollments')
-      .select('course_id')
+      .select('course_id,expires_at')
       .eq('user_id', user.id);
-    const ids = (data || []).map((row) => row.course_id);
+    const activeEnrollments = (data || []).filter((row) => Date.parse(row.expires_at) > Date.now());
+    const ids = activeEnrollments.map((row) => row.course_id);
+    const paidExpiries = activeEnrollments.map((row) => row.expires_at);
+    const paidExpiry = activeEnrollments.find((row) => row.course_id === 'math-first')?.expires_at || null;
     if (error || ids.includes('math-first')) {
-      return { data: ids, error, user, trial: null };
+      return { data: ids, error, user, trial: null, paidExpiry, paidExpiries };
     }
     const { data: trialRows, error: trialError } = await client.rpc('math_trial', { p_start: false });
     const trial = trialRows?.[0] || null;
     if (trial?.status === 'active') ids.push('math-first');
-    return { data: ids, error: trialError, user, trial };
+    return { data: ids, error: trialError, user, trial, paidExpiry: null, paidExpiries };
   };
   window.ogeHasCourseAccess = async (courseId) => {
     const result = await window.ogeGetEnrollmentIds();
@@ -29,6 +32,10 @@
       user: result.user,
       trialRemainingMs: courseId === 'math-first' && result.trial?.status === 'active'
         ? result.trial.remaining_seconds * 1000 : null,
+      accessRemainingMs: courseId === 'math-first' && result.paidExpiry
+        ? Math.max(0, Date.parse(result.paidExpiry) - Date.now())
+        : courseId === 'math-first' && result.trial?.status === 'active'
+          ? result.trial.remaining_seconds * 1000 : null,
     };
   };
   window.ogeStartMathTrial = async () => {
@@ -71,8 +78,8 @@
       return;
     }
     document.documentElement.style.visibility = '';
-    if (access.trialRemainingMs !== null) {
-      guardTimer = setTimeout(enforceMathAccess, Math.max(1000, access.trialRemainingMs + 250));
+    if (access.accessRemainingMs !== null) {
+      guardTimer = setTimeout(enforceMathAccess, Math.min(86400000, Math.max(1000, access.accessRemainingMs + 250)));
     }
   };
 

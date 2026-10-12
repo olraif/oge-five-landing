@@ -24,6 +24,7 @@
       const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
       const renderTable = (rows, columns) => !rows.length ? '<p class="admin-empty">Пока нет данных.</p>' : `<table class="admin-table"><thead><tr>${columns.map((c) => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${c.render ? c.render(row) : esc(row[c.key])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       let exportedStudents = [];
+      const formatDate = (value) => value ? new Date(value).toLocaleString('ru-RU') : '—';
       const csvCell = (value) => {
         let safe = String(value ?? '');
         if (/^\s*[=+\-@]/.test(safe)) safe = `'${safe}`;
@@ -39,10 +40,20 @@
           if (!data || data.length < pageSize) return accounts;
         }
       }
+      async function getAllAccess() {
+        const access = [];
+        const pageSize = 500;
+        for (let start = 0; ; start += pageSize) {
+          const { data, error } = await client.rpc('admin_list_access').range(start, start + pageSize - 1);
+          if (error) throw error;
+          access.push(...(data || []));
+          if (!data || data.length < pageSize) return access;
+        }
+      }
       function downloadStudents() {
         const rows = [
-          ['Email', 'Имя', 'Email подтверждён', 'Создан'],
-          ...exportedStudents.map((account) => [account.email, account.display_name, account.email_confirmed ? 'Да' : 'Нет', account.created_at])
+          ['Email', 'Имя', 'Email подтверждён', 'Создан', 'Курс', 'Промокод', 'Промокод активирован', 'Доступ до', 'Статус'],
+          ...exportedStudents.map(({ account, access }) => [account.email, account.display_name, account.email_confirmed ? 'Да' : 'Нет', account.created_at, access?.course_title || '', access?.coupon_code || '', access?.activated_at || '', access?.expires_at || '', access ? (access.is_active ? 'Действует' : 'Истёк') : 'Нет доступа'])
         ];
         const csv = '\uFEFF' + rows.map((row) => row.map(csvCell).join(';')).join('\r\n') + '\r\n';
         const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
@@ -59,25 +70,39 @@
         if (!sessionData.session) { location.href = './login.html?next=admin.html'; return; }
         const { data: profile, error: profileError } = await client.from('profiles').select('role,display_name').eq('id', sessionData.session.user.id).single();
         if (profileError || profile?.role !== 'admin') { document.body.innerHTML = '<main class="admin-shell"><section class="admin-panel"><h2>Доступ закрыт</h2><p class="admin-empty">Этот раздел доступен только администратору.</p><a class="admin-button" href="./choose.html">Вернуться в тренажёр</a></section></main>'; return; }
-        const [accountsResult, { data: courses }, { data: coupons }] = await Promise.all([
+        const [accountsResult, accessResult, { data: courses }, { data: coupons }] = await Promise.all([
           getAllAccounts().then((data) => ({ data })).catch((error) => ({ error })),
+          getAllAccess().then((data) => ({ data })).catch((error) => ({ error })),
           client.from('courses').select('id,title,subject').order('sort_order'),
           client.from('coupons').select('code,course_id,used_count,max_uses,is_active').order('created_at', { ascending:false })
         ]);
         const { data: accounts, error: accountsError } = accountsResult;
+        const { data: access, error: accessError } = accessResult;
         const students = (accounts || []).filter((account) => account.account_role !== 'admin');
-        exportedStudents = accountsError ? [] : students;
-        $('download-students').disabled = Boolean(accountsError);
+        const accessByUser = new Map();
+        (access || []).forEach((item) => accessByUser.set(item.user_id, [...(accessByUser.get(item.user_id) || []), item]));
+        const studentRows = students.flatMap((account) => (accessByUser.get(account.user_id) || [null]).map((item) => ({ account, access: item })));
+        exportedStudents = accountsError || accessError ? [] : studentRows;
+        $('download-students').disabled = Boolean(accountsError || accessError);
         $('students-count').textContent = accountsError ? '—' : students.length; $('courses-count').textContent = courses?.length || 0; $('coupons-count').textContent = (coupons || []).filter((c) => c.is_active).length;
         if (accountsError) {
           $('students-list').innerHTML = '<p class="admin-empty">Не удалось загрузить аккаунты.</p>';
         } else {
-          $('students-list').innerHTML = renderTable(students, [
-            {label:'Email',key:'email'},
-            {label:'Имя',key:'display_name'},
-            {label:'Email подтверждён',render:(r)=>r.email_confirmed ? 'Да' : 'Нет'},
-            {label:'Создан',render:(r)=>new Date(r.created_at).toLocaleDateString('ru-RU')},
-            {label:'',render:(r)=>`<button class="admin-delete" type="button" data-delete-account="${esc(r.user_id)}" data-account-email="${esc(r.email)}">Удалить</button>`}
+          if (accessError) {
+            $('account-message').textContent = 'Аккаунты загружены, но данные о промокодах и сроках доступа недоступны.';
+            $('account-message').className = 'admin-message is-error';
+          }
+          $('students-list').innerHTML = renderTable(studentRows, [
+            {label:'Email',render:(r)=>esc(r.account.email)},
+            {label:'Имя',render:(r)=>esc(r.account.display_name)},
+            {label:'Email подтверждён',render:(r)=>r.account.email_confirmed ? 'Да' : 'Нет'},
+            {label:'Создан',render:(r)=>esc(formatDate(r.account.created_at))},
+            {label:'Курс',render:(r)=>esc(r.access?.course_title || '—')},
+            {label:'Промокод',render:(r)=>esc(r.access?.coupon_code || '—')},
+            {label:'Активирован',render:(r)=>esc(formatDate(r.access?.activated_at))},
+            {label:'Доступ до',render:(r)=>esc(formatDate(r.access?.expires_at))},
+            {label:'Статус',render:(r)=>r.access ? (r.access.is_active ? 'Действует' : 'Истёк') : 'Нет доступа'},
+            {label:'',render:(r)=>`<button class="admin-delete" type="button" data-delete-account="${esc(r.account.user_id)}" data-account-email="${esc(r.account.email)}">Удалить</button>`}
           ]);
           document.querySelectorAll('[data-delete-account]').forEach((button) => button.addEventListener('click', async () => {
             const email = button.dataset.accountEmail;

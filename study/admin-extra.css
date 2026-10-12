@@ -3,4 +3,6 @@
 .admin-panel-head h2{margin:0}
 .admin-panel-head .admin-button{flex:none}
 .admin-panel-head .admin-button:disabled{opacity:.5;cursor:not-allowed}
+#students-list{overflow-x:auto}
+#students-list .admin-table{min-width:1100px}
 @media(max-width:480px){.admin-panel-head{align-items:stretch;flex-direction:column}.admin-panel-head .admin-button{width:100%}}

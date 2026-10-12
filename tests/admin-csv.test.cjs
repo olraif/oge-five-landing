@@ -12,6 +12,10 @@ test('admin page has a valid script and CSV button', () => {
   assert.match(html, /id="download-students"[^>]*disabled/);
   assert.match(script, /account\.account_role !== 'admin'/);
   assert.match(script, /client\.rpc\('admin_list_accounts'\)\.range\(/);
+  assert.match(script, /client\.rpc\('admin_list_access'\)\.range\(/);
+  assert.match(script, /accessByUser\.get\(account\.user_id\)/);
+  assert.match(script, /'Промокод активирован', 'Доступ до', 'Статус'/);
+  assert.match(script, /access\.is_active \? 'Действует' : 'Истёк'/);
 });
 
 test('CSV cells quote separators and neutralize spreadsheet formulas', () => {
