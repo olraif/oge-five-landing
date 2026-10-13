@@ -40,7 +40,6 @@ files=(
   study/math/part-two/part-two.js
   study/math/part-two/data/author-bank.json
   study/math/part-two/graph-preview.js
-  study/math/part-two/math-typography.js
   study/math/part-two/progress-codec.js
 )
 new_files=(
@@ -49,6 +48,7 @@ new_files=(
   study/math/math-hub.js
   study/math/part-two/data/author-bank.json
   study/math/part-two/graph-preview.js
+  study/math/part-two/math-typography.js
   study/math/part-two/progress-codec.js
 )
 

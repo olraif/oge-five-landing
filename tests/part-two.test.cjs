@@ -118,3 +118,12 @@ test('лишние подписи удалены, выбранный прото�
   assert.match(css, /prototype-progress\.is-current[^}]+box-shadow:inset 0 0 0 2px/u);
   assert.match(css, /practical-prototype-card\.is-active/u);
 });
+
+test('сценарий публикации считает типографику новым файлом', () => {
+  const script = fs.readFileSync(path.join(root, 'scripts/deploy-part-two.sh'), 'utf8');
+  const files = script.match(/^files=\(([^]*?)^\)/mu)?.[1] || '';
+  const newFiles = script.match(/^new_files=\(([^]*?)^\)/mu)?.[1] || '';
+  const deployPath = 'study/math/part-two/math-typography.js';
+  assert.equal(files.split('\n').filter((line) => line.trim() === deployPath).length, 1);
+  assert.equal(newFiles.split('\n').filter((line) => line.trim() === deployPath).length, 1);
+});
