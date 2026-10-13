@@ -4,11 +4,10 @@ const { execFileSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const https = require('node:https');
 
+const baseRevision = '77de857655de787620bae0601050504467274785';
 const git = (...args) => execFileSync('git', args, { stdio: ['ignore', 'pipe', 'ignore'] });
 const lines = (buffer) => buffer.toString('utf8').split('\0').filter(Boolean);
-const changed = lines(git('diff', '--name-only', '-z', 'HEAD', '--', 'study'));
-const added = lines(git('ls-files', '--others', '--exclude-standard', '-z', '--', 'study'));
-const files = [...new Set([...changed, ...added])].sort();
+const files = lines(git('diff', '--name-only', '-z', baseRevision, 'HEAD', '--', 'study')).sort();
 const digest = (buffer) => createHash('sha256').update(buffer).digest('hex');
 
 function fetchLive(path) {
@@ -39,7 +38,7 @@ function fetchLive(path) {
   const conflicts = [];
   for (const path of files) {
     let old = null;
-    try { old = git('show', `HEAD:${path}`); } catch { /* New file. */ }
+    try { old = git('show', `${baseRevision}:${path}`); } catch { /* New file. */ }
     const live = await fetchLive(path);
     if (old === null ? live !== null : live === null || digest(old) !== digest(live)) {
       conflicts.push(path);
