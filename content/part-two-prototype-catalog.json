@@ -1,0 +1,1308 @@
+[
+  {
+    "examNumber": 20,
+    "prototypeNumber": 1,
+    "prototypeId": "20.1",
+    "sourcePage": 104,
+    "sourceAnalogIds": [
+      "20.1.1",
+      "20.1.2",
+      "20.1.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 2,
+    "prototypeId": "20.2",
+    "sourcePage": 104,
+    "sourceAnalogIds": [
+      "20.2.1",
+      "20.2.2",
+      "20.2.3"
+    ],
+    "availableSourceAnalogs": 8
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 3,
+    "prototypeId": "20.3",
+    "sourcePage": 104,
+    "sourceAnalogIds": [
+      "20.3.1",
+      "20.3.2",
+      "20.3.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 4,
+    "prototypeId": "20.4",
+    "sourcePage": 104,
+    "sourceAnalogIds": [
+      "20.4.1",
+      "20.4.2",
+      "20.4.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 5,
+    "prototypeId": "20.5",
+    "sourcePage": 104,
+    "sourceAnalogIds": [
+      "20.5.1",
+      "20.5.2",
+      "20.5.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 6,
+    "prototypeId": "20.6",
+    "sourcePage": 105,
+    "sourceAnalogIds": [
+      "20.6.1",
+      "20.6.2",
+      "20.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 7,
+    "prototypeId": "20.7",
+    "sourcePage": 105,
+    "sourceAnalogIds": [
+      "20.7.1",
+      "20.7.2",
+      "20.7.3"
+    ],
+    "availableSourceAnalogs": 8
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 8,
+    "prototypeId": "20.8",
+    "sourcePage": 105,
+    "sourceAnalogIds": [
+      "20.8.1",
+      "20.8.2",
+      "20.8.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 9,
+    "prototypeId": "20.9",
+    "sourcePage": 105,
+    "sourceAnalogIds": [
+      "20.9.1",
+      "20.9.2",
+      "20.9.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 10,
+    "prototypeId": "20.10",
+    "sourcePage": 105,
+    "sourceAnalogIds": [
+      "20.10.1",
+      "20.10.2",
+      "20.10.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 11,
+    "prototypeId": "20.11",
+    "sourcePage": 106,
+    "sourceAnalogIds": [
+      "20.11.1",
+      "20.11.2",
+      "20.11.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 12,
+    "prototypeId": "20.12",
+    "sourcePage": 106,
+    "sourceAnalogIds": [
+      "20.12.1",
+      "20.12.2",
+      "20.12.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 13,
+    "prototypeId": "20.13",
+    "sourcePage": 106,
+    "sourceAnalogIds": [
+      "20.13.1",
+      "20.13.2",
+      "20.13.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 14,
+    "prototypeId": "20.14",
+    "sourcePage": 106,
+    "sourceAnalogIds": [
+      "20.14.1",
+      "20.14.2",
+      "20.14.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 15,
+    "prototypeId": "20.15",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.15.1",
+      "20.15.2",
+      "20.15.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 16,
+    "prototypeId": "20.16",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.16.1",
+      "20.16.2",
+      "20.16.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 17,
+    "prototypeId": "20.17",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.17.1",
+      "20.17.2",
+      "20.17.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 18,
+    "prototypeId": "20.18",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.18.1",
+      "20.18.2",
+      "20.18.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 19,
+    "prototypeId": "20.19",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.19.1",
+      "20.19.2",
+      "20.19.3"
+    ],
+    "availableSourceAnalogs": 11
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 20,
+    "prototypeId": "20.20",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.20.1",
+      "20.20.2",
+      "20.20.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 21,
+    "prototypeId": "20.21",
+    "sourcePage": 107,
+    "sourceAnalogIds": [
+      "20.21.1",
+      "20.21.2",
+      "20.21.3"
+    ],
+    "availableSourceAnalogs": 11
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 22,
+    "prototypeId": "20.22",
+    "sourcePage": 108,
+    "sourceAnalogIds": [
+      "20.22.1",
+      "20.22.2",
+      "20.22.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 23,
+    "prototypeId": "20.23",
+    "sourcePage": 108,
+    "sourceAnalogIds": [
+      "20.23.1",
+      "20.23.2",
+      "20.23.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 20,
+    "prototypeNumber": 24,
+    "prototypeId": "20.24",
+    "sourcePage": 108,
+    "sourceAnalogIds": [
+      "20.24.1",
+      "20.24.2",
+      "20.24.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 1,
+    "prototypeId": "21.1",
+    "sourcePage": 109,
+    "sourceAnalogIds": [
+      "21.1.1",
+      "21.1.2",
+      "21.1.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 2,
+    "prototypeId": "21.2",
+    "sourcePage": 109,
+    "sourceAnalogIds": [
+      "21.2.1",
+      "21.2.2",
+      "21.2.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 3,
+    "prototypeId": "21.3",
+    "sourcePage": 109,
+    "sourceAnalogIds": [
+      "21.3.1",
+      "21.3.2",
+      "21.3.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 4,
+    "prototypeId": "21.4",
+    "sourcePage": 109,
+    "sourceAnalogIds": [
+      "21.4.1",
+      "21.4.2",
+      "21.4.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 5,
+    "prototypeId": "21.5",
+    "sourcePage": 110,
+    "sourceAnalogIds": [
+      "21.5.1",
+      "21.5.2",
+      "21.5.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 6,
+    "prototypeId": "21.6",
+    "sourcePage": 110,
+    "sourceAnalogIds": [
+      "21.6.1",
+      "21.6.2",
+      "21.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 7,
+    "prototypeId": "21.7",
+    "sourcePage": 110,
+    "sourceAnalogIds": [
+      "21.7.1",
+      "21.7.2",
+      "21.7.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 8,
+    "prototypeId": "21.8",
+    "sourcePage": 110,
+    "sourceAnalogIds": [
+      "21.8.1",
+      "21.8.2",
+      "21.8.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 9,
+    "prototypeId": "21.9",
+    "sourcePage": 111,
+    "sourceAnalogIds": [
+      "21.9.1",
+      "21.9.2",
+      "21.9.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 10,
+    "prototypeId": "21.10",
+    "sourcePage": 111,
+    "sourceAnalogIds": [
+      "21.10.1",
+      "21.10.2",
+      "21.10.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 11,
+    "prototypeId": "21.11",
+    "sourcePage": 111,
+    "sourceAnalogIds": [
+      "21.11.1",
+      "21.11.2",
+      "21.11.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 12,
+    "prototypeId": "21.12",
+    "sourcePage": 112,
+    "sourceAnalogIds": [
+      "21.12.1",
+      "21.12.2",
+      "21.12.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 13,
+    "prototypeId": "21.13",
+    "sourcePage": 112,
+    "sourceAnalogIds": [
+      "21.13.1",
+      "21.13.2",
+      "21.13.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 14,
+    "prototypeId": "21.14",
+    "sourcePage": 112,
+    "sourceAnalogIds": [
+      "21.14.1",
+      "21.14.2",
+      "21.14.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 15,
+    "prototypeId": "21.15",
+    "sourcePage": 112,
+    "sourceAnalogIds": [
+      "21.15.1",
+      "21.15.2",
+      "21.15.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 16,
+    "prototypeId": "21.16",
+    "sourcePage": 113,
+    "sourceAnalogIds": [
+      "21.16.1",
+      "21.16.2",
+      "21.16.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 17,
+    "prototypeId": "21.17",
+    "sourcePage": 113,
+    "sourceAnalogIds": [
+      "21.17.1",
+      "21.17.2",
+      "21.17.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 18,
+    "prototypeId": "21.18",
+    "sourcePage": 113,
+    "sourceAnalogIds": [
+      "21.18.1",
+      "21.18.2",
+      "21.18.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 19,
+    "prototypeId": "21.19",
+    "sourcePage": 113,
+    "sourceAnalogIds": [
+      "21.19.1",
+      "21.19.2",
+      "21.19.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 20,
+    "prototypeId": "21.20",
+    "sourcePage": 114,
+    "sourceAnalogIds": [
+      "21.20.1",
+      "21.20.2",
+      "21.20.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 21,
+    "prototypeNumber": 21,
+    "prototypeId": "21.21",
+    "sourcePage": 114,
+    "sourceAnalogIds": [
+      "21.21.1",
+      "21.21.2",
+      "21.21.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 1,
+    "prototypeId": "22.1",
+    "sourcePage": 115,
+    "sourceAnalogIds": [
+      "22.1.1",
+      "22.1.2",
+      "22.1.3"
+    ],
+    "availableSourceAnalogs": 19
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 2,
+    "prototypeId": "22.2",
+    "sourcePage": 115,
+    "sourceAnalogIds": [
+      "22.2.1",
+      "22.2.2",
+      "22.2.3"
+    ],
+    "availableSourceAnalogs": 7
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 3,
+    "prototypeId": "22.3",
+    "sourcePage": 115,
+    "sourceAnalogIds": [
+      "22.3.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 4,
+    "prototypeId": "22.4",
+    "sourcePage": 116,
+    "sourceAnalogIds": [
+      "22.4.1",
+      "22.4.2",
+      "22.4.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 5,
+    "prototypeId": "22.5",
+    "sourcePage": 116,
+    "sourceAnalogIds": [
+      "22.5.1",
+      "22.5.2",
+      "22.5.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 6,
+    "prototypeId": "22.6",
+    "sourcePage": 116,
+    "sourceAnalogIds": [
+      "22.6.1",
+      "22.6.2",
+      "22.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 7,
+    "prototypeId": "22.7",
+    "sourcePage": 117,
+    "sourceAnalogIds": [
+      "22.7.1",
+      "22.7.2",
+      "22.7.3"
+    ],
+    "availableSourceAnalogs": 19
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 8,
+    "prototypeId": "22.8",
+    "sourcePage": 117,
+    "sourceAnalogIds": [
+      "22.8.1",
+      "22.8.2",
+      "22.8.3"
+    ],
+    "availableSourceAnalogs": 19
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 9,
+    "prototypeId": "22.9",
+    "sourcePage": 117,
+    "sourceAnalogIds": [
+      "22.9.1",
+      "22.9.2",
+      "22.9.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 10,
+    "prototypeId": "22.10",
+    "sourcePage": 118,
+    "sourceAnalogIds": [
+      "22.10.1",
+      "22.10.2",
+      "22.10.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 11,
+    "prototypeId": "22.11",
+    "sourcePage": 118,
+    "sourceAnalogIds": [
+      "22.11.1",
+      "22.11.2",
+      "22.11.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 12,
+    "prototypeId": "22.12",
+    "sourcePage": 118,
+    "sourceAnalogIds": [
+      "22.12.1",
+      "22.12.2",
+      "22.12.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 13,
+    "prototypeId": "22.13",
+    "sourcePage": 118,
+    "sourceAnalogIds": [
+      "22.13.1",
+      "22.13.2",
+      "22.13.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 14,
+    "prototypeId": "22.14",
+    "sourcePage": 119,
+    "sourceAnalogIds": [
+      "22.14.1",
+      "22.14.2",
+      "22.14.3"
+    ],
+    "availableSourceAnalogs": 7
+  },
+  {
+    "examNumber": 22,
+    "prototypeNumber": 15,
+    "prototypeId": "22.15",
+    "sourcePage": 119,
+    "sourceAnalogIds": [
+      "22.15.1",
+      "22.15.2",
+      "22.15.3"
+    ],
+    "availableSourceAnalogs": 8
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 1,
+    "prototypeId": "23.1",
+    "sourcePage": 120,
+    "sourceAnalogIds": [
+      "23.1.1",
+      "23.1.2",
+      "23.1.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 2,
+    "prototypeId": "23.2",
+    "sourcePage": 120,
+    "sourceAnalogIds": [
+      "23.2.1",
+      "23.2.2",
+      "23.2.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 3,
+    "prototypeId": "23.3",
+    "sourcePage": 120,
+    "sourceAnalogIds": [
+      "23.3.1",
+      "23.3.2",
+      "23.3.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 4,
+    "prototypeId": "23.4",
+    "sourcePage": 120,
+    "sourceAnalogIds": [
+      "23.4.1",
+      "23.4.2",
+      "23.4.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 5,
+    "prototypeId": "23.5",
+    "sourcePage": 120,
+    "sourceAnalogIds": [
+      "23.5.1",
+      "23.5.2",
+      "23.5.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 6,
+    "prototypeId": "23.6",
+    "sourcePage": 121,
+    "sourceAnalogIds": [
+      "23.6.1",
+      "23.6.2",
+      "23.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 7,
+    "prototypeId": "23.7",
+    "sourcePage": 121,
+    "sourceAnalogIds": [
+      "23.7.1",
+      "23.7.2",
+      "23.7.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 8,
+    "prototypeId": "23.8",
+    "sourcePage": 121,
+    "sourceAnalogIds": [
+      "23.8.1",
+      "23.8.2",
+      "23.8.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 9,
+    "prototypeId": "23.9",
+    "sourcePage": 121,
+    "sourceAnalogIds": [
+      "23.9.1",
+      "23.9.2",
+      "23.9.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 10,
+    "prototypeId": "23.10",
+    "sourcePage": 121,
+    "sourceAnalogIds": [
+      "23.10.1",
+      "23.10.2",
+      "23.10.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 11,
+    "prototypeId": "23.11",
+    "sourcePage": 122,
+    "sourceAnalogIds": [
+      "23.11.1",
+      "23.11.2",
+      "23.11.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 12,
+    "prototypeId": "23.12",
+    "sourcePage": 122,
+    "sourceAnalogIds": [
+      "23.12.1",
+      "23.12.2",
+      "23.12.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 13,
+    "prototypeId": "23.13",
+    "sourcePage": 122,
+    "sourceAnalogIds": [
+      "23.13.1",
+      "23.13.2",
+      "23.13.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 14,
+    "prototypeId": "23.14",
+    "sourcePage": 122,
+    "sourceAnalogIds": [
+      "23.14.1",
+      "23.14.2",
+      "23.14.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 15,
+    "prototypeId": "23.15",
+    "sourcePage": 122,
+    "sourceAnalogIds": [
+      "23.15.1",
+      "23.15.2",
+      "23.15.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 16,
+    "prototypeId": "23.16",
+    "sourcePage": 123,
+    "sourceAnalogIds": [
+      "23.16.1",
+      "23.16.2",
+      "23.16.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 17,
+    "prototypeId": "23.17",
+    "sourcePage": 123,
+    "sourceAnalogIds": [
+      "23.17.1",
+      "23.17.2",
+      "23.17.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 18,
+    "prototypeId": "23.18",
+    "sourcePage": 123,
+    "sourceAnalogIds": [
+      "23.18.1",
+      "23.18.2",
+      "23.18.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 23,
+    "prototypeNumber": 19,
+    "prototypeId": "23.19",
+    "sourcePage": 123,
+    "sourceAnalogIds": [
+      "23.19.1",
+      "23.19.2",
+      "23.19.3"
+    ],
+    "availableSourceAnalogs": 4
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 1,
+    "prototypeId": "24.1",
+    "sourcePage": 124,
+    "sourceAnalogIds": [
+      "24.1.1",
+      "24.1.2",
+      "24.1.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 2,
+    "prototypeId": "24.2",
+    "sourcePage": 124,
+    "sourceAnalogIds": [
+      "24.2.1",
+      "24.2.2",
+      "24.2.3"
+    ],
+    "availableSourceAnalogs": 7
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 3,
+    "prototypeId": "24.3",
+    "sourcePage": 124,
+    "sourceAnalogIds": [
+      "24.3.1",
+      "24.3.2",
+      "24.3.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 4,
+    "prototypeId": "24.4",
+    "sourcePage": 124,
+    "sourceAnalogIds": [
+      "24.4.1",
+      "24.4.2",
+      "24.4.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 5,
+    "prototypeId": "24.5",
+    "sourcePage": 124,
+    "sourceAnalogIds": [
+      "24.5.1",
+      "24.5.2",
+      "24.5.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 6,
+    "prototypeId": "24.6",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.6.1",
+      "24.6.2",
+      "24.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 7,
+    "prototypeId": "24.7",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.7.1",
+      "24.7.2",
+      "24.7.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 8,
+    "prototypeId": "24.8",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.8.1",
+      "24.8.2"
+    ],
+    "availableSourceAnalogs": 2
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 9,
+    "prototypeId": "24.9",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.9.1",
+      "24.9.2",
+      "24.9.3"
+    ],
+    "availableSourceAnalogs": 5
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 10,
+    "prototypeId": "24.10",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.10.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 11,
+    "prototypeId": "24.11",
+    "sourcePage": 125,
+    "sourceAnalogIds": [
+      "24.11.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 12,
+    "prototypeId": "24.12",
+    "sourcePage": 126,
+    "sourceAnalogIds": [
+      "24.12.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 13,
+    "prototypeId": "24.13",
+    "sourcePage": 126,
+    "sourceAnalogIds": [
+      "24.13.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 14,
+    "prototypeId": "24.14",
+    "sourcePage": 126,
+    "sourceAnalogIds": [
+      "24.14.1"
+    ],
+    "availableSourceAnalogs": 1
+  },
+  {
+    "examNumber": 24,
+    "prototypeNumber": 15,
+    "prototypeId": "24.15",
+    "sourcePage": 126,
+    "sourceAnalogIds": [
+      "24.15.1",
+      "24.15.2"
+    ],
+    "availableSourceAnalogs": 2
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 1,
+    "prototypeId": "25.1",
+    "sourcePage": 127,
+    "sourceAnalogIds": [
+      "25.1.1",
+      "25.1.2",
+      "25.1.3"
+    ],
+    "availableSourceAnalogs": 3
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 2,
+    "prototypeId": "25.2",
+    "sourcePage": 127,
+    "sourceAnalogIds": [
+      "25.2.1",
+      "25.2.2",
+      "25.2.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 3,
+    "prototypeId": "25.3",
+    "sourcePage": 127,
+    "sourceAnalogIds": [
+      "25.3.1",
+      "25.3.2",
+      "25.3.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 4,
+    "prototypeId": "25.4",
+    "sourcePage": 127,
+    "sourceAnalogIds": [
+      "25.4.1",
+      "25.4.2",
+      "25.4.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 5,
+    "prototypeId": "25.5",
+    "sourcePage": 128,
+    "sourceAnalogIds": [
+      "25.5.1",
+      "25.5.2",
+      "25.5.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 6,
+    "prototypeId": "25.6",
+    "sourcePage": 128,
+    "sourceAnalogIds": [
+      "25.6.1",
+      "25.6.2",
+      "25.6.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 7,
+    "prototypeId": "25.7",
+    "sourcePage": 128,
+    "sourceAnalogIds": [
+      "25.7.1",
+      "25.7.2",
+      "25.7.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 8,
+    "prototypeId": "25.8",
+    "sourcePage": 128,
+    "sourceAnalogIds": [
+      "25.8.1",
+      "25.8.2",
+      "25.8.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 9,
+    "prototypeId": "25.9",
+    "sourcePage": 128,
+    "sourceAnalogIds": [
+      "25.9.1",
+      "25.9.2",
+      "25.9.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 10,
+    "prototypeId": "25.10",
+    "sourcePage": 129,
+    "sourceAnalogIds": [
+      "25.10.1",
+      "25.10.2",
+      "25.10.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 11,
+    "prototypeId": "25.11",
+    "sourcePage": 129,
+    "sourceAnalogIds": [
+      "25.11.1",
+      "25.11.2",
+      "25.11.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 12,
+    "prototypeId": "25.12",
+    "sourcePage": 129,
+    "sourceAnalogIds": [
+      "25.12.1",
+      "25.12.2",
+      "25.12.3"
+    ],
+    "availableSourceAnalogs": 11
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 13,
+    "prototypeId": "25.13",
+    "sourcePage": 129,
+    "sourceAnalogIds": [
+      "25.13.1",
+      "25.13.2",
+      "25.13.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 14,
+    "prototypeId": "25.14",
+    "sourcePage": 130,
+    "sourceAnalogIds": [
+      "25.14.1",
+      "25.14.2",
+      "25.14.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 15,
+    "prototypeId": "25.15",
+    "sourcePage": 130,
+    "sourceAnalogIds": [
+      "25.15.1",
+      "25.15.2",
+      "25.15.3"
+    ],
+    "availableSourceAnalogs": 9
+  },
+  {
+    "examNumber": 25,
+    "prototypeNumber": 16,
+    "prototypeId": "25.16",
+    "sourcePage": 130,
+    "sourceAnalogIds": [
+      "25.16.1",
+      "25.16.2",
+      "25.16.3"
+    ],
+    "availableSourceAnalogs": 9
+  }
+]

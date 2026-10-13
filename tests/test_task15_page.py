@@ -15,7 +15,7 @@ class Task15PageContractTests(unittest.TestCase):
 
     def test_task15_is_linked_from_existing_trainer_navigation(self):
         navigation = (PART_ONE / "trainer-navigation.js").read_text(encoding="utf-8")
-        self.assertIn("15: 'task15.html#trainer'", navigation)
+        self.assertIn("15: '/study/math/part-one/task15.html#trainer'", navigation)
         task14 = (PART_ONE / "task14.html").read_text(encoding="utf-8")
         self.assertIn('href="task15.html#trainer">15</a>', task14)
 

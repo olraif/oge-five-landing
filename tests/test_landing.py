@@ -36,7 +36,7 @@ class TrainerEntryContractTests(unittest.TestCase):
         for text in ("ОГЭ-тренажёр — математика", "Кабинет ученика",
                      "Мои тренажёры", "Мой прогресс", "Бонусы"):
             self.assertIn(text, self.study_html)
-        self.assertIn('href="math/part-one/index.html#trainer"', self.study_html)
+        self.assertIn('href="math/index.html"', self.study_html)
         self.assertIn('id="buy-part-one"', self.study_html)
         self.assertIn('href="#purchase-offer" data-purchase-open', self.study_html)
 

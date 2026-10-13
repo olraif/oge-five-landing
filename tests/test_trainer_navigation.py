@@ -11,13 +11,13 @@ class TrainerNavigationTests(unittest.TestCase):
         for page_name in PAGES:
             with self.subTest(page=page_name):
                 html = (PART_ONE / page_name).read_text(encoding="utf-8")
-                self.assertIn('src="trainer-navigation.js"', html)
+                self.assertIn('src="trainer-navigation.js?v=', html)
 
     def test_shared_navigation_maps_every_loaded_task_directly(self):
         script = (PART_ONE / "trainer-navigation.js").read_text(encoding="utf-8")
         expected_routes = {
-            6: "index.html#trainer",
-            **{number: f"task{number}.html#trainer" for number in range(7, 17)},
+            6: "/study/math/part-one/index.html#trainer",
+            **{number: f"/study/math/part-one/task{number}.html#trainer" for number in range(7, 17)},
         }
         for number, route in expected_routes.items():
             with self.subTest(task=number):

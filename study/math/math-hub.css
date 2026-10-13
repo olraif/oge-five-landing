@@ -1,0 +1,7 @@
+.math-hub-page .course-hero{grid-template-columns:1.25fr .75fr}
+.math-hub-page .course-hero h1{margin-top:14px}
+.math-hub-page .module-map b{width:auto;min-width:60px;padding:0 10px}
+.math-hub-page .module-map article.is-open{background:#ecfff2;outline:2px solid #bfeec7}
+.math-hub-page .module-map article.is-locked{opacity:.68}
+.math-hub-note{margin:18px 0 0;color:#5f6b82;line-height:1.5}
+@media(max-width:1000px){.math-hub-page .course-hero{grid-template-columns:1fr}}

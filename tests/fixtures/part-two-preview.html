@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru" style="visibility:hidden">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Локальная проверка второй части</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/study/study.css">
+  <link rel="stylesheet" href="/study/math/part-one/part-one.css">
+  <link rel="stylesheet" href="/study/math/part-two/part-two.css">
+  <style>[hidden]{display:none!important}.preview-banner{padding:8px 24px;background:#ffe9a6;color:#493b00;font-weight:700}</style>
+</head>
+<body class="studio-page math-course-page math-part-two-page" data-course="math-algebra" data-data="/study/math/part-two/data/author-bank.json">
+  <div class="preview-banner">Локальная проверка интерфейса — не личный кабинет</div>
+  <main class="course-shell">
+    <aside class="course-sidebar" aria-label="Меню тренажёра">
+      <a class="is-active" href="/study/math/index.html"><span>•</span> Обзор тренажёра</a>
+      <div class="task-nav task-nav--sidebar" aria-label="Задания 1–25"></div>
+      <a class="trainer-progress-link" href="/study/#progress"><span>↗</span> Мой прогресс</a>
+    </aside>
+    <section class="course-content">
+      <section class="course-panel math-part-two-panel" id="trainer">
+        <p class="eyebrow"><span></span> математика ОГЭ · вторая часть</p>
+        <h1 id="task-title">Задание</h1>
+        <p class="math-part-two-lead">Выберите прототип и решите три авторских аналога.</p>
+        <div id="state" role="status">Проверяем страницу…</div>
+        <nav id="groups" class="prototype-progress-grid" aria-label="Прототипы задания" hidden></nav>
+        <div id="tasks" hidden></div>
+      </section>
+    </section>
+  </main>
+  <script>
+    const requestedCourse = new URLSearchParams(location.search).get('course');
+    if (requestedCourse === 'math-geometry') document.body.dataset.course = requestedCourse;
+    const storedProgress = JSON.parse(sessionStorage.getItem('part-two-preview-progress') || '{}');
+    const mockUser = { id: 'local-preview-user', user_metadata: { trainer_progress: { math: storedProgress } } };
+    window.ogeSupabase = { auth: {
+      getUser: async () => ({ data: { user: mockUser }, error: null }),
+      updateUser: async ({ data }) => {
+        mockUser.user_metadata = data;
+        sessionStorage.setItem('part-two-preview-progress', JSON.stringify(data.trainer_progress?.math || {}));
+        return { data: { user: mockUser }, error: null };
+      },
+    } };
+    window.ogeHasCourseAccess = async () => ({ data: true, error: null });
+    window.ogeGetEnrollmentIds = async () => ({ data: ['math-algebra', 'math-geometry'], error: null, user: mockUser });
+  </script>
+  <script src="/study/math/part-one/trainer-navigation.js?v=part-two-preview-2"></script>
+  <script>window.dispatchEvent(new Event('oge-auth-ready'));</script>
+  <script src="/study/math/part-two/answer-check.js"></script>
+  <script src="/study/math/part-two/progress-codec.js"></script>
+  <script src="/study/math/part-two/graph-preview.js"></script>
+  <script src="/study/math/part-two/part-two.js?v=preview-final-3"></script>
+</body>
+</html>

@@ -204,7 +204,7 @@
               <button type="submit">Открыть тренажёр</button>
               <small data-code-message></small>
             </form>
-            <a class="access-enter" href="math/part-one/index.html#trainer">Открыть тренажёр</a>
+            <a class="access-enter" href="math/index.html">Открыть тренажёр</a>
           </article>
           <article class="access-card is-locked" data-course-card data-course-id="math-algebra" data-code="ALGEBRA-6900">
             <span class="access-status">доступ закрыт</span>
@@ -219,7 +219,7 @@
               <button type="submit">Открыть тренажёр</button>
               <small data-code-message></small>
             </form>
-            <a class="access-enter" href="math/part-two/algebra.html">Открыть тренажёр</a>
+            <a class="access-enter" href="math/index.html">Открыть тренажёр</a>
           </article>
           <article class="access-card is-locked" data-course-card data-course-id="math-geometry" data-code="GEOMETRY-6900">
             <span class="access-status">доступ закрыт</span>
@@ -234,7 +234,7 @@
               <button type="submit">Открыть тренажёр</button>
               <small data-code-message></small>
             </form>
-            <a class="access-enter" href="math/part-two/geometry.html">Открыть тренажёр</a>
+            <a class="access-enter" href="math/index.html">Открыть тренажёр</a>
           </article>
         </div>
       </section>
@@ -400,6 +400,7 @@
   <script src="/study/vendor/supabase-js-2.115.0/supabase.js"></script>
   <script src="./auth-session.js"></script>
   <script src="./progress-model.js"></script>
+  <script src="./math/part-two/progress-codec.js"></script>
   <script>
     (() => {
       const views = document.querySelectorAll('.studio-view');
@@ -885,17 +886,16 @@
         renderTask18Progress(task18Progress);
         const task19Progress = keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.task19);
         renderTask19Progress(task19Progress);
+        const partTwoProgress = user.user_metadata?.trainer_progress?.math || {};
         for (let number = 20; number <= 25; number += 1) {
           const bar = document.querySelector(`.bar--task${number}`);
           if (!bar) continue;
-          const attempts = Object.values(keepOwnedAttempts(user.user_metadata?.trainer_progress?.math?.[`task${number}`]));
-          const solved = attempts.filter((attempt) => attempt.status === 'correct').length;
-          const reviewed = attempts.filter((attempt) => attempt.status === 'reviewed').length;
-          bar.style.setProperty('--ok', `${solved / 4 * 100}%`);
-          bar.style.setProperty('--work', `${reviewed / 4 * 100}%`);
+          const { total, correct: solved, reviewed } = window.OgePartTwoProgress.summary(partTwoProgress, user.id, number);
+          bar.style.setProperty('--ok', `${solved / total * 100}%`);
+          bar.style.setProperty('--work', `${reviewed / total * 100}%`);
           bar.classList.toggle('is-started', solved + reviewed > 0);
-          bar.querySelector('[data-part-two-percent]').textContent = `${Math.round((solved + reviewed) / 4 * 100)}%`;
-          bar.title = `Задание ${number}: ответы совпали ${solved}/4, самопроверка ${reviewed}/4`;
+          bar.querySelector('[data-part-two-percent]').textContent = `${Math.round((solved + reviewed) / total * 100)}%`;
+          bar.title = `Задание ${number}: ответы совпали ${solved}/${total}, самопроверка ${reviewed}/${total}`;
         }
       };
 
@@ -965,7 +965,7 @@
         demoMessage.textContent = 'Открываем демодоступ…';
         const result = await window.ogeStartMathTrial?.();
         if (result?.data?.status === 'active') {
-          window.location.href = './math/part-one/index.html#trainer';
+          window.location.href = './math/index.html';
           return;
         }
         await syncCourseAccess(window.ogeCurrentUser);
@@ -1009,6 +1009,7 @@
             activateCourse(card);
             message.textContent = 'Тренажёр открыт и сохранён в личном кабинете';
             message.classList.remove('is-error');
+            window.location.href = './math/index.html';
             return;
           }
           console.error('Supabase coupon activation error:', result.error);

@@ -22,7 +22,8 @@
     const { data: trialRows, error: trialError } = await client.rpc('math_trial', { p_start: false });
     const trial = trialRows?.[0] || null;
     if (trial?.status === 'active') ids.push('math-first');
-    return { data: ids, error: trialError, user, trial, paidExpiry: null, paidExpiries };
+    // A temporary trial lookup failure must not close independently paid blocks.
+    return { data: ids, error: ids.length ? null : trialError, user, trial, paidExpiry: null, paidExpiries };
   };
   window.ogeHasCourseAccess = async (courseId) => {
     const result = await window.ogeGetEnrollmentIds();

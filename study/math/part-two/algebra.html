@@ -4,21 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Вторая часть ОГЭ — алгебра</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../theme.css">
+  <link rel="stylesheet" href="../../study.css">
+  <link rel="stylesheet" href="../part-one/part-one.css">
   <link rel="stylesheet" href="./part-two.css">
   <style>[hidden]{display:none!important}</style>
 </head>
-<body data-course="math-algebra" data-data="./data/algebra-20-22.json" data-title="Алгебра" data-range="20–22">
-  <header class="topbar"><a href="/study/#courses">← Мои тренажёры</a><span>ОГЭ-тренажёр</span></header>
-  <main class="page">
-    <div class="hero"><span class="eyebrow">Вторая часть · задания №20–22</span><h1>Алгебра</h1><p>Авторские задачи, сгруппированные по номеру и типу. Первая подборка: 12 задач.</p><p class="notice">Введите ответ и сверьте решение. Построение графика в №22 проверяется самостоятельно.</p></div>
-    <div id="state" role="status">Проверяем доступ…</div>
-    <nav id="groups" class="groups" aria-label="Номера заданий" hidden></nav>
-    <div id="tasks" hidden></div>
+<body class="studio-page math-course-page math-part-two-page" data-course="math-algebra" data-data="./data/author-bank.json" data-title="Алгебра" data-range="20–22">
+  <main class="course-shell">
+    <aside class="course-sidebar" aria-label="Меню тренажёра">
+      <a class="is-active" href="/study/math/index.html"><span>•</span> Обзор тренажёра</a>
+      <div class="task-nav task-nav--sidebar" aria-label="Задания 1–25"></div>
+      <a class="trainer-progress-link" href="/study/#progress"><span>↗</span> Мой прогресс</a>
+    </aside>
+    <section class="course-content">
+      <section class="course-panel math-part-two-panel" id="trainer">
+        <p class="eyebrow"><span></span> математика ОГЭ · вторая часть · алгебра</p>
+        <h1 id="task-title">Алгебра</h1>
+        <p class="math-part-two-lead">Выберите прототип и решите три авторских аналога. Построение графика в №22 проверяется самостоятельно.</p>
+        <div id="state" role="status">Проверяем доступ…</div>
+        <nav id="groups" class="prototype-progress-grid" aria-label="Прототипы задания" hidden></nav>
+        <div id="tasks" hidden></div>
+      </section>
+    </section>
   </main>
+  <script src="../part-one/trainer-navigation.js"></script>
   <script src="/study/supabase-config.js"></script>
   <script src="/study/vendor/supabase-js-2.115.0/supabase.js"></script>
   <script src="/study/auth-session.js"></script>
   <script src="./answer-check.js"></script>
+  <script src="./progress-codec.js"></script>
+  <script src="./graph-preview.js"></script>
   <script src="./part-two.js"></script>
+  <script src="../../legal/legal-footer.js" data-legal-footer></script>
 </body>
 </html>

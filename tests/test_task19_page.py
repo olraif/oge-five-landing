@@ -23,7 +23,7 @@ class Task19PageContractTests(unittest.TestCase):
     def test_task19_is_connected_to_navigation_and_student_progress(self):
         navigation = (PART_ONE / "trainer-navigation.js").read_text(encoding="utf-8")
         dashboard = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
-        self.assertIn("19: 'task19.html#trainer'", navigation)
+        self.assertIn("19: '/study/math/part-one/task19.html#trainer'", navigation)
         for marker in ("data-task19-stack", "data-task19-percent", "renderTask19Progress", "math?.task19"):
             self.assertIn(marker, dashboard)
 

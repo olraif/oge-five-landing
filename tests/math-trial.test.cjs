@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'study', 'auth-session.js'), 'utf8');
 
-async function makeSession({ user = { id: 'student-1', email: 'test@example.com' }, paid = [], trial = null, pathname = '/study/' } = {}) {
+async function makeSession({ user = { id: 'student-1', email: 'test@example.com' }, paid = [], trial = null, trialError = null, pathname = '/study/' } = {}) {
   let redirect = null;
   let started = 0;
   const timerDelays = [];
@@ -25,7 +25,7 @@ async function makeSession({ user = { id: 'student-1', email: 'test@example.com'
     rpc: async (name, { p_start }) => {
       assert.equal(name, 'math_trial');
       if (p_start) started += 1;
-      return { data: [trial || { status: 'not_started', expires_at: null, remaining_seconds: null }], error: null };
+      return { data: trialError ? null : [trial || { status: 'not_started', expires_at: null, remaining_seconds: null }], error: trialError };
     },
   };
   const window = {
@@ -75,4 +75,11 @@ test('guest cannot activate free trial', async () => {
   const session = await makeSession({ user: null });
   assert.equal((await session.window.ogeStartMathTrial()).error.message, 'AUTH_REQUIRED');
   assert.equal(session.getStarted(), 0);
+});
+
+test('paid algebra remains available if the first-part trial lookup fails', async () => {
+  const session = await makeSession({ paid: ['math-algebra'], trialError: new Error('temporary trial error') });
+  const access = await session.window.ogeHasCourseAccess('math-algebra');
+  assert.equal(access.data, true);
+  assert.equal(access.error, null);
 });

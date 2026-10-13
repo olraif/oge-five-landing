@@ -4,7 +4,12 @@
   const state = document.getElementById('state');
   const nav = document.getElementById('groups');
   const container = document.getElementById('tasks');
+  const title = document.getElementById('task-title');
   const client = window.ogeSupabase;
+  const allowedNumbers = course === 'math-algebra' ? [20, 21, 22] : [23, 24, 25];
+  const expectedCounts = { 20: 24, 21: 21, 22: 15, 23: 19, 24: 15, 25: 16 };
+  const requestedNumber = Number(new URLSearchParams(window.location.search).get('task'));
+  const examNumber = allowedNumbers.includes(requestedNumber) ? requestedNumber : allowedNumbers[0];
   const el = (tag, className, content) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -17,20 +22,13 @@
     if (error || !data.user) throw error || new Error('Требуется вход в аккаунт');
     return { user: data.user, progress: data.user.user_metadata?.trainer_progress?.math || {} };
   };
-  const saveProgress = async (task, status, answer) => {
+  const saveProgress = async (task, status) => {
     const { user, progress } = await readProgress();
-    const key = `task${task.examNumber}`;
     const next = {
       ...user.user_metadata,
       trainer_progress: {
         ...user.user_metadata?.trainer_progress,
-        math: {
-          ...progress,
-          [key]: {
-            ...progress[key],
-            [task.id]: { status, answer, savedAt: new Date().toISOString(), ownerId: user.id },
-          },
-        },
+        math: window.OgePartTwoProgress.withStatus(progress, user.id, task.id, status),
       },
     };
     const result = await client.auth.updateUser({ data: next });
@@ -38,11 +36,11 @@
     window.dispatchEvent(new CustomEvent('oge-part-two-progress-updated'));
   };
 
-  const renderTask = (task, saved) => {
+  const renderTask = (task, saved, onSaved) => {
     const card = el('article', 'task');
     card.dataset.status = saved?.status || '';
     const top = el('div', 'task__top');
-    top.append(el('span', 'task__type', `Тип задачи: ${task.prototypeFamily}`));
+    top.append(el('span', 'task__type', `Прототип ${task.prototypeId} · аналог ${task.analogNumber}`));
     const badge = el('span', 'task__status', saved?.status === 'correct' ? 'Ответ совпал' : saved?.status === 'reviewed' ? 'Сверено' : 'Не решено');
     top.append(badge);
     card.append(top, el('p', 'task__prompt', task.prompt));
@@ -54,7 +52,8 @@
     field.value = saved?.answer || '';
     field.setAttribute('aria-label', label.textContent);
     label.append(field);
-    const button = el('button', '', task.validationMode === 'self_check_proof' ? 'Сверить доказательство' : 'Проверить ответ');
+    const button = el('button', '', task.validationMode === 'self_check_proof'
+      ? 'Сверить доказательство' : task.requiresGraph ? 'Сверить ответ и график' : 'Проверить ответ');
     button.type = 'submit';
     const feedback = el('p', 'task__feedback');
     feedback.setAttribute('role', 'status');
@@ -62,8 +61,9 @@
     card.append(form);
     const solution = el('div', 'task__solution');
     solution.hidden = true;
-    solution.append(el('strong', '', `Ответ: ${task.answer}`), el('p', '', task.solution));
-    const mark = el('button', '', 'Я сверил(а) решение');
+    solution.append(el('strong', '', task.validationMode === 'self_check_proof'
+      ? 'Образец доказательства' : `Ответ: ${task.answer}`), el('p', '', task.solution));
+    const mark = el('button', '', task.requiresGraph ? 'Я сверил(а) график и решение' : 'Я сверил(а) решение');
     mark.type = 'button';
     mark.hidden = saved?.status === 'correct';
     solution.append(mark);
@@ -77,13 +77,17 @@
       event.preventDefault();
       if (!field.value.trim()) return;
       solution.hidden = false;
+      if (task.graphSpec && window.OgeGraphPreview && !solution.querySelector('.task__graph-preview')) {
+        solution.insertBefore(window.OgeGraphPreview.render(task.graphSpec), mark);
+      }
       const matched = window.PartTwoAnswerCheck.compare(task.validationMode, field.value, task.answer);
-      if (matched === true && task.validationMode !== 'parameter_set_plus_graph_self_check') {
+      if (matched === true && !task.requiresGraph && task.validationMode !== 'parameter_set_plus_graph_self_check') {
         button.disabled = true;
         feedback.textContent = 'Ответ совпал. Сверьте также ход решения.';
         try {
-          await saveProgress(task, 'correct', field.value.trim());
+          await saveProgress(task, 'correct');
           setStatus('correct');
+          onSaved(task.id, 'correct');
         } catch (error) {
           feedback.textContent = 'Ответ совпал, но прогресс не сохранился. Повторите попытку.';
         } finally {
@@ -100,8 +104,9 @@
     mark.addEventListener('click', async () => {
       mark.disabled = true;
       try {
-        await saveProgress(task, 'reviewed', field.value.trim());
+        await saveProgress(task, 'reviewed');
         setStatus('reviewed');
+        onSaved(task.id, 'reviewed');
         feedback.textContent = 'Самопроверка отмечена, прогресс сохранён.';
       } catch (error) {
         feedback.textContent = 'Не удалось сохранить прогресс. Повторите попытку.';
@@ -112,33 +117,67 @@
     return card;
   };
 
-  const render = (tasks, progress, userId) => {
-    const groups = [...new Set(tasks.map((task) => task.examNumber))];
-    for (const number of groups) {
-      const link = el('a', '', `№ ${number}`);
-      link.href = `#task-${number}`;
-      nav.append(link);
-      const section = el('section', 'task-group');
-      section.id = `task-${number}`;
-      const head = el('div', 'task-group__head');
-      head.append(el('h2', '', `Задание №${number}`));
-      const items = tasks.filter((task) => task.examNumber === number);
-      head.append(el('small', '', `${items.length} типа задачи`));
-      section.append(head);
-      const grid = el('div', 'task-grid');
-      for (const task of items) {
-        const saved = progress[`task${number}`]?.[task.id];
-        grid.append(renderTask(task, saved?.ownerId === userId ? saved : null));
-      }
-      section.append(grid);
-      container.append(section);
+  const render = (bank, progress, userId) => {
+    title.textContent = `Задание ${examNumber}`;
+    document.title = `Задание ${examNumber} · ОГЭ-тренажёр`;
+    document.querySelectorAll(`.task-nav [data-second-part-task="${examNumber}"]`)
+      .forEach((link) => link.classList.add('is-current'));
+    window.OgeTrainerNavigation?.revealCurrentTaskOnMobile();
+    const groups = bank.filter((group) => group.examNumber === examNumber);
+    const expected = expectedCounts[examNumber];
+    if (groups.length < expected) {
+      container.append(el('p', 'math-part-two-draft-note',
+        `Подготовлено ${groups.length} из ${expected} прототипов этого номера. Остальные задания ещё готовятся.`));
     }
+    if (!groups.length) {
+      nav.hidden = true;
+      container.hidden = false;
+      return;
+    }
+    groups.forEach((group, index) => {
+      const button = el('button', 'prototype-progress');
+      button.type = 'button';
+      button.append(el('b', '', `Тип ${group.prototypeNumber || group.prototypeId.split('.')[1]}`),
+        el('span', '', '3 аналога'));
+      button.setAttribute('aria-label', `Прототип ${group.prototypeId}, три аналога`);
+      const section = el('section', 'math-part-two-prototype');
+      section.append(el('h2', '', `Прототип ${group.prototypeId}`));
+      section.hidden = index !== 0;
+      const statuses = new Map();
+      const updateButton = () => {
+        const values = [...statuses.values()];
+        const complete = values.length === 3 && values.every((value) => value === 'correct' || value === 'reviewed');
+        button.classList.toggle('is-green', complete);
+        button.classList.toggle('is-yellow', values.length > 0 && !complete);
+        button.classList.toggle('is-pink', values.length === 0);
+      };
+      group.analogs.forEach((analog, analogIndex) => {
+        const task = { ...analog, examNumber, prototypeId: group.prototypeId, analogNumber: analogIndex + 1 };
+        const status = window.OgePartTwoProgress.statusAt(progress, userId, task.id);
+        const owned = status ? { status } : null;
+        if (owned?.status) statuses.set(task.id, owned.status);
+        section.append(renderTask(task, owned, (id, status) => {
+          statuses.set(id, status);
+          updateButton();
+        }));
+      });
+      updateButton();
+      button.classList.toggle('is-current', index === 0);
+      button.addEventListener('click', () => {
+        nav.querySelectorAll('button').forEach((tab) => tab.classList.remove('is-current'));
+        container.querySelectorAll('.math-part-two-prototype').forEach((item) => { item.hidden = true; });
+        button.classList.add('is-current');
+        section.hidden = false;
+      });
+      nav.append(button);
+      container.append(section);
+    });
     nav.hidden = false;
     container.hidden = false;
   };
 
   const start = async () => {
-    if (!client || !window.ogeHasCourseAccess) {
+    if (!client || !window.ogeHasCourseAccess || !window.OgePartTwoProgress) {
       state.textContent = 'Не удалось подключиться к сервису. Обновите страницу позже.';
       document.documentElement.style.visibility = '';
       return;
@@ -151,11 +190,13 @@
       }
       const [response, account] = await Promise.all([fetch(source, { cache: 'no-store' }), readProgress()]);
       if (!response.ok) throw new Error('Не удалось загрузить задания');
-      const tasks = await response.json();
-      if (!Array.isArray(tasks) || tasks.length !== 12 || tasks.some((task) => !task.id || !task.examNumber || !task.prompt || !task.solution)) {
+      const bank = await response.json();
+      if (!Array.isArray(bank) || bank.some((group) => !group.prototypeId || !group.examNumber
+        || !Array.isArray(group.analogs) || group.analogs.length !== 3
+        || group.analogs.some((task) => !task.id || !task.prompt || !task.solution))) {
         throw new Error('Данные заданий неполны');
       }
-      render(tasks, account.progress, account.user.id);
+      render(bank, account.progress, account.user.id);
       state.textContent = '';
       document.documentElement.style.visibility = '';
       const recheckAccess = async () => {
