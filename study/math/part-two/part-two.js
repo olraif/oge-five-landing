@@ -38,12 +38,12 @@
 
   const renderTask = (task, saved, onSaved) => {
     const card = el('article', 'task');
+    card.setAttribute('aria-label', `Прототип ${task.prototypeId}, аналог ${task.analogNumber}`);
     card.dataset.status = saved?.status || '';
     const top = el('div', 'task__top');
-    top.append(el('span', 'task__type', `Прототип ${task.prototypeId} · аналог ${task.analogNumber}`));
     const badge = el('span', 'task__status', saved?.status === 'correct' ? 'Ответ совпал' : saved?.status === 'reviewed' ? 'Сверено' : 'Не решено');
     top.append(badge);
-    card.append(top, el('p', 'task__prompt', task.prompt));
+    card.append(top, el('p', 'task__prompt', window.OgeMathTypography.prompt(task.prompt)));
     const form = el('form', 'task__form');
     const label = el('label', '', task.validationMode === 'self_check_proof' ? 'Ваше доказательство' : 'Ваш ответ');
     const field = el(task.validationMode === 'self_check_proof' ? 'textarea' : 'input');
@@ -62,7 +62,8 @@
     const solution = el('div', 'task__solution');
     solution.hidden = true;
     solution.append(el('strong', '', task.validationMode === 'self_check_proof'
-      ? 'Образец доказательства' : `Ответ: ${task.answer}`), el('p', '', task.solution));
+      ? 'Образец доказательства' : `Ответ: ${window.OgeMathTypography.inline(task.answer)}`),
+    el('p', '', window.OgeMathTypography.inline(task.solution)));
     const mark = el('button', '', task.requiresGraph ? 'Я сверил(а) график и решение' : 'Я сверил(а) решение');
     mark.type = 'button';
     mark.hidden = saved?.status === 'correct';
@@ -77,6 +78,9 @@
       event.preventDefault();
       if (!field.value.trim()) return;
       solution.hidden = false;
+      window.OgeMathTypography.typeset(solution).catch(() => {
+        feedback.textContent = 'Не удалось отобразить формулы в решении. Обновите страницу.';
+      });
       if (task.graphSpec && window.OgeGraphPreview && !solution.querySelector('.task__graph-preview')) {
         solution.insertBefore(window.OgeGraphPreview.render(task.graphSpec), mark);
       }
@@ -137,11 +141,10 @@
     groups.forEach((group, index) => {
       const button = el('button', 'prototype-progress');
       button.type = 'button';
-      button.append(el('b', '', `Тип ${group.prototypeNumber || group.prototypeId.split('.')[1]}`),
-        el('span', '', '3 аналога'));
+      button.append(el('b', '', `Тип ${group.prototypeNumber || group.prototypeId.split('.')[1]}`));
       button.setAttribute('aria-label', `Прототип ${group.prototypeId}, три аналога`);
       const section = el('section', 'math-part-two-prototype');
-      section.append(el('h2', '', `Прототип ${group.prototypeId}`));
+      section.setAttribute('aria-label', `Прототип ${group.prototypeId}`);
       section.hidden = index !== 0;
       const statuses = new Map();
       const updateButton = () => {
@@ -168,12 +171,18 @@
         container.querySelectorAll('.math-part-two-prototype').forEach((item) => { item.hidden = true; });
         button.classList.add('is-current');
         section.hidden = false;
+        window.OgeMathTypography.typeset(section).catch(() => {
+          state.textContent = 'Не удалось отобразить формулы. Обновите страницу.';
+        });
       });
       nav.append(button);
       container.append(section);
     });
     nav.hidden = false;
     container.hidden = false;
+    window.OgeMathTypography.typeset(container.querySelector('.math-part-two-prototype:not([hidden])')).catch(() => {
+      state.textContent = 'Не удалось отобразить формулы. Обновите страницу.';
+    });
   };
 
   const start = async () => {

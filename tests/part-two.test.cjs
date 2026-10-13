@@ -4,6 +4,7 @@ const path = require('node:path');
 const { test } = require('node:test');
 const { compare } = require('../study/math/part-two/answer-check.js');
 const progressCodec = require('../study/math/part-two/progress-codec.js');
+const typography = require('../study/math/part-two/math-typography.js');
 
 const root = path.resolve(__dirname, '..');
 const algebra = JSON.parse(fs.readFileSync(path.join(root, 'study/math/part-two/data/algebra-20-22.json'), 'utf8'));
@@ -86,4 +87,34 @@ test('все 110 прототипов PDF имеют по три авторск�
     assert.match(page, /data-data="\.\/data\/author-bank\.json"/);
     assert.doesNotMatch(page, /data-(?:algebra-20-22|geometry-23-25)\.json/);
   }
+});
+
+test('во второй части дроби, корни, системы и кусочные функции оформлены математически', () => {
+  const bank = require(path.join(root, 'content/part-two-author-bank.cjs'));
+  const byId = (id) => bank.find((group) => group.prototypeId === id).analogs[0].prompt;
+  assert.match(typography.prompt(byId('20.1')), /\\frac\{2a - 5b \+ 3\}\{4a \+ b - 2\}/);
+  assert.match(typography.prompt(byId('20.8')), /\\sqrt\{2 - x\}/);
+  assert.match(typography.prompt(byId('20.10')), /\\begin\{cases\}.*\\\\.*\\end\{cases\}/);
+  assert.match(typography.prompt(byId('22.1')), /y=\\begin\{cases\}/);
+  for (const task of bank.flatMap((group) => group.analogs)) {
+    for (const value of [typography.prompt(task.prompt), typography.inline(task.solution), typography.inline(task.answer)]) {
+      const withoutUnits = value.replace(/(?:км|м|л|деталей)\/(?:ч|с|мин)/gu, '');
+      assert.doesNotMatch(withoutUnits, /[√/]/u, task.id);
+    }
+  }
+});
+
+test('лишние подписи удалены, выбранный прототип виден в обеих частях', () => {
+  for (const file of ['algebra.html', 'geometry.html']) {
+    const page = fs.readFileSync(path.join(root, `study/math/part-two/${file}`), 'utf8');
+    assert.doesNotMatch(page, /Выберите прототип и решите три авторских аналога/);
+    assert.match(page, /math-typography\.js/);
+    assert.match(page, /mathjax-3\.2\.2/);
+  }
+  const script = fs.readFileSync(path.join(root, 'study/math/part-two/part-two.js'), 'utf8');
+  assert.doesNotMatch(script, /'3 аналога'/);
+  assert.doesNotMatch(script, /section\.append\(el\('h2'/);
+  const css = fs.readFileSync(path.join(root, 'study/math/part-one/part-one.css'), 'utf8');
+  assert.match(css, /prototype-progress\.is-current[^}]+box-shadow:inset 0 0 0 2px/u);
+  assert.match(css, /practical-prototype-card\.is-active/u);
 });

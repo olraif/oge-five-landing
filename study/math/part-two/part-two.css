@@ -2,20 +2,20 @@
 .math-part-two-page .course-sidebar>a:first-child{background:#4b74ff;color:#fff}
 .math-part-two-page .course-sidebar>a:first-child span{background:rgba(255,255,255,.18);color:#fff}
 .math-part-two-panel h1{margin:10px 0 8px;color:#172443;font-size:clamp(36px,4vw,58px);letter-spacing:-.05em}
-.math-part-two-lead{max-width:700px;margin:0;color:#64708a;line-height:1.55}
 .math-part-two-page .prototype-progress-grid{margin:24px 0 18px}
+.math-part-two-page .prototype-progress{min-height:58px;align-content:center}
 .math-part-two-page .prototype-progress.is-pink{background:#fff1f5;border-color:#f2c7d5}
 .math-part-two-page .prototype-progress.is-green{background:#dff8e7;border-color:#7ad69a}
 .math-part-two-page .prototype-progress.is-yellow{background:#fff5d8;border-color:#f0cc6b}
 .math-part-two-page .prototype-progress:disabled{cursor:not-allowed;opacity:.6}
 .math-part-two-prototype{display:grid;gap:14px;margin-top:20px}
-.math-part-two-prototype h2{margin:0;color:#172443;font-size:20px}
 .math-part-two-draft-note{padding:12px 16px;border:1px solid #dce5f7;border-radius:14px;background:#f7f9ff;color:#52617c;font-size:13px;line-height:1.5}
 .math-part-two-page .task{background:#fff;border:1px solid #dfe6f6;border-radius:22px;padding:20px;box-shadow:0 8px 25px #1d32700b}
-.math-part-two-page .task__top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.math-part-two-page .task__type{color:#4167eb;font-size:12px;font-weight:800}
+.math-part-two-page .task__top{display:flex;justify-content:flex-end;align-items:center;gap:12px}
 .math-part-two-page .task__status{color:#667794;font-size:12px}
 .math-part-two-page .task__prompt{line-height:1.65;white-space:pre-wrap}
+.math-part-two-page .task__prompt mjx-container{white-space:normal;overflow-x:auto;overflow-y:hidden;max-width:100%}
+.math-part-two-page .task__prompt mjx-container[display="true"]{margin:.55em 0;text-align:left!important}
 .math-part-two-page .task label{display:block;color:#52617c;font-size:13px}
 .math-part-two-page .task input,.math-part-two-page .task textarea{display:block;width:100%;margin-top:8px;padding:12px;border:1px solid #cdd9f5;border-radius:12px;background:#f9fbff;color:#172443;font:inherit}
 .math-part-two-page .task textarea{min-height:110px;resize:vertical}

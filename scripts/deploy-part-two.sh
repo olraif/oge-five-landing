@@ -6,6 +6,7 @@ set -euo pipefail
 revision=${1:-}
 [[ $revision =~ ^[0-9a-f]{40}$ ]] || { echo 'Укажите полный SHA релиза (40 символов)' >&2; exit 1; }
 base_revision=77de857655de787620bae0601050504467274785
+prior_revision=223b79e1c4afc071b38778e2cca63ec1c162e409
 root=/var/www/oge-na-5
 
 files=(
@@ -34,10 +35,12 @@ files=(
   study/math/part-two/algebra.html
   study/math/part-two/answer-check.js
   study/math/part-two/geometry.html
+  study/math/part-two/math-typography.js
   study/math/part-two/part-two.css
   study/math/part-two/part-two.js
   study/math/part-two/data/author-bank.json
   study/math/part-two/graph-preview.js
+  study/math/part-two/math-typography.js
   study/math/part-two/progress-codec.js
 )
 new_files=(
@@ -98,7 +101,7 @@ for file in "${files[@]}"; do
   check_directory "$file"
   destination=$root/$file
   [[ ! -L $destination ]] || fail "символьная ссылка вместо файла: $destination"
-  mkdir -p "$tmp/new/$(dirname "$file")" "$tmp/base/$(dirname "$file")"
+  mkdir -p "$tmp/new/$(dirname "$file")" "$tmp/base/$(dirname "$file")" "$tmp/prior/$(dirname "$file")"
   curl --proto '=https' -fsSL --max-time 30 \
     "https://raw.githubusercontent.com/olraif/oge-five-landing/$revision/$file" \
     -o "$tmp/new/$file" || fail "не удалось скачать релиз: $file"
@@ -113,9 +116,14 @@ for file in "${files[@]}"; do
     curl --proto '=https' -fsSL --max-time 30 \
       "https://raw.githubusercontent.com/olraif/oge-five-landing/$base_revision/$file" \
       -o "$tmp/base/$file" || fail "не удалось скачать базовую версию: $file"
+    curl --proto '=https' -fsSL --max-time 30 \
+      "https://raw.githubusercontent.com/olraif/oge-five-landing/$prior_revision/$file" \
+      -o "$tmp/prior/$file" || fail "не удалось скачать предыдущую версию: $file"
     [[ -f $destination ]] || fail "отсутствует существующий файл: $file"
     live_hash=$(hash_file "$destination")
-    [[ $live_hash == "$(hash_file "$tmp/base/$file")" || $live_hash == "$new_hash" ]] ||
+    [[ $live_hash == "$(hash_file "$tmp/base/$file")" ||
+       $live_hash == "$(hash_file "$tmp/prior/$file")" ||
+       $live_hash == "$new_hash" ]] ||
       fail "файл изменился на сервере: $file ($live_hash)"
     [[ $live_hash == "$new_hash" ]] || changed+=("$file")
   fi
