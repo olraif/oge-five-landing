@@ -89,19 +89,17 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/terms\.html"')
         self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
         self.assertNotRegex(html, r'href="\./legal/offer\.html"')
-        self.assertIn("consent_version: '1.3'", html)
-        self.assertIn("terms_version: '1.3'", html)
+        self.assertIn("consent_version: '1.4'", html)
+        self.assertIn("terms_version: '1.4'", html)
 
     def test_legal_pages_name_current_operator_and_terms(self):
         for filename in ("privacy.html", "consent.html", "offer.html", "terms.html"):
             with self.subTest(filename=filename):
                 html = (LEGAL / filename).read_text(encoding="utf-8")
-                self.assertIn("Султанов", html)
-                self.assertIn("Амир", html)
-                self.assertIn("Ильдарович", html)
-                self.assertIn("022906630008", html)
-                self.assertNotIn("Сайфуллина", html)
-                self.assertNotIn("562700185169", html)
+                self.assertIn("Сайфуллина Олеся Раифовна", html)
+                self.assertIn("562700185169", html)
+                self.assertNotIn("Султанов", html)
+                self.assertNotIn("022906630008", html)
 
     def test_legal_trial_terms_match_immediate_two_hour_activation(self):
         for filename in ("offer.html", "terms.html"):
