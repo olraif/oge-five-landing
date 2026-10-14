@@ -172,7 +172,11 @@ class LegalFlowTests(unittest.TestCase):
                 offer_links = [item for item in page.links if "data-purchase-offer-link" in item]
                 self.assertEqual([item.get("href") for item in offer_links], [offer_url])
                 contact_links = [item for item in page.links if "data-purchase-contact" in item]
-                self.assertEqual([item.get("href") for item in contact_links], ["mailto:oge-na-5@mail.ru"])
+                expected_contacts = (
+                    ["https://max.ru/u/f9LHodD0cOJ-WhJxLmY8QmF0qkpfQyUtIpdxsmy0NXN-tXKcYjrT8ztesFg", "mailto:oge-na-5@mail.ru"]
+                    if relative == "index.html" else ["mailto:oge-na-5@mail.ru"]
+                )
+                self.assertEqual([item.get("href") for item in contact_links], expected_contacts)
                 self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
                 self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
 
