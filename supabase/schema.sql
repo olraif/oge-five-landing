@@ -83,9 +83,7 @@ insert into public.courses (id, subject, title, description, sort_order)
 values
   ('math-first', 'math', 'Первая часть ОГЭ', 'Авторский тренажёр по заданиям 1–19 готовится к запуску.', 1),
   ('math-algebra', 'math', 'Вторая часть: алгебра', 'Разбор и практика алгебраических заданий.', 2),
-  ('math-geometry', 'math', 'Вторая часть: геометрия', 'Разбор и практика геометрических заданий.', 3),
-  ('informatics-first', 'informatics', 'Информатика: первая часть', 'Ответы с автоматической проверкой.', 1),
-  ('informatics-second', 'informatics', 'Информатика: вторая часть', 'Практика с самопроверкой по решению.', 2)
+  ('math-geometry', 'math', 'Вторая часть: геометрия', 'Разбор и практика геометрических заданий.', 3)
 on conflict (id) do update set
   title = excluded.title,
   description = excluded.description,

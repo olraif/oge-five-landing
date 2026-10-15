@@ -10,7 +10,6 @@ class TrainerEntryContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.root_html = (ROOT / "index.html").read_text(encoding="utf-8")
         cls.study_html = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
-        cls.informatics_html = (ROOT / "study" / "informatics" / "index.html").read_text(encoding="utf-8")
         cls.part_one_html = (ROOT / "study" / "math" / "part-one" / "index.html").read_text(encoding="utf-8")
         cls.part_one_js = (ROOT / "study" / "math" / "part-one" / "part-one.js").read_text(encoding="utf-8")
         cls.auth_js = (ROOT / "study" / "auth-session.js").read_text(encoding="utf-8")
@@ -32,6 +31,12 @@ class TrainerEntryContractTests(unittest.TestCase):
         self.assertIn("<loc>https://oge-na-5.ru/study/math/part-one/</loc>", sitemap)
         self.assertEqual((ROOT / "CNAME").read_text(encoding="utf-8").strip(), "oge-na-5.ru")
 
+    def test_informatics_is_not_a_public_offer(self):
+        self.assertFalse((ROOT / "study" / "informatics" / "index.html").exists())
+        self.assertNotIn("информатик", self.root_html.lower())
+        self.assertNotIn("информатик", self.study_html.lower())
+        self.assertNotIn("informatics", (ROOT / "sitemap.xml").read_text(encoding="utf-8"))
+
     def test_trainer_home_and_progress_remain_available(self):
         for text in ("ОГЭ-тренажёр — математика", "Кабинет ученика",
                      "Мои тренажёры", "Мой прогресс", "Бонусы"):
@@ -41,7 +46,7 @@ class TrainerEntryContractTests(unittest.TestCase):
         self.assertIn('href="#purchase-offer" data-purchase-open', self.study_html)
 
     def test_individual_lesson_goes_to_separate_domain(self):
-        for page in (self.study_html, self.informatics_html):
+        for page in (self.study_html,):
             card = page.split('<article class="course-card is-mentor">', 1)[1].split("</article>", 1)[0]
             self.assertIn('href="https://repiq.ru/oge/"', card)
             self.assertNotIn('href="https://oge-na-5.ru/"', card)

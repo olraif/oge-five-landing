@@ -89,8 +89,8 @@ class LegalFlowTests(unittest.TestCase):
         self.assertRegex(html, r'href="\./legal/terms\.html"')
         self.assertNotRegex(html, r'href="\./legal/privacy\.html"')
         self.assertNotRegex(html, r'href="\./legal/offer\.html"')
-        self.assertIn("consent_version: '1.4'", html)
-        self.assertIn("terms_version: '1.4'", html)
+        self.assertIn("consent_version: '1.5'", html)
+        self.assertIn("terms_version: '1.5'", html)
 
     def test_legal_pages_name_current_operator_and_terms(self):
         for filename in ("privacy.html", "consent.html", "offer.html", "terms.html"):
@@ -135,7 +135,7 @@ class LegalFlowTests(unittest.TestCase):
         self.assertIn('data-legal-footer', reset)
 
     def test_legal_footer_is_loaded_by_login_cabinet_admin_and_every_trainer_page(self):
-        pages = [STUDY / "login.html", STUDY / "admin.html", STUDY / "index.html", STUDY / "informatics" / "index.html"]
+        pages = [STUDY / "login.html", STUDY / "admin.html", STUDY / "index.html"]
         pages += sorted((STUDY / "math" / "part-one").glob("*.html"))
         for path in pages:
             with self.subTest(page=path.relative_to(ROOT).as_posix()):
@@ -144,7 +144,7 @@ class LegalFlowTests(unittest.TestCase):
                 self.assertEqual(len(scripts), 1)
 
     def test_purchase_and_activation_keep_legal_copy_in_documents(self):
-        for relative in ("index.html", "informatics/index.html"):
+        for relative in ("index.html",):
             with self.subTest(page=relative):
                 html = (STUDY / relative).read_text(encoding="utf-8")
                 self.assertNotIn('class="course-legal-link"', html)
@@ -155,7 +155,6 @@ class LegalFlowTests(unittest.TestCase):
     def test_purchase_requires_offer_acceptance_before_contact(self):
         cases = (
             ("index.html", 3, "./legal/offer.html", "study.css?v=20261007-1", "./purchase-offer.js?v=20260909-1"),
-            ("informatics/index.html", 2, "../legal/offer.html", "../study.css?v=20260909-2", "../purchase-offer.js?v=20260909-1"),
         )
         for relative, purchase_count, offer_url, stylesheet_url, script_url in cases:
             with self.subTest(page=relative):
@@ -172,10 +171,7 @@ class LegalFlowTests(unittest.TestCase):
                 offer_links = [item for item in page.links if "data-purchase-offer-link" in item]
                 self.assertEqual([item.get("href") for item in offer_links], [offer_url])
                 contact_links = [item for item in page.links if "data-purchase-contact" in item]
-                expected_contacts = (
-                    ["https://max.ru/u/f9LHodD0cOJ-WhJxLmY8QmF0qkpfQyUtIpdxsmy0NXN-tXKcYjrT8ztesFg", "mailto:oge-na-5@mail.ru"]
-                    if relative == "index.html" else ["mailto:oge-na-5@mail.ru"]
-                )
+                expected_contacts = ["https://max.ru/u/f9LHodD0cOJ-WhJxLmY8QmF0qkpfQyUtIpdxsmy0NXN-tXKcYjrT8ztesFg", "mailto:oge-na-5@mail.ru"]
                 self.assertEqual([item.get("href") for item in contact_links], expected_contacts)
                 self.assertTrue(all(item.get("aria-disabled") == "true" for item in contact_links))
                 self.assertTrue(all(item.get("tabindex") == "-1" for item in contact_links))
@@ -194,7 +190,6 @@ class LegalFlowTests(unittest.TestCase):
     def test_tariff_prices_are_separate_from_buttons_that_sell_access(self):
         cases = {
             "index.html": ("Первая часть", "Алгебра", "Геометрия"),
-            "informatics/index.html": ("Первая часть", "Вторая часть"),
         }
         for relative, option_labels in cases.items():
             with self.subTest(page=relative):
@@ -235,7 +230,7 @@ class LegalFlowTests(unittest.TestCase):
             "по типам банка фипи",
             "демо-вариантом",
         )
-        pages = (STUDY / "index.html", STUDY / "informatics" / "index.html")
+        pages = (STUDY / "index.html",)
         for path in pages:
             with self.subTest(page=path.relative_to(ROOT).as_posix()):
                 html = path.read_text(encoding="utf-8")

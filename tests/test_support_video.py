@@ -9,7 +9,6 @@ class SupportContractTests(unittest.TestCase):
     def test_support_section_uses_faq_without_video(self):
         pages = [
             (ROOT / "study" / "index.html").read_text(encoding="utf-8"),
-            (ROOT / "study" / "informatics" / "index.html").read_text(encoding="utf-8"),
         ]
         css = (ROOT / "study" / "study.css").read_text(encoding="utf-8")
 
@@ -40,7 +39,6 @@ class SupportContractTests(unittest.TestCase):
     def test_individual_lesson_has_one_cta_to_teacher_site(self):
         pages = [
             (ROOT / "study" / "index.html").read_text(encoding="utf-8"),
-            (ROOT / "study" / "informatics" / "index.html").read_text(encoding="utf-8"),
         ]
 
         for html in pages:

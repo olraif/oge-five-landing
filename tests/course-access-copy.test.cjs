@@ -43,7 +43,7 @@ function makeCard() {
   };
 }
 
-for (const relativePath of ['study/index.html', 'study/informatics/index.html']) {
+for (const relativePath of ['study/index.html']) {
   const activateCourse = loadCourseStateHandler(relativePath, 'activateCourse');
   const card = makeCard();
   activateCourse(card);
