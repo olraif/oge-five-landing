@@ -36,6 +36,12 @@ const { chromium } = require('playwright');
   for (let index = 1; index <= 35; index += 1) {
     await page.locator(`[data-task8-prototype="8.${index}"]`).click();
     if (await page.locator('[data-task8-quiz] label').count() < 4) throw new Error(`8.${index}: missing rows`);
+    if (index === 26) {
+      await page.waitForFunction(() => document.querySelectorAll('[data-task8-quiz] mjx-container').length === 4);
+      const clippedFormula = await page.locator('[data-task8-quiz] label > span').evaluateAll((spans) => spans.some((span) =>
+        getComputedStyle(span).overflowY !== 'visible' && span.scrollHeight > span.clientHeight + 1));
+      if (clippedFormula) throw new Error('8.26: formula is clipped inside a scrollable text box');
+    }
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     if (overflow) throw new Error(`8.${index}: horizontal page overflow`);
   }

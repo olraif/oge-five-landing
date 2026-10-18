@@ -17,10 +17,14 @@ class Task8PageContractTests(unittest.TestCase):
             'data-task8-current-total',
             'href="../../index.html#progress"',
             'src="task8.js"',
-            'href="task8.css"',
+            'href="task8.css?v=20261018-formula-1"',
             '/study/vendor/mathjax-3.2.2/es5/tex-mml-chtml.js',
         ):
             self.assertIn(marker, html)
+
+    def test_task8_formula_text_is_not_clipped_by_its_container(self):
+        css = (PART_ONE / "task8.css").read_text(encoding="utf-8")
+        self.assertIn(".task8-page .quiz-card label > span{overflow:visible}", css)
 
     def test_task8_is_linked_from_existing_trainer_navigation(self):
         task6 = (PART_ONE / "index.html").read_text(encoding="utf-8")
