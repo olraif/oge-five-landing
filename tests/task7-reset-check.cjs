@@ -42,6 +42,7 @@ const { chromium } = require('playwright');
             return { data: { user }, error: null };
           },
         } };
+        window.ogeSaveTrainerProgress = (next) => window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
         window.__resetTestUser = user;
       })();
     `,

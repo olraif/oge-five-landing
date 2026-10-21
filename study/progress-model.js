@@ -463,5 +463,127 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
     return savedAt >= accountCreatedAt;
   };
 
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets, createAccountProgressStorage, isAttemptOwnedByAccount };
+  const FIRST_PART_BUILDERS = Object.freeze({
+    6: buildTask6Summary, 7: buildTask7Summary, 8: buildTask8Summary,
+    9: buildTask9Summary, 10: buildTask10Summary, 11: buildTask11Summary,
+    12: buildTask12Summary, 13: buildTask13Summary, 14: buildTask14Summary,
+    15: buildTask15Summary, 16: buildTask16Summary, 17: buildTask17Summary,
+    18: buildTask18Summary, 19: buildTask19Summary,
+  });
+  const PRACTICAL_TASK_TOTAL = 72;
+  const PART_TWO_TOTAL = 330;
+  const ownedAttempts = (attempts, user, task) => filterProgressAfterResets(
+    Object.fromEntries(Object.entries(attempts || {}).filter(([, attempt]) => isAttemptOwnedByAccount(attempt, user))),
+    user?.user_metadata,
+    ['math', task],
+  );
+
+  const buildFirstPartSummary = (mathProgress = {}, user) => {
+    const byTask = {};
+    const practical = ownedAttempts(mathProgress.task1to5, user, 'task1to5');
+    for (let number = 1; number <= 5; number += 1) {
+      let correct = 0;
+      let answered = 0;
+      Object.values(practical).forEach((attempt) => {
+        const task = attempt?.taskProgress?.[number];
+        correct += Math.max(0, Number(task?.correct) || 0);
+        answered += Math.max(0, Number(task?.answered) || 0);
+      });
+      byTask[number] = {
+        total: PRACTICAL_TASK_TOTAL,
+        correct: Math.min(PRACTICAL_TASK_TOTAL, correct),
+        attempted: Math.min(PRACTICAL_TASK_TOTAL, Math.max(correct, answered)),
+      };
+    }
+    Object.entries(FIRST_PART_BUILDERS).forEach(([number, build]) => {
+      const summary = build(ownedAttempts(mathProgress[`task${number}`], user, `task${number}`));
+      byTask[number] = {
+        total: summary.total,
+        correct: summary.correct,
+        attempted: summary.correct + summary.wrong,
+      };
+    });
+    const totals = Object.values(byTask).reduce((result, task) => ({
+      total: result.total + task.total,
+      correct: result.correct + task.correct,
+      attempted: result.attempted + task.attempted,
+    }), { total: 0, correct: 0, attempted: 0 });
+    return { ...totals, byTask, percent: totals.total ? Math.round(totals.correct * 1000 / totals.total) / 10 : 0 };
+  };
+
+  const buildSecondPartSummary = (mathProgress = {}, user) => {
+    const compact = mathProgress.partTwoV1;
+    if (!user?.id || compact?.ownerId !== user.id || typeof compact.statuses !== 'string') {
+      return { available: false, total: PART_TWO_TOTAL, completed: 0, correct: 0, reviewed: 0, percent: 0 };
+    }
+    const statuses = compact.statuses.slice(0, PART_TWO_TOTAL);
+    const correct = [...statuses].filter((status) => status === '1').length;
+    const reviewed = [...statuses].filter((status) => status === '2').length;
+    const completed = correct + reviewed;
+    return { available: true, total: PART_TWO_TOTAL, completed, correct, reviewed, percent: Math.round(completed * 1000 / PART_TWO_TOTAL) / 10 };
+  };
+
+  const parseCalendarDay = (value) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return null;
+    const day = new Date(`${value}T00:00:00Z`);
+    return Number.isFinite(day.getTime()) && day.toISOString().slice(0, 10) === value ? day.getTime() / 86400000 : null;
+  };
+  const recordDailyProgress = (history = {}, previousMath = {}, nextMath = {}, user, today) => {
+    if (parseCalendarDay(today) === null || !user?.id) return history;
+    const beforeFirst = buildFirstPartSummary(previousMath, user);
+    const afterFirst = buildFirstPartSummary(nextMath, user);
+    const beforeSecond = buildSecondPartSummary(previousMath, user);
+    const afterSecond = buildSecondPartSummary(nextMath, user);
+    const existingDays = history?.days && typeof history.days === 'object' && !Array.isArray(history.days) ? history.days : {};
+    const existing = existingDays[today] || {};
+    const days = {
+      ...existingDays,
+      [today]: {
+        first: (Number(existing.first) || 0) + afterFirst.correct - beforeFirst.correct,
+        second: (Number(existing.second) || 0) + afterSecond.completed - beforeSecond.completed,
+      },
+    };
+    const recentDays = Object.fromEntries(Object.entries(days)
+      .filter(([day]) => parseCalendarDay(day) !== null)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .slice(-14));
+    return { startedAt: history?.startedAt || today, days: recentDays };
+  };
+  const summarizeLastSevenDays = (history = {}, today, firstTotal, secondTotal = PART_TWO_TOTAL) => {
+    const currentDay = parseCalendarDay(today);
+    if (currentDay === null) return null;
+    const days = history?.days && typeof history.days === 'object' ? history.days : {};
+    const totals = Object.entries(days).reduce((result, [day, change]) => {
+      const date = parseCalendarDay(day);
+      if (date !== null && date >= currentDay - 6 && date <= currentDay) {
+        result.first += Number(change?.first) || 0;
+        result.second += Number(change?.second) || 0;
+      }
+      return result;
+    }, { first: 0, second: 0 });
+    const percent = (count, total) => total > 0 ? Math.round(count * 10000 / total) / 100 : 0;
+    return {
+      startedAt: history?.startedAt || null,
+      incompleteSince: history?.incompleteSince || null,
+      firstCount: totals.first,
+      secondCount: totals.second,
+      firstPercent: percent(totals.first, firstTotal),
+      secondPercent: percent(totals.second, secondTotal),
+    };
+  };
+  const buildPreparationPlan = ({ targetDate, today, currentPercent } = {}) => {
+    const target = parseCalendarDay(targetDate);
+    const currentDay = parseCalendarDay(today);
+    if (target === null || currentDay === null || currentDay >= target) return null;
+    const current = Math.max(0, Math.min(100, Number(currentPercent) || 0));
+    const daysLeft = target - currentDay;
+    const remaining = 100 - current;
+    const weeklyIncrease = Math.min(remaining, Math.ceil((remaining * 7 / daysLeft) * 10) / 10);
+    return {
+      daysLeft,
+      weeklyIncrease,
+      nextWeekPercent: Math.round((current + weeklyIncrease) * 10) / 10,
+    };
+  };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets, buildFirstPartSummary, buildSecondPartSummary, recordDailyProgress, summarizeLastSevenDays, buildPreparationPlan, createAccountProgressStorage, isAttemptOwnedByAccount };
 });

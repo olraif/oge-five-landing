@@ -4,6 +4,44 @@
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
   window.ogeSupabase = client;
+  const progressModelUrl = new URL('./progress-model.js', document.currentScript?.src || location.href).href;
+  let progressModelPromise = null;
+  const loadProgressModel = () => {
+    if (window.OgeProgressModel?.recordDailyProgress) return Promise.resolve(window.OgeProgressModel);
+    if (!progressModelPromise) {
+      progressModelPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = progressModelUrl;
+        script.onload = () => window.OgeProgressModel?.recordDailyProgress ? resolve(window.OgeProgressModel) : reject(new Error('Модель прогресса не загрузилась'));
+        script.onerror = () => reject(new Error('Модель прогресса недоступна'));
+        document.head.append(script);
+      });
+    }
+    return progressModelPromise;
+  };
+  const moscowDate = () => {
+    const parts = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+  window.ogeSaveTrainerProgress = async (nextProgress, knownUser) => {
+    const user = knownUser || (await client.auth.getUser()).data?.user;
+    if (!user) return { data: null, error: new Error('AUTH_REQUIRED') };
+    const previousHistory = user.user_metadata?.math_progress_history_v1 || {};
+    let history;
+    try {
+      const model = await loadProgressModel();
+      history = model.recordDailyProgress(
+        previousHistory,
+        user.user_metadata?.trainer_progress?.math || {},
+        nextProgress?.math || {}, user, moscowDate(),
+      );
+    } catch (error) {
+      console.warn('Не удалось обновить недельную аналитику', error);
+      history = { ...previousHistory, incompleteSince: moscowDate() };
+    }
+    return client.auth.updateUser({ data: { trainer_progress: nextProgress, math_progress_history_v1: history } });
+  };
   window.ogeGetEnrollmentIds = async () => {
     const { data: sessionData } = await client.auth.getSession();
     const user = sessionData.session?.user || null;

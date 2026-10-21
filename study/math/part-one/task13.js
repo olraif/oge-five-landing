@@ -124,7 +124,7 @@
           task13: { ...(current.math?.task13 || {}), [ownedPayload.prototype]: ownedPayload },
         },
       };
-      const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+      const { data: updated, error } = await window.ogeSaveTrainerProgress(next, freshUser);
       if (error) throw error;
       cloudUser = updated?.user || { ...freshUser, user_metadata: { ...freshUser.user_metadata, trainer_progress: next } };
     } catch (error) {

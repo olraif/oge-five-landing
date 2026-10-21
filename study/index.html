@@ -244,12 +244,40 @@
           <div>
             <p class="eyebrow"><span></span> мой прогресс</p>
           </div>
+          <div class="progress-overview" aria-live="polite">
+            <div class="progress-overview__item">
+              <span>Первая часть · 1–19</span>
+              <strong data-first-part-percent>0%</strong>
+              <small data-first-part-count>Правильно решено: 0</small>
+            </div>
+            <div class="progress-overview__item">
+              <span>Вторая часть · 20–25</span>
+              <strong data-second-part-percent>0%</strong>
+              <small data-second-part-count>Пройдено 0 из 330</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-weekly" aria-live="polite">
+          <div class="progress-weekly__heading">
+            <strong>За последние 7 дней</strong>
+            <span data-weekly-note>Учёт новых решений начнётся после первой тренировки</span>
+          </div>
+          <div class="progress-weekly__metric"><span>Первая часть</span><strong data-first-weekly-percent>+0%</strong><small data-first-weekly-count>0 заданий</small></div>
+          <div class="progress-weekly__metric"><span>Вторая часть</span><strong data-second-weekly-percent>+0%</strong><small data-second-weekly-count>0 заданий</small></div>
         </div>
 
         <div class="progress-legend" aria-label="Обозначения прогресса">
           <span><i class="is-green"></i> правильно решено</span>
           <span><i class="is-yellow"></i> над этим ещё работаем</span>
           <span><i class="is-red"></i> осталось закрыть до 100%</span>
+        </div>
+
+        <div class="preparation-plan" aria-live="polite">
+          <strong class="preparation-plan__title">Темп подготовки</strong>
+          <label class="preparation-plan__field">Дата экзамена<input type="date" data-preparation-date aria-label="Дата экзамена"></label>
+          <div class="preparation-plan__field"><span>Дней до экзамена</span><strong data-preparation-days>—</strong></div>
+          <div class="preparation-plan__field"><span>Нужно в неделю · часть 1</span><strong data-preparation-week>—</strong></div>
         </div>
 
         <div class="progress-scale" aria-label="Прогресс по заданиям ОГЭ 1–25">
@@ -829,6 +857,87 @@
         bar.title = 'Задание 19: ' + summary.percent + '%';
       };
       const resetTask19Progress = () => renderTask19Progress({});
+      const preparationDateInput = document.querySelector('[data-preparation-date]');
+      const calendarDate = (date) => {
+        const parts = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+        return `${values.year}-${values.month}-${values.day}`;
+      };
+      const defaultPreparationDate = () => {
+        const [currentYear, month, day] = calendarDate(new Date()).split('-').map(Number);
+        const year = month < 6 || (month === 6 && day < 1) ? currentYear : currentYear + 1;
+        return `${year}-06-01`;
+      };
+      const planKey = (user) => `ogePreparationPlan:v1:${user.id}`;
+      const planMemory = new Map();
+      const readPlan = (user) => {
+        try { return JSON.parse(localStorage.getItem(planKey(user)) || 'null') || planMemory.get(user.id) || null; }
+        catch { return planMemory.get(user.id) || null; }
+      };
+      const savePlan = (user, plan) => {
+        planMemory.set(user.id, plan);
+        try { localStorage.setItem(planKey(user), JSON.stringify(plan)); } catch { /* План работает до закрытия страницы. */ }
+      };
+      const renderProgressOverview = (user) => {
+        const model = window.OgeProgressModel;
+        if (!model) return;
+        const mathProgress = user?.user_metadata?.trainer_progress?.math || {};
+        const first = model.buildFirstPartSummary(mathProgress, user);
+        const second = model.buildSecondPartSummary(mathProgress, user);
+        document.querySelector('[data-first-part-percent]').textContent = `${String(first.percent).replace('.', ',')}%`;
+        document.querySelector('[data-first-part-count]').textContent = `Верно ${first.correct} из ${first.total}`;
+        document.querySelector('[data-second-part-percent]').textContent = `${String(second.percent).replace('.', ',')}%`;
+        document.querySelector('[data-second-part-count]').textContent = `Пройдено ${second.completed} из ${second.total}`;
+
+        const today = calendarDate(new Date());
+        const weekly = model.summarizeLastSevenDays(user?.user_metadata?.math_progress_history_v1, today, first.total, second.total);
+        const formatChange = (value) => value === 0 ? '+0%' : `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(2).replace('.', ',')}%`;
+        const formatCount = (value, total) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${Math.abs(value)} из ${total}`;
+        document.querySelector('[data-first-weekly-percent]').textContent = formatChange(weekly?.firstPercent || 0);
+        document.querySelector('[data-second-weekly-percent]').textContent = formatChange(weekly?.secondPercent || 0);
+        document.querySelector('[data-first-weekly-count]').textContent = formatCount(weekly?.firstCount || 0, first.total);
+        document.querySelector('[data-second-weekly-count]').textContent = formatCount(weekly?.secondCount || 0, second.total);
+        const daysSince = (day) => day ? Math.floor((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86400000) : null;
+        document.querySelector('[data-weekly-note]').textContent = !user ? 'Войдите, чтобы увидеть недельный прирост'
+          : weekly?.incompleteSince && daysSince(weekly.incompleteSince) < 7 ? 'Часть решений не попала в недельный учёт'
+            : !weekly?.startedAt ? 'Учёт новых решений начнётся после первой тренировки'
+              : daysSince(weekly.startedAt) < 7 ? `Учёт с ${weekly.startedAt.split('-').reverse().join('.')}; прежний прирост недоступен`
+                : 'Доля от общего количества заданий';
+
+        const weeklyPace = document.querySelector('[data-preparation-week]');
+        const daysLeft = document.querySelector('[data-preparation-days]');
+        if (!user) {
+          preparationDateInput.disabled = true;
+          preparationDateInput.value = '';
+          weeklyPace.textContent = '—';
+          daysLeft.textContent = '—';
+          return;
+        }
+        preparationDateInput.disabled = false;
+        preparationDateInput.min = new Date(Date.parse(`${today}T00:00:00Z`) + 86400000).toISOString().slice(0, 10);
+        let plan = readPlan(user);
+        if (!plan?.targetDate) {
+          plan = { targetDate: defaultPreparationDate() };
+          savePlan(user, plan);
+        }
+        preparationDateInput.value = plan.targetDate;
+        const pace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: first.total ? first.correct * 100 / first.total : 0 });
+        if (!pace) {
+          daysLeft.textContent = '0';
+          weeklyPace.textContent = first.percent === 100 ? '0 п. п.' : '—';
+          return;
+        }
+        daysLeft.textContent = String(pace.daysLeft);
+        weeklyPace.textContent = `+${String(pace.weeklyIncrease).replace('.', ',')} п. п.`;
+      };
+      preparationDateInput?.addEventListener('change', () => {
+        const user = window.ogeCurrentUser;
+        if (!user || !preparationDateInput.value) return;
+        const plan = readPlan(user);
+        if (!plan) return;
+        savePlan(user, { targetDate: preparationDateInput.value });
+        renderProgressOverview(user);
+      });
       const syncCloudTask6Progress = (user) => {
         if (!user) {
           resetTask1to5Progress();
@@ -846,6 +955,7 @@
           resetTask17Progress();
           resetTask18Progress();
           resetTask19Progress();
+          renderProgressOverview(null);
           return;
         }
         const keepOwnedAttempts = (progress = {}) => Object.fromEntries(
@@ -898,6 +1008,7 @@
           bar.querySelector('[data-part-two-percent]').textContent = `${Math.round((solved + reviewed) / total * 100)}%`;
           bar.title = `Задание ${number}: ответы совпали ${solved}/${total}, самопроверка ${reviewed}/${total}`;
         }
+        renderProgressOverview(user);
       };
 
       const courseCards = document.querySelectorAll('[data-course-card]');
@@ -1039,7 +1150,20 @@
       resetTask18Progress();
       resetTask19Progress();
       window.addEventListener('oge-auth-ready', (event) => syncAuthenticatedUi(event.detail?.user || null));
+      const refreshProgressFromAccount = async () => {
+        if (location.hash !== '#progress' || !window.ogeSupabase) return;
+        const { data, error } = await window.ogeSupabase.auth.getUser();
+        if (error) return;
+        window.ogeCurrentUser = data.user || null;
+        syncCloudTask6Progress(data.user || null);
+      };
+      window.addEventListener('hashchange', refreshProgressFromAccount);
+      window.addEventListener('focus', refreshProgressFromAccount);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') refreshProgressFromAccount();
+      });
       setTimeout(() => syncAuthenticatedUi(window.ogeCurrentUser || null), 700);
+      setTimeout(refreshProgressFromAccount, 900);
     })();
   </script>
   <dialog class="purchase-offer-dialog" id="purchase-offer" data-purchase-dialog aria-labelledby="purchase-offer-title">

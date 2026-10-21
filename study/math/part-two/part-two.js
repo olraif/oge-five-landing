@@ -25,13 +25,10 @@
   const saveProgress = async (task, status) => {
     const { user, progress } = await readProgress();
     const next = {
-      ...user.user_metadata,
-      trainer_progress: {
-        ...user.user_metadata?.trainer_progress,
-        math: window.OgePartTwoProgress.withStatus(progress, user.id, task.id, status),
-      },
+      ...user.user_metadata?.trainer_progress,
+      math: window.OgePartTwoProgress.withStatus(progress, user.id, task.id, status),
     };
-    const result = await client.auth.updateUser({ data: next });
+    const result = await window.ogeSaveTrainerProgress(next, user);
     if (result.error) throw result.error;
     window.dispatchEvent(new CustomEvent('oge-part-two-progress-updated'));
   };

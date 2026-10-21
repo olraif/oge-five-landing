@@ -26,6 +26,7 @@ const assert = require('node:assert/strict');
             return { data: { user: user() }, error: null };
           },
         } };
+        window.ogeSaveTrainerProgress = (next) => window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
         window.ogeHasCourseAccess = async () => ({ data: true, user: user() });
         window.ogeCurrentUser = user();
         setTimeout(() => window.dispatchEvent(new CustomEvent('oge-auth-ready', { detail: { user: user() } })), 0);

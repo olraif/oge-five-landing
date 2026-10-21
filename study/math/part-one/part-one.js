@@ -225,7 +225,7 @@ const saveCloudProgress = async (payload) => {
   const current = user.user_metadata?.trainer_progress || {};
   const normalizedPayload = { ...payload, prototype, ownerId: user.id };
   const next = { ...current, math: { ...(current.math || {}), task6: { ...(current.math?.task6 || {}), [prototype]: normalizedPayload } } };
-  const { data: updated, error } = await window.ogeSupabase.auth.updateUser({ data: { trainer_progress: next } });
+  const { data: updated, error } = await window.ogeSaveTrainerProgress(next, user);
   if (error) throw error;
   cloudUser = updated?.user || { ...user, user_metadata: { ...user.user_metadata, trainer_progress: next } };
   accountStorage?.write(storagePrefix, user.id, prototype, normalizedPayload);
