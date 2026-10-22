@@ -15,7 +15,7 @@
   <meta property="og:description" content="Онлайн-тренажёр для подготовки к ОГЭ по математике.">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../theme.css">
-  <link rel="stylesheet" href="study.css?v=20261007-1">
+  <link rel="stylesheet" href="study.css?v=20261022-1">
   <!-- Yandex Metrika is temporarily disabled (2026-09-05). -->
   <script src="../site.js" defer></script>
 </head>
@@ -92,7 +92,7 @@
           </article>
           <article class="diagnostic-card">
             <b>Контроль</b>
-            <h2>Диагностика</h2>
+            <h2>Прогресс</h2>
             <p>Диаграмма показывает, сколько заданий уже прорешано, сколько выполнено верно и какие прототипы нужно повторить.</p>
             <div class="diagnostic-preview" aria-hidden="true">
               <span style="height: 42%"></span>
@@ -267,17 +267,18 @@
           <div class="progress-weekly__metric"><span>Вторая часть</span><strong data-second-weekly-percent>+0%</strong><small data-second-weekly-count>0 заданий</small></div>
         </div>
 
-        <div class="progress-legend" aria-label="Обозначения прогресса">
-          <span><i class="is-green"></i> правильно решено</span>
-          <span><i class="is-yellow"></i> над этим ещё работаем</span>
-          <span><i class="is-red"></i> осталось закрыть до 100%</span>
-        </div>
-
         <div class="preparation-plan" aria-live="polite">
           <strong class="preparation-plan__title">Темп подготовки</strong>
           <label class="preparation-plan__field">Дата экзамена<input type="date" data-preparation-date aria-label="Дата экзамена"></label>
           <div class="preparation-plan__field"><span>Дней до экзамена</span><strong data-preparation-days>—</strong></div>
-          <div class="preparation-plan__field"><span>Нужно в неделю · часть 1</span><strong data-preparation-week>—</strong></div>
+          <div class="preparation-plan__field"><span>Нужно в неделю · часть 1</span><strong data-preparation-week-first>—</strong></div>
+          <div class="preparation-plan__field"><span>Нужно в неделю · часть 2</span><strong data-preparation-week-second>—</strong></div>
+        </div>
+
+        <div class="progress-legend" aria-label="Обозначения прогресса">
+          <span><i class="is-green"></i> правильно решено</span>
+          <span><i class="is-yellow"></i> над этим ещё работаем</span>
+          <span><i class="is-red"></i> осталось закрыть до 100%</span>
         </div>
 
         <div class="progress-scale" aria-label="Прогресс по заданиям ОГЭ 1–25">
@@ -904,12 +905,14 @@
               : daysSince(weekly.startedAt) < 7 ? `Учёт с ${weekly.startedAt.split('-').reverse().join('.')}; прежний прирост недоступен`
                 : 'Доля от общего количества заданий';
 
-        const weeklyPace = document.querySelector('[data-preparation-week]');
+        const weeklyPaceFirst = document.querySelector('[data-preparation-week-first]');
+        const weeklyPaceSecond = document.querySelector('[data-preparation-week-second]');
         const daysLeft = document.querySelector('[data-preparation-days]');
         if (!user) {
           preparationDateInput.disabled = true;
           preparationDateInput.value = '';
-          weeklyPace.textContent = '—';
+          weeklyPaceFirst.textContent = '—';
+          weeklyPaceSecond.textContent = '—';
           daysLeft.textContent = '—';
           return;
         }
@@ -921,14 +924,18 @@
           savePlan(user, plan);
         }
         preparationDateInput.value = plan.targetDate;
-        const pace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: first.total ? first.correct * 100 / first.total : 0 });
-        if (!pace) {
+        const firstPace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: first.total ? first.correct * 100 / first.total : 0 });
+        const secondPace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: second.total ? second.completed * 100 / second.total : 0 });
+        if (!firstPace || !secondPace) {
           daysLeft.textContent = '0';
-          weeklyPace.textContent = first.percent === 100 ? '0 п. п.' : '—';
+          weeklyPaceFirst.textContent = first.percent === 100 ? '0%' : '—';
+          weeklyPaceSecond.textContent = second.percent === 100 ? '0%' : '—';
           return;
         }
-        daysLeft.textContent = String(pace.daysLeft);
-        weeklyPace.textContent = `+${String(pace.weeklyIncrease).replace('.', ',')} п. п.`;
+        const formatPace = (value) => `${String(value).replace('.', ',')}%`;
+        daysLeft.textContent = String(firstPace.daysLeft);
+        weeklyPaceFirst.textContent = formatPace(firstPace.weeklyIncrease);
+        weeklyPaceSecond.textContent = formatPace(secondPace.weeklyIncrease);
       };
       preparationDateInput?.addEventListener('change', () => {
         const user = window.ogeCurrentUser;
