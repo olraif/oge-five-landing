@@ -119,6 +119,18 @@ test('лишние подписи удалены, выбранный прото�
   assert.match(css, /practical-prototype-card\.is-active/u);
 });
 
+test('номера заданий второй части не сливаются с процентами прогресса', () => {
+  const index = fs.readFileSync(path.join(root, 'study/index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'study/study.css'), 'utf8');
+  for (let number = 20; number <= 25; number += 1) {
+    assert.match(index, new RegExp(`class="bar bar--part-two bar--task${number}"[^>]*><span>${number}<small data-part-two-percent>`));
+  }
+  assert.match(css, /\.bar--part-two>span\{[^}]*flex-direction:column/);
+  assert.match(index, /data-first-correct-percent/);
+  assert.match(index, /data-second-correct-percent/);
+  assert.match(index, /formatPercent\(second\.correct, second\.total\)/);
+});
+
 test('сценарий публикации считает типографику новым файлом', () => {
   const script = fs.readFileSync(path.join(root, 'scripts/deploy-part-two.sh'), 'utf8');
   const files = script.match(/^files=\(([^]*?)^\)/mu)?.[1] || '';

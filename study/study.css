@@ -85,6 +85,7 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 @media (max-width:720px){.studio-content,.studio-panel,.progress-view,.progress-scale,.fipi-bank-table-wrap,.fipi-bank-scroll{min-width:0;max-width:100%}.progress-scale{width:100%;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}.fipi-bank-scroll{display:block;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}}
 
 .progress-view .panel-head--simple{grid-template-columns:minmax(0,1fr) minmax(360px,440px);align-items:start;margin-bottom:0}
+.progress-correct-share{display:flex;flex-wrap:wrap;align-items:center;gap:7px 15px;margin-top:12px;color:#53617a;font-size:12px;font-weight:700}.progress-correct-share__label{display:flex;align-items:center;gap:6px;width:100%;color:#526078;font-size:11px;font-weight:850}.progress-correct-share__label::before{content:"";width:8px;height:8px;border-radius:50%;background:#69d18a}.progress-correct-share strong{color:#1f8c53;font-size:15px;font-weight:900}
 .progress-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .progress-overview__item{display:grid;align-content:start;gap:5px;min-width:0;padding:12px 14px;border:1px solid #e1e8f6;border-radius:18px;background:#f7faff}
 .progress-overview__item span{color:#5f6b82;font-size:11px;font-weight:850}
@@ -246,6 +247,7 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-text)}
 .bar--task19>span{bottom:-42px;display:flex;flex-direction:column;align-items:center;gap:1px;color:#4b74ff}
 .bar--task19>span small{font-size:9px;line-height:1;color:#4b74ff;font-weight:950}
 .bar--practical>span{bottom:-42px;display:flex;flex-direction:column;align-items:center;gap:1px}.bar--practical>span small{font-size:9px;line-height:1;color:#4b74ff;font-weight:950}
+.bar--part-two>span{bottom:-42px;display:flex;flex-direction:column;align-items:center;gap:1px;color:#4b74ff}.bar--part-two>span small{font-size:9px;line-height:1;color:#4b74ff;font-weight:950}
 
 /* Keep the purchase window inside the site's light visual system. */
 .purchase-offer-dialog{border:1px solid #d7deea;background:#fff}

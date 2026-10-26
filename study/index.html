@@ -15,7 +15,7 @@
   <meta property="og:description" content="Онлайн-тренажёр для подготовки к ОГЭ по математике.">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../theme.css">
-  <link rel="stylesheet" href="study.css?v=20261026-1">
+  <link rel="stylesheet" href="study.css?v=20261026-3">
   <!-- Yandex Metrika is temporarily disabled (2026-09-05). -->
   <script src="../site.js" defer></script>
 </head>
@@ -243,6 +243,11 @@
         <div class="panel-head panel-head--simple">
           <div>
             <p class="eyebrow"><span></span> мой прогресс</p>
+            <div class="progress-correct-share" aria-live="polite">
+              <span class="progress-correct-share__label">Верно решено</span>
+              <span>1-я часть <strong data-first-correct-percent>0%</strong></span>
+              <span>2-я часть <strong data-second-correct-percent>0%</strong></span>
+            </div>
           </div>
           <div class="progress-overview" aria-live="polite">
             <div class="progress-overview__item">
@@ -313,12 +318,12 @@
             <div class="bar bar--task17" style="--ok:0%;--work:0%"><div class="task17-progress-stack" data-task17-stack aria-hidden="true"></div><span>17<small data-task17-percent>0%</small></span></div>
             <div class="bar bar--task18" style="--ok:0%;--work:0%"><div class="task18-progress-stack" data-task18-stack aria-hidden="true"></div><span>18<small data-task18-percent>0%</small></span></div>
             <div class="bar bar--task19" style="--ok:0%;--work:0%"><div class="task19-progress-stack" data-task19-stack aria-hidden="true"></div><span>19<small data-task19-percent>0%</small></span></div>
-            <div class="bar bar--task20" style="--ok:0%;--work:0%"><span>20<small data-part-two-percent>0%</small></span></div>
-            <div class="bar bar--task21" style="--ok:0%;--work:0%"><span>21<small data-part-two-percent>0%</small></span></div>
-            <div class="bar bar--task22" style="--ok:0%;--work:0%"><span>22<small data-part-two-percent>0%</small></span></div>
-            <div class="bar bar--task23" style="--ok:0%;--work:0%"><span>23<small data-part-two-percent>0%</small></span></div>
-            <div class="bar bar--task24" style="--ok:0%;--work:0%"><span>24<small data-part-two-percent>0%</small></span></div>
-            <div class="bar bar--task25" style="--ok:0%;--work:0%"><span>25<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task20" style="--ok:0%;--work:0%"><span>20<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task21" style="--ok:0%;--work:0%"><span>21<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task22" style="--ok:0%;--work:0%"><span>22<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task23" style="--ok:0%;--work:0%"><span>23<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task24" style="--ok:0%;--work:0%"><span>24<small data-part-two-percent>0%</small></span></div>
+            <div class="bar bar--part-two bar--task25" style="--ok:0%;--work:0%"><span>25<small data-part-two-percent>0%</small></span></div>
           </div>
         </div>
 
@@ -896,6 +901,9 @@
         document.querySelector('[data-second-part-done]').textContent = formatNumber(second.completed);
         document.querySelector('[data-second-part-remaining]').textContent = `Осталось: ${formatNumber(Math.max(0, second.total - second.completed))}`;
         document.querySelector('[data-second-part-total]').textContent = `Всего: ${formatNumber(second.total)}`;
+        const formatPercent = (correct, total) => `${String(total ? Math.round(correct * 1000 / total) / 10 : 0).replace('.', ',')}%`;
+        document.querySelector('[data-first-correct-percent]').textContent = formatPercent(first.correct, first.total);
+        document.querySelector('[data-second-correct-percent]').textContent = formatPercent(second.correct, second.total);
         const today = calendarDate(new Date());
         const weekly = model.summarizeLastSevenDays(user?.user_metadata?.math_progress_history_v1, today, first.total, second.total);
         const formatWeeklyCount = (value) => `${value < 0 ? '−' : ''}${formatNumber(Math.abs(value))}`;
