@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { buildFirstPartSummary, buildSecondPartSummary, recordDailyProgress, summarizeLastSevenDays, buildPreparationPlan } = require('../study/progress-model.js');
+const { buildFirstPartSummary, buildSecondPartSummary, recordDailyProgress, summarizeLastSevenDays, buildPreparationPlan, buildPreparationTaskPlan } = require('../study/progress-model.js');
 
 const user = { id: 'student-1', created_at: '2026-10-01T00:00:00.000Z' };
 const first = buildFirstPartSummary({
@@ -59,5 +59,14 @@ assert.equal(buildPreparationPlan({ targetDate: '2026-11-18', today: '2026-11-17
 assert.equal(buildPreparationPlan({ targetDate: '2026-11-18', today: '2026-11-17', currentPercent: 100 }).weeklyIncrease, 0);
 assert.equal(buildPreparationPlan({ targetDate: '2026-11-18', today: '2026-11-18' }), null);
 assert.equal(buildPreparationPlan({ targetDate: '2026-02-30', today: '2026-10-28' }), null);
+
+const taskPlan = buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-10-21', completed: 35, total: 100 });
+assert.deepEqual(taskPlan, { daysLeft: 28, completed: 35, remaining: 65, total: 100, weeklyTarget: 17 });
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-10-28', completed: 35, total: 100 }).weeklyTarget, 22, 'after an idle week, the weekly task count rises');
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-10-28', completed: 60, total: 100 }).weeklyTarget, 14, 'extra work lowers the next weekly task count');
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-11-17', completed: 35, total: 100 }).weeklyTarget, 65, 'a plan never exceeds the remaining tasks');
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-10-21', completed: 100, total: 100 }).weeklyTarget, 0);
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-10-21', completed: 0, total: 0 }), null);
+assert.equal(buildPreparationTaskPlan({ targetDate: '2026-11-18', today: '2026-11-18', completed: 0, total: 100 }), null);
 
 console.log('Preparation analytics tests passed');

@@ -10,7 +10,7 @@ class Task6ProgressContractTests(unittest.TestCase):
         html = (ROOT / "study" / "index.html").read_text(encoding="utf-8")
         css = (ROOT / "study" / "study.css").read_text(encoding="utf-8")
 
-        self.assertIn('<script src="./progress-model.js"></script>', html)
+        self.assertIn('<script src="./progress-model.js?v=20261026-1"></script>', html)
         self.assertIn("data-task6-stack", html)
         self.assertIn("data-task6-percent", html)
         self.assertIn("buildTask6Summary", html)

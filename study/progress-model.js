@@ -585,5 +585,21 @@ const summarizeTask15Prototype = (key, attempt = {}) => {
       nextWeekPercent: Math.round((current + weeklyIncrease) * 10) / 10,
     };
   };
-  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets, buildFirstPartSummary, buildSecondPartSummary, recordDailyProgress, summarizeLastSevenDays, buildPreparationPlan, createAccountProgressStorage, isAttemptOwnedByAccount };
+  const buildPreparationTaskPlan = ({ targetDate, today, completed, total } = {}) => {
+    const target = parseCalendarDay(targetDate);
+    const currentDay = parseCalendarDay(today);
+    const count = Math.floor(Number(total));
+    if (target === null || currentDay === null || currentDay >= target || !Number.isFinite(count) || count <= 0) return null;
+    const done = Math.max(0, Math.min(count, Math.floor(Number(completed) || 0)));
+    const remaining = count - done;
+    const daysLeft = target - currentDay;
+    return {
+      daysLeft,
+      completed: done,
+      remaining,
+      total: count,
+      weeklyTarget: Math.min(remaining, Math.ceil(remaining * 7 / daysLeft)),
+    };
+  };
+  return { TASK6_TOTALS, TASK6_ANSWER_KEYS, TASK7_TOTALS, TASK8_TOTALS, TASK9_TOTALS, TASK10_TOTALS, TASK11_TOTALS, TASK12_TOTALS, TASK13_TOTALS, TASK14_TOTALS, TASK15_TOTALS, TASK16_TOTALS, TASK17_TOTALS, TASK18_TOTALS, TASK19_TOTALS, summarizePrototype, summarizeTask7Prototype, summarizeTask8Prototype, summarizeTask9Prototype, summarizeTask10Prototype, summarizeTask11Prototype, summarizeTask12Prototype, summarizeTask13Prototype, summarizeTask14Prototype, summarizeTask15Prototype, summarizeTask16Prototype, summarizeTask17Prototype, summarizeTask18Prototype, summarizeTask19Prototype, getPrototypeStatus, buildTask6Summary, buildTask7Summary, buildTask8Summary, buildTask9Summary, buildTask10Summary, buildTask11Summary, buildTask12Summary, buildTask13Summary, buildTask14Summary, buildTask15Summary, buildTask16Summary, buildTask17Summary, buildTask18Summary, buildTask19Summary, buildProgressResetKey, isAttemptVisibleAfterReset, filterProgressAfterResets, buildFirstPartSummary, buildSecondPartSummary, recordDailyProgress, summarizeLastSevenDays, buildPreparationPlan, buildPreparationTaskPlan, createAccountProgressStorage, isAttemptOwnedByAccount };
 });

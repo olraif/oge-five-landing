@@ -15,7 +15,7 @@
   <meta property="og:description" content="Онлайн-тренажёр для подготовки к ОГЭ по математике.">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../theme.css">
-  <link rel="stylesheet" href="study.css?v=20261022-1">
+  <link rel="stylesheet" href="study.css?v=20261026-1">
   <!-- Yandex Metrika is temporarily disabled (2026-09-05). -->
   <script src="../site.js" defer></script>
 </head>
@@ -247,13 +247,17 @@
           <div class="progress-overview" aria-live="polite">
             <div class="progress-overview__item">
               <span>Первая часть · 1–19</span>
-              <strong data-first-part-percent>0%</strong>
-              <small data-first-part-count>Правильно решено: 0</small>
+              <strong data-first-part-done>0</strong>
+              <small>решено верно</small>
+              <small data-first-part-remaining>Осталось: 2 760</small>
+              <small data-first-part-total>Всего: 2 760</small>
             </div>
             <div class="progress-overview__item">
               <span>Вторая часть · 20–25</span>
-              <strong data-second-part-percent>0%</strong>
-              <small data-second-part-count>Пройдено 0 из 330</small>
+              <strong data-second-part-done>0</strong>
+              <small>пройдено</small>
+              <small data-second-part-remaining>Осталось: 330</small>
+              <small data-second-part-total>Всего: 330</small>
             </div>
           </div>
         </div>
@@ -263,16 +267,16 @@
             <strong>За последние 7 дней</strong>
             <span data-weekly-note>Учёт новых решений начнётся после первой тренировки</span>
           </div>
-          <div class="progress-weekly__metric"><span>Первая часть</span><strong data-first-weekly-percent>+0%</strong><small data-first-weekly-count>0 заданий</small></div>
-          <div class="progress-weekly__metric"><span>Вторая часть</span><strong data-second-weekly-percent>+0%</strong><small data-second-weekly-count>0 заданий</small></div>
+          <div class="progress-weekly__metric"><span>Первая часть</span><strong data-first-weekly-count>0</strong><small>решено верно</small></div>
+          <div class="progress-weekly__metric"><span>Вторая часть</span><strong data-second-weekly-count>0</strong><small>пройдено</small></div>
         </div>
 
         <div class="preparation-plan" aria-live="polite">
           <strong class="preparation-plan__title">Темп подготовки</strong>
           <label class="preparation-plan__field">Дата экзамена<input type="date" data-preparation-date aria-label="Дата экзамена"></label>
           <div class="preparation-plan__field"><span>Дней до экзамена</span><strong data-preparation-days>—</strong></div>
-          <div class="preparation-plan__field"><span>Нужно в неделю · часть 1</span><strong data-preparation-week-first>—</strong></div>
-          <div class="preparation-plan__field"><span>Нужно в неделю · часть 2</span><strong data-preparation-week-second>—</strong></div>
+          <div class="preparation-plan__field"><span>План на неделю · часть 1</span><strong data-preparation-week-first>—</strong></div>
+          <div class="preparation-plan__field"><span>План на неделю · часть 2</span><strong data-preparation-week-second>—</strong></div>
         </div>
 
         <div class="progress-legend" aria-label="Обозначения прогресса">
@@ -429,7 +433,7 @@
   <script src="./supabase-config.js"></script>
   <script src="/study/vendor/supabase-js-2.115.0/supabase.js"></script>
   <script src="./auth-session.js"></script>
-  <script src="./progress-model.js"></script>
+  <script src="./progress-model.js?v=20261026-1"></script>
   <script src="./math/part-two/progress-codec.js"></script>
   <script>
     (() => {
@@ -885,25 +889,25 @@
         const mathProgress = user?.user_metadata?.trainer_progress?.math || {};
         const first = model.buildFirstPartSummary(mathProgress, user);
         const second = model.buildSecondPartSummary(mathProgress, user);
-        document.querySelector('[data-first-part-percent]').textContent = `${String(first.percent).replace('.', ',')}%`;
-        document.querySelector('[data-first-part-count]').textContent = `Верно ${first.correct} из ${first.total}`;
-        document.querySelector('[data-second-part-percent]').textContent = `${String(second.percent).replace('.', ',')}%`;
-        document.querySelector('[data-second-part-count]').textContent = `Пройдено ${second.completed} из ${second.total}`;
-
+        const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(value);
+        document.querySelector('[data-first-part-done]').textContent = formatNumber(first.correct);
+        document.querySelector('[data-first-part-remaining]').textContent = `Осталось: ${formatNumber(Math.max(0, first.total - first.correct))}`;
+        document.querySelector('[data-first-part-total]').textContent = `Всего: ${formatNumber(first.total)}`;
+        document.querySelector('[data-second-part-done]').textContent = formatNumber(second.completed);
+        document.querySelector('[data-second-part-remaining]').textContent = `Осталось: ${formatNumber(Math.max(0, second.total - second.completed))}`;
+        document.querySelector('[data-second-part-total]').textContent = `Всего: ${formatNumber(second.total)}`;
         const today = calendarDate(new Date());
         const weekly = model.summarizeLastSevenDays(user?.user_metadata?.math_progress_history_v1, today, first.total, second.total);
-        const formatChange = (value) => value === 0 ? '+0%' : `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(2).replace('.', ',')}%`;
-        const formatCount = (value, total) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${Math.abs(value)} из ${total}`;
-        document.querySelector('[data-first-weekly-percent]').textContent = formatChange(weekly?.firstPercent || 0);
-        document.querySelector('[data-second-weekly-percent]').textContent = formatChange(weekly?.secondPercent || 0);
-        document.querySelector('[data-first-weekly-count]').textContent = formatCount(weekly?.firstCount || 0, first.total);
-        document.querySelector('[data-second-weekly-count]').textContent = formatCount(weekly?.secondCount || 0, second.total);
+        const formatWeeklyCount = (value) => `${value < 0 ? '−' : ''}${formatNumber(Math.abs(value))}`;
+        document.querySelector('[data-first-weekly-count]').textContent = formatWeeklyCount(weekly?.firstCount || 0);
+        document.querySelector('[data-second-weekly-count]').textContent = formatWeeklyCount(weekly?.secondCount || 0);
         const daysSince = (day) => day ? Math.floor((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86400000) : null;
         document.querySelector('[data-weekly-note]').textContent = !user ? 'Войдите, чтобы увидеть недельный прирост'
           : weekly?.incompleteSince && daysSince(weekly.incompleteSince) < 7 ? 'Часть решений не попала в недельный учёт'
             : !weekly?.startedAt ? 'Учёт новых решений начнётся после первой тренировки'
               : daysSince(weekly.startedAt) < 7 ? `Учёт с ${weekly.startedAt.split('-').reverse().join('.')}; прежний прирост недоступен`
-                : 'Доля от общего количества заданий';
+                : weekly.firstCount < 0 || weekly.secondCount < 0 ? 'После сброса число готовых заданий уменьшилось'
+                  : 'Сколько заданий добавилось к прогрессу';
 
         const weeklyPaceFirst = document.querySelector('[data-preparation-week-first]');
         const weeklyPaceSecond = document.querySelector('[data-preparation-week-second]');
@@ -924,18 +928,20 @@
           savePlan(user, plan);
         }
         preparationDateInput.value = plan.targetDate;
-        const firstPace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: first.total ? first.correct * 100 / first.total : 0 });
-        const secondPace = model.buildPreparationPlan({ targetDate: plan.targetDate, today, currentPercent: second.total ? second.completed * 100 / second.total : 0 });
+        const firstPace = model.buildPreparationTaskPlan({ targetDate: plan.targetDate, today, completed: first.correct, total: first.total });
+        const secondPace = model.buildPreparationTaskPlan({ targetDate: plan.targetDate, today, completed: second.completed, total: second.total });
         if (!firstPace || !secondPace) {
           daysLeft.textContent = '0';
-          weeklyPaceFirst.textContent = first.percent === 100 ? '0%' : '—';
-          weeklyPaceSecond.textContent = second.percent === 100 ? '0%' : '—';
+          weeklyPaceFirst.textContent = first.correct >= first.total ? '0 заданий' : '—';
+          weeklyPaceSecond.textContent = second.completed >= second.total ? '0 заданий' : '—';
           return;
         }
-        const formatPace = (value) => `${String(value).replace('.', ',')}%`;
+        const taskWord = (value) => value % 10 === 1 && value % 100 !== 11 ? 'задание'
+          : value % 10 >= 2 && value % 10 <= 4 && (value % 100 < 12 || value % 100 > 14) ? 'задания' : 'заданий';
+        const formatPace = (value) => `${formatNumber(value)} ${taskWord(value)}`;
         daysLeft.textContent = String(firstPace.daysLeft);
-        weeklyPaceFirst.textContent = formatPace(firstPace.weeklyIncrease);
-        weeklyPaceSecond.textContent = formatPace(secondPace.weeklyIncrease);
+        weeklyPaceFirst.textContent = formatPace(firstPace.weeklyTarget);
+        weeklyPaceSecond.textContent = formatPace(secondPace.weeklyTarget);
       };
       preparationDateInput?.addEventListener('change', () => {
         const user = window.ogeCurrentUser;
